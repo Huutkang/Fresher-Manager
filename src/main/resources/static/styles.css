@@ -1,0 +1,91 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+form {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 300px;
+    border: 2px solid rgb(0, 0, 0); /* Tạo viền kép */
+}
+
+div {
+    margin-bottom: 15px;
+    position: relative; /* Thêm này để có thể định vị icon */
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    padding-right: 30px; /* Tạo khoảng trống cho icon */
+    border: 1px solid red; /* Thay đổi màu viền thành đỏ */
+    border-radius: 3px; /* Thêm góc bo tròn nếu muốn */
+}
+
+input:focus {
+    outline: none; /* Loại bỏ outline mặc định */
+    border-color: red; /* Đổi màu viền khi focus */
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Thêm hiệu ứng bóng đổ */
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+.eye-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    z-index: 1; /* Đảm bảo icon nằm trên input */
+}
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#password + .eye-icon {
+    top: calc(50% + 10px); /* Điều chỉnh vị trí dọc */
+}

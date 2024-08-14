@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Page</title>
+</head>
+<body>
+    <h1>Welcome to My Page</h1>
+
+    <!-- Khoảng trống này sẽ được backend chèn nội dung -->
+    <p th:text="${dynamicContent}">Placeholder text</p>
+
+    <!-- Hoặc thêm nhiều phần tử -->
+    <ul>
+        <li th:each="item : ${items}" th:text="${item}">Item</li>
+    </ul>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <form id="loginForm">
+        <div>
+            <label for="username">Tên đăng nhập</label>
+            <input type="text" id="username" name="username" required placeholder="Nhập 6-20 ký tự">
+        </div>
+        <div>
+            <label for="password">Mật khẩu</label>
+            <input type="password" id="password" name="password" required>
+            <img id="togglePassword" class="eye-icon" src="eye-icon.png" alt="Toggle password visibility">
+        </div>
+        <button type="submit" id="loginButton" disabled>Đăng nhập</button>
+    </form>
+
+    <div id="welcomePopup" class="popup">
+        <div class="popup-content">
+            <p id="welcomeMessage"></p>
+            <button id="closePopup">Đóng</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
