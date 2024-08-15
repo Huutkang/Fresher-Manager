@@ -72,6 +72,11 @@
 			<version>1.5.5.Final</version> <!-- Kiểm tra phiên bản mới nhất trên trang chủ MapStruct -->
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

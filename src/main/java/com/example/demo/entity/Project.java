@@ -34,4 +34,7 @@ public class Project {
     private java.sql.Date startDate;
 
     private java.sql.Date endDate;
+
+    @Column(nullable = false)
+    private boolean active = true;
 }

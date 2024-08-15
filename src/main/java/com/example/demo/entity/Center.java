@@ -23,4 +23,7 @@ public class Center {
     @ManyToOne
     @JoinColumn(name = "manager_id", foreignKey = @ForeignKey(name = "fk_manager"))
     private Users manager;
+
+    @Column(nullable = false)
+    private boolean active = true;
 }
