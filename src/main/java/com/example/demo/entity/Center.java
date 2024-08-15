@@ -27,3 +27,4 @@ public class Center {
     @Column(nullable = false)
     private boolean active = true;
 }
+

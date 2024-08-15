@@ -38,3 +38,4 @@ public class Project {
     @Column(nullable = false)
     private boolean active = true;
 }
+
