@@ -17,7 +17,7 @@ import com.example.demo.entity.FresherProject;
 import com.example.demo.service.FresherProjectService;
 
 @RestController
-@RequestMapping("/fresher-projects")
+@RequestMapping("/fresherProjects")
 public class FresherProjectController {
 
     @Autowired

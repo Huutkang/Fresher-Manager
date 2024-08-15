@@ -1,13 +1,6 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,13 +16,12 @@ public class FresherProject {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "fresher_id", foreignKey = @ForeignKey(name = "fk_fresher"), nullable = false)
-    private Fresher fresher;
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user"))
+    private Users user;
 
     @ManyToOne
-    @JoinColumn(name = "project_id", foreignKey = @ForeignKey(name = "fk_project"), nullable = false)
+    @JoinColumn(name = "project_id", foreignKey = @ForeignKey(name = "fk_project"))
     private Project project;
 
-    @Column(length = 100)
     private String role;
 }

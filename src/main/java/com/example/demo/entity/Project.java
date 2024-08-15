@@ -1,17 +1,9 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.ForeignKey;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.Date;
 
 @Entity
 @Data
@@ -23,33 +15,23 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "center_id", foreignKey = @ForeignKey(name = "fk_center"), nullable = true)
+    @JoinColumn(name = "center_id", foreignKey = @ForeignKey(name = "fk_center"))
     private Center center;
 
-    @Column(length = 255)
-    private String manager_name;
+    @ManyToOne
+    @JoinColumn(name = "manager_id", foreignKey = @ForeignKey(name = "fk_manager"))
+    private Users manager;
 
-    @Column
-    private Date start_date;
-
-    @Column
-    private Date end_date;
-
-    @Column(length = 100)
     private String language;
 
-    @Column(length = 50)
+    @Column(nullable = false)
     private String status;
 
-    public void setStatus(String status) {
-        if (status.equals("not start") || status.equals("ongoing") || status.equals("canceled") || status.equals("closed")) {
-            this.status = status;
-        } else {
-            throw new IllegalArgumentException("Invalid status: " + status);
-        }
-    }
+    private java.sql.Date startDate;
+
+    private java.sql.Date endDate;
 }

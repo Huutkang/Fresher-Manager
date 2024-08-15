@@ -34,11 +34,11 @@ public class ProjectService {
         Project project = projectRepository.findById(id).orElseThrow(() -> new RuntimeException("Project not found"));
         project.setName(projectDetails.getName());
         project.setCenter(projectDetails.getCenter());
-        project.setManagerName(projectDetails.getManagerName());
-        project.setStartDate(projectDetails.getStartDate());
-        project.setEndDate(projectDetails.getEndDate());
+        project.setManager(projectDetails.getManager());
         project.setLanguage(projectDetails.getLanguage());
         project.setStatus(projectDetails.getStatus());
+        project.setStartDate(projectDetails.getStartDate());
+        project.setEndDate(projectDetails.getEndDate());
         return projectRepository.save(project);
     }
 

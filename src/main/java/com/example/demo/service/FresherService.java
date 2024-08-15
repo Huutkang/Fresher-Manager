@@ -19,7 +19,7 @@ public class FresherService {
         return fresherRepository.save(fresher);
     }
 
-    // Lấy tất cả Fresher
+    // Lấy tất cả Freshers
     public List<Fresher> getAllFreshers() {
         return fresherRepository.findAll();
     }
@@ -32,11 +32,8 @@ public class FresherService {
     // Cập nhật Fresher
     public Fresher updateFresher(int id, Fresher fresherDetails) {
         Fresher fresher = fresherRepository.findById(id).orElseThrow(() -> new RuntimeException("Fresher not found"));
-        fresher.setName(fresherDetails.getName());
-        fresher.setEmail(fresherDetails.getEmail());
-        fresher.setPhoneNumber(fresherDetails.getPhoneNumber());
+        fresher.setUser(fresherDetails.getUser());
         fresher.setProgrammingLanguage(fresherDetails.getProgrammingLanguage());
-        fresher.setCenter(fresherDetails.getCenter());
         return fresherRepository.save(fresher);
     }
 
@@ -45,4 +42,3 @@ public class FresherService {
         fresherRepository.deleteById(id);
     }
 }
-

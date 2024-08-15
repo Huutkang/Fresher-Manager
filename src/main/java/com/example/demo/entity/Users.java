@@ -9,18 +9,29 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Center {
+public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false, unique = true)
+    private String username;
+    
+    @Column(nullable = false)
+    private String password_hash;
+
     @Column(nullable = false)
     private String name;
 
-    private String location;
+    @Column(unique = true)
+    private String email;
+    
+    @Column(length = 10)
+    private String phoneNumber;
 
-    @ManyToOne
-    @JoinColumn(name = "manager_id", foreignKey = @ForeignKey(name = "fk_manager"))
-    private Users manager;
+    @Column(nullable = false)
+    private String role;
 }
+
+

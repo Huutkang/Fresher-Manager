@@ -31,8 +31,9 @@ public class FresherProjectService {
 
     // Cập nhật FresherProject
     public FresherProject updateFresherProject(int id, FresherProject fresherProjectDetails) {
-        FresherProject fresherProject = fresherProjectRepository.findById(id).orElseThrow(() -> new RuntimeException("FresherProject not found"));
-        fresherProject.setFresher(fresherProjectDetails.getFresher());
+        FresherProject fresherProject = fresherProjectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("FresherProject not found"));
+        fresherProject.setUser(fresherProjectDetails.getUser());
         fresherProject.setProject(fresherProjectDetails.getProject());
         fresherProject.setRole(fresherProjectDetails.getRole());
         return fresherProjectRepository.save(fresherProject);

@@ -1,13 +1,6 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.ForeignKey;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,19 +15,13 @@ public class Fresher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false, length = 255)
-    private String name;
+    @OneToOne
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user"), unique = true)
+    private Users user;
 
-    @Column(nullable = false, unique = true, length = 255)
-    private String email;
-
-    @Column(length = 20)
-    private String phone_number;
-
-    @Column(length = 100)
-    private String programming_language;
+    private String programmingLanguage;
 
     @ManyToOne
-    @JoinColumn(name = "center_id", foreignKey = @ForeignKey(name = "fk_center"), nullable = true)
+    @JoinColumn(name = "center_id", foreignKey = @ForeignKey(name = "fk_center"), unique = true)
     private Center center;
 }

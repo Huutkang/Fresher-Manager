@@ -31,10 +31,11 @@ public class CenterService {
 
     // Cập nhật Center
     public Center updateCenter(int id, Center centerDetails) {
-        Center center = centerRepository.findById(id).orElseThrow(() -> new RuntimeException("Center not found"));
+        Center center = centerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Center not found"));
         center.setName(centerDetails.getName());
-        center.setAddress(centerDetails.getAddress());
-        center.setManagerName(centerDetails.getManagerName());
+        center.setLocation(centerDetails.getLocation());
+        center.setManager(centerDetails.getManager());
         return centerRepository.save(center);
     }
 

@@ -19,6 +19,6 @@ public class HomeController {
         List<String> items = Arrays.asList("chó", "mèo", "Item 3");
         model.addAttribute("items", items);
 
-        return "x"; // Trả về file index.html
+        return "x"; // Trả về file x.html
     }
 }
