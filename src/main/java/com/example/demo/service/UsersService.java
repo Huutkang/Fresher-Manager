@@ -43,6 +43,7 @@ public class UsersService {
     // Lấy tất cả Users dưới dạng userResDto
     public List<UserResDto> getAllUsers() {
         return usersRepository.findAll().stream()
+                .filter(Users::getActive)
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -50,6 +51,7 @@ public class UsersService {
     // Hoặc sử dụng phân trang
     public Page<UserResDto> getAllUsers(Pageable pageable) {
         return usersRepository.findAll(pageable)
+                .filter(Users::getActive)
                 .map(this::convertToDTO);
     }
 
@@ -65,6 +67,7 @@ public class UsersService {
     // chuyển username sang id
     public Optional<Integer> getUserIdByUsername(String username) {
         return usersRepository.findByUsername(username)
+                .filter(Users::getActive)
                 .map(Users::getId);
     }
     
@@ -85,16 +88,16 @@ public class UsersService {
         return usersRepository.save(user);
     }
 
+    
+
     public Users updatePassword(int id, String password) {
-        Users user = usersRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Users user = getActiveUserById(id);
         user.setPassword_hash(passwordEncoder(password));
         return usersRepository.save(user);
     }
     
     public Users updateUser(int id, SetUserReqDto userDto) {
-        Users user = usersRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Users user = getActiveUserById(id);
         user.setUsername(userDto.getUsername());
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
@@ -104,8 +107,7 @@ public class UsersService {
 
     // Xóa User theo ID
     public Users deleteUser(int id) {
-        Users user = usersRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Users user = getActiveUserById(id);
         user.setActive(false);
         return usersRepository.save(user);
     }
@@ -114,17 +116,15 @@ public class UsersService {
         return encoder.encode(password);
     }
 
-    public boolean checkPassword(int id, String password){
-        Users user = usersRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-                String password_hash = user.getPassword_hash();
-        return encoder.matches(password, password_hash);
+    public boolean checkPassword(int id, String password) {
+        Users user = getActiveUserById(id);
+        return encoder.matches(password, user.getPassword_hash());
     }
 
     protected Users getActiveUserById(int id) {
         return usersRepository.findById(id)
                 .filter(Users::getActive)
-                .orElseThrow(() -> new RuntimeException("User not found or inactive"));
+                .orElseThrow(() -> new UserNotFoundException("User not found or inactive"));
     }
 }
 
