@@ -43,7 +43,10 @@ public class ProjectService {
     }
 
     // Xóa Project theo ID
-    public void deleteProject(int id) {
-        projectRepository.deleteById(id);
+    public Project deleteProject(int id) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        project.setActive(false);
+        return projectRepository.save(project);
     }
 }

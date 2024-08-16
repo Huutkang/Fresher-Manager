@@ -2,15 +2,24 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Users;
 import com.example.demo.repository.UsersRepository;
+import com.example.demo.dto.request.NewUserReqDto;
+import com.example.demo.dto.request.SetUserReqDto;
+import com.example.demo.dto.response.UserResDto;
+import com.example.demo.exception.UserNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
+
 
 @Service
 public class UsersService {
@@ -18,29 +27,61 @@ public class UsersService {
     @Autowired
     private UsersRepository usersRepository;
     
-    private PasswordEncoder Encoder = new BCryptPasswordEncoder(10);
+    private final PasswordEncoder encoder = new BCryptPasswordEncoder(10);
 
     // Thêm mới User
-    public Users addUser(Users user) {
-        user.setPassword_hash(passwordEncoder(user.getPassword()));  
-        return usersRepository.save(user);
+    public Users addUser(NewUserReqDto user) {
+        Users newUser = new Users();
+        newUser.setUsername(user.getUsername());
+        newUser.setPassword_hash(passwordEncoder(user.getPassword()));
+        newUser.setName(user.getName());
+        newUser.setEmail(user.getEmail());
+        newUser.setPhoneNumber(user.getPhoneNumber());
+        return usersRepository.save(newUser);
     }
 
-    // Lấy tất cả Users
-    public List<Users> getAllUsers() {
-        return usersRepository.findAll();
+    // Lấy tất cả Users dưới dạng userResDto
+    public List<UserResDto> getAllUsers() {
+        return usersRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    // Lấy User theo ID
-    public Optional<Users> getUserById(int id) {
-        return usersRepository.findById(id);
+    // Hoặc sử dụng phân trang
+    public Page<UserResDto> getAllUsers(Pageable pageable) {
+        return usersRepository.findAll(pageable)
+                .map(this::convertToDTO);
     }
 
-    // Cập nhật User
-    public Users updateUsername(int id, String username) {
-        Users user = usersRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setUsername(username);
+    // Lấy User theo ID dưới dạng userResDto
+    public Optional<UserResDto> getUserById(int id) {
+        try {
+            return Optional.of(convertToDTO(getActiveUserById(id)));
+        } catch (RuntimeException e) {
+            return Optional.empty();
+        }
+    }
+    
+    // chuyển username sang id
+    public Optional<Integer> getUserIdByUsername(String username) {
+        return usersRepository.findByUsername(username)
+                .map(Users::getId);
+    }
+    
+    // Phương thức hỗ trợ chuyển đổi từ Users sang userResDto
+    private UserResDto convertToDTO(Users user) {
+        UserResDto dto = new UserResDto();
+        dto.setUsername(user.getUsername());
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setRole(user.getRole());
+        return dto;
+    }
+
+    public Users setRole(int id, String role) {
+        Users user = getActiveUserById(id);
+        user.setRole(role);
         return usersRepository.save(user);
     }
 
@@ -51,23 +92,39 @@ public class UsersService {
         return usersRepository.save(user);
     }
     
-    public Users updateUser(int id, Users userDetails) {
+    public Users updateUser(int id, SetUserReqDto userDto) {
         Users user = usersRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setName(userDetails.getName());
-        user.setEmail(userDetails.getEmail());
-        user.setPhoneNumber(userDetails.getPhoneNumber());
-        user.setRole(userDetails.getRole());
+        user.setUsername(userDto.getUsername());
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        user.setPhoneNumber(userDto.getPhoneNumber());
         return usersRepository.save(user);
     }
 
     // Xóa User theo ID
-    public void deleteUser(int id) {
-        usersRepository.deleteById(id);
+    public Users deleteUser(int id) {
+        Users user = usersRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setActive(false);
+        return usersRepository.save(user);
     }
 
     private String passwordEncoder(String password){
-        return Encoder.encode(password);
+        return encoder.encode(password);
+    }
+
+    public boolean checkPassword(int id, String password){
+        Users user = usersRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+                String password_hash = user.getPassword_hash();
+        return encoder.matches(password, password_hash);
+    }
+
+    protected Users getActiveUserById(int id) {
+        return usersRepository.findById(id)
+                .filter(Users::getActive)
+                .orElseThrow(() -> new RuntimeException("User not found or inactive"));
     }
 }
 

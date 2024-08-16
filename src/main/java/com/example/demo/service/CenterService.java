@@ -40,7 +40,10 @@ public class CenterService {
     }
 
     // Xóa Center theo ID
-    public void deleteCenter(int id) {
-        centerRepository.deleteById(id);
+    public Center deleteCenter(int id) {
+        Center center = centersRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        center.setActive(false);
+        return centersRepository.save(center);
     }
 }

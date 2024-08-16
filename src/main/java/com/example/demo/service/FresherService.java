@@ -38,7 +38,10 @@ public class FresherService {
     }
 
     // Xóa Fresher theo ID
-    public void deleteFresher(int id) {
-        fresherRepository.deleteById(id);
+    public Fresher deleteFresher(int id) {
+        Fresher fresher = fresherRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        fresher.setActive(false);
+        return fresherRepository.save(fresher);
     }
 }
