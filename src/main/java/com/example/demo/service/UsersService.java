@@ -63,9 +63,18 @@ public class UsersService {
             return Optional.empty();
         }
     }
+
+    // public Optional<UserResDto> getUserByUsername(String username) {
+    //     try{
+    //         int id = getUserIdByUsername(username).get();
+    //         return getUserById(id);
+    //     } catch (RuntimeException e) {
+    //         return Optional.empty();
+    //     }
+    // }
     
     // chuyển username sang id
-    public Optional<Integer> getUserIdByUsername(String username) {
+    protected Optional<Integer> getUserIdByUsername(String username) {
         return usersRepository.findByUsername(username)
                 .filter(Users::getActive)
                 .map(Users::getId);
@@ -82,7 +91,7 @@ public class UsersService {
         return dto;
     }
 
-    public Users setRole(int id, String role) {
+    protected Users setRole(int id, String role) {
         Users user = getActiveUserById(id);
         user.setRole(role);
         return usersRepository.save(user);
@@ -90,13 +99,13 @@ public class UsersService {
 
     
 
-    public Users updatePassword(int id, String password) {
+    protected Users updatePassword(int id, String password) {
         Users user = getActiveUserById(id);
         user.setPassword_hash(passwordEncoder(password));
         return usersRepository.save(user);
     }
     
-    public Users updateUser(int id, SetUserReqDto userDto) {
+    protected Users updateUser(int id, SetUserReqDto userDto) {
         Users user = getActiveUserById(id);
         user.setUsername(userDto.getUsername());
         user.setName(userDto.getName());
@@ -106,7 +115,7 @@ public class UsersService {
     }
 
     // Xóa User theo ID
-    public Users deleteUser(int id) {
+    protected Users deleteUser(int id) {
         Users user = getActiveUserById(id);
         user.setActive(false);
         return usersRepository.save(user);
@@ -116,7 +125,7 @@ public class UsersService {
         return encoder.encode(password);
     }
 
-    public boolean checkPassword(int id, String password) {
+    protected boolean checkPassword(int id, String password) {
         Users user = getActiveUserById(id);
         return encoder.matches(password, user.getPassword_hash());
     }
