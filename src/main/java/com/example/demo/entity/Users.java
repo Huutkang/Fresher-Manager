@@ -31,7 +31,7 @@ public class Users {
     private String phoneNumber;
 
     @Column(nullable = false)
-    private String role;
+    private String role = "none";
 
     @Column(nullable = false)
     private boolean active = true;

@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Users;
 import com.example.demo.service.UsersService;
+import com.example.demo.dto.request.NewUserReqDto;
+import com.example.demo.dto.request.SetUserReqDto;
+import com.example.demo.dto.response.UserResDto;
 
 @RestController
 @RequestMapping("/users")
@@ -25,29 +29,29 @@ public class UsersController {
 
     // Thêm mới User
     @PostMapping
-    public Users createUser(@RequestBody Users user) {
-        return usersService.addUser(user);
+    public Users createUser(@RequestBody NewUserReqDto newUserReq) {
+        return usersService.addUser(newUserReq);
     }
 
     // Lấy tất cả Users
     @GetMapping
-    public List<Users> getAllUsers() {
+    public List<UserResDto> getAllUsers() {
         return usersService.getAllUsers();
     }
 
     // Lấy User theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<Users> getUserById(@PathVariable int id) {
-        Users user = usersService.getUserById(id).orElse(null);
+    public ResponseEntity<UserResDto> getUserById(@PathVariable int id) {
+        Optional<UserResDto> user = usersService.getUserById(id);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(user.get());
     }
 
     // Cập nhật User
     @PutMapping("/{id}")
-    public ResponseEntity<Users> updateUser(@PathVariable int id, @RequestBody Users userDetails) {
+    public ResponseEntity<Users> updateUser(@PathVariable int id, @RequestBody SetUserReqDto userDetails) {
         try {
             Users updatedUser = usersService.updateUser(id, userDetails);
             return ResponseEntity.ok(updatedUser);

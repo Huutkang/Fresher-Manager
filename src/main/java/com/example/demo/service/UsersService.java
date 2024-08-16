@@ -43,7 +43,7 @@ public class UsersService {
     // Lấy tất cả Users dưới dạng userResDto
     public List<UserResDto> getAllUsers() {
         return usersRepository.findAll().stream()
-                .filter(Users::getActive)
+                .filter(Users::isActive)
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -51,14 +51,14 @@ public class UsersService {
     // Hoặc sử dụng phân trang
     public Page<UserResDto> getAllUsers(Pageable pageable) {
         return usersRepository.findAll(pageable)
-                .filter(Users::getActive)
+                .filter(Users::isActive)
                 .map(this::convertToDTO);
     }
 
     // Lấy User theo ID dưới dạng userResDto
     public Optional<UserResDto> getUserById(int id) {
         try {
-            return Optional.of(convertToDTO(getActiveUserById(id)));
+            return Optional.of(convertToDTO(isActiveUserById(id)));
         } catch (RuntimeException e) {
             return Optional.empty();
         }
@@ -76,7 +76,7 @@ public class UsersService {
     // chuyển username sang id
     protected Optional<Integer> getUserIdByUsername(String username) {
         return usersRepository.findByUsername(username)
-                .filter(Users::getActive)
+                .filter(Users::isActive)
                 .map(Users::getId);
     }
     
@@ -92,7 +92,7 @@ public class UsersService {
     }
 
     protected Users setRole(int id, String role) {
-        Users user = getActiveUserById(id);
+        Users user = isActiveUserById(id);
         user.setRole(role);
         return usersRepository.save(user);
     }
@@ -100,13 +100,13 @@ public class UsersService {
     
 
     protected Users updatePassword(int id, String password) {
-        Users user = getActiveUserById(id);
+        Users user = isActiveUserById(id);
         user.setPassword_hash(passwordEncoder(password));
         return usersRepository.save(user);
     }
     
-    protected Users updateUser(int id, SetUserReqDto userDto) {
-        Users user = getActiveUserById(id);
+    public Users updateUser(int id, SetUserReqDto userDto) {
+        Users user = isActiveUserById(id);
         user.setUsername(userDto.getUsername());
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
@@ -115,8 +115,8 @@ public class UsersService {
     }
 
     // Xóa User theo ID
-    protected Users deleteUser(int id) {
-        Users user = getActiveUserById(id);
+    public Users deleteUser(int id) {
+        Users user = isActiveUserById(id);
         user.setActive(false);
         return usersRepository.save(user);
     }
@@ -126,13 +126,13 @@ public class UsersService {
     }
 
     protected boolean checkPassword(int id, String password) {
-        Users user = getActiveUserById(id);
+        Users user = isActiveUserById(id);
         return encoder.matches(password, user.getPassword_hash());
     }
 
-    protected Users getActiveUserById(int id) {
+    protected Users isActiveUserById(int id) {
         return usersRepository.findById(id)
-                .filter(Users::getActive)
+                .filter(Users::isActive)
                 .orElseThrow(() -> new UserNotFoundException("User not found or inactive"));
     }
 }
