@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.HashSet;
+
 import com.example.demo.entity.Users;
 import com.example.demo.repository.UsersRepository;
 import com.example.demo.dto.request.NewUserReqDto;
@@ -19,6 +21,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.example.demo.enums.Role;
+
 
 
 
@@ -33,11 +37,14 @@ public class UsersService {
     // Thêm mới User
     public Users addUser(NewUserReqDto user) {
         Users newUser = new Users();
+        HashSet<String> roles = new HashSet<>();
         newUser.setUsername(user.getUsername());
         newUser.setPassword_hash(passwordEncoder(user.getPassword()));
         newUser.setName(user.getName());
         newUser.setEmail(user.getEmail());
         newUser.setPhoneNumber(user.getPhoneNumber());
+        roles.add(Role.USER.name());
+        newUser.setRoles(roles);
         return usersRepository.save(newUser);
     }
 

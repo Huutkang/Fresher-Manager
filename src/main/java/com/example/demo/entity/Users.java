@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.util.Set;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,8 +32,7 @@ public class Users {
     @Column(length = 10)
     private String phoneNumber;
 
-    @Column(nullable = false)
-    private String role = "none";
+    private Set<String> roles;
 
     @Column(nullable = false)
     private boolean active = true;
