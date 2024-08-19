@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.request.ApiResponse;
 import com.example.demo.entity.Users;
 import com.example.demo.service.UsersService;
 import com.example.demo.dto.request.NewUserReqDto;
@@ -29,8 +30,10 @@ public class UsersController {
 
     // Thêm mới User
     @PostMapping
-    public Users createUser(@RequestBody NewUserReqDto newUserReq) {
-        return usersService.addUser(newUserReq);
+    public ApiResponse createUser(@RequestBody NewUserReqDto newUserReq) {
+        ApiResponse response = new ApiResponse();
+        response.setResult(newUserReq);
+        return response;
     }
 
     // Lấy tất cả Users

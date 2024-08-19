@@ -10,9 +10,9 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dto.request.AuthenticationReq;
+import com.example.demo.dto.request.AuthenticationRequest;
 import com.example.demo.dto.request.IntrospectRequest;
-import com.example.demo.dto.response.AuthenticationRes;
+import com.example.demo.dto.response.AuthenticationResponse;
 import com.example.demo.dto.response.IntrospectResponse;
 import com.example.demo.exception.AppException;
 import com.nimbusds.jose.JOSEException;
@@ -38,22 +38,9 @@ public class AuthenticationService {
     @Autowired
     private UsersService user;
 
-    public IntrospectResponse introspect(IntrospectRequest request) {
-        var token = request.getToken();
-        boolean isValid;
-        try {
-            isValid = verifyToken(token);
-        } catch (AppException e) {
-            isValid = false;
-        }
-        IntrospectResponse introspectResponse = new IntrospectResponse();
-        introspectResponse.setValid(isValid);
-        return introspectResponse;
-    }
-
-    AuthenticationRes authenticate(AuthenticationReq request){
+    public AuthenticationResponse authenticate(AuthenticationRequest request){
         Optional<Integer> id = user.getUserIdByUsername(request.getUsername());
-        AuthenticationRes authenticationResponse = new AuthenticationRes();
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse();
         if (id.isPresent()) {
             // check password
             if (user.checkPassword(id.get(), request.getPassword())) {
@@ -68,6 +55,19 @@ public class AuthenticationService {
             authenticationResponse.setToken("guest");
         }
         return authenticationResponse;
+    }
+
+    public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
+        var token = request.getToken();
+        boolean isValid;
+        try {
+            isValid = verifyToken(token);
+        } catch (AppException e) {
+            isValid = false;
+        }
+        IntrospectResponse introspectResponse = new IntrospectResponse();
+        introspectResponse.setValid(isValid);
+        return introspectResponse;
     }
 
     private String generateToken(String username) {
@@ -102,11 +102,11 @@ public class AuthenticationService {
 
         SignedJWT signedJWT = SignedJWT.parse(token);
 
-        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+        // Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
         
         var verified = signedJWT.verify(verifier);
 
         
-        return verified && expiryTime.after(new Date());
+        return verified;
     }
 }

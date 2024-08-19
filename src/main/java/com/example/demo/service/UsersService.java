@@ -5,7 +5,8 @@ import com.example.demo.repository.UsersRepository;
 import com.example.demo.dto.request.NewUserReqDto;
 import com.example.demo.dto.request.SetUserReqDto;
 import com.example.demo.dto.response.UserResDto;
-import com.example.demo.exception.UserNotFoundException;
+import com.example.demo.exception.ErrorCode;
+import com.example.demo.exception.AppException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -133,7 +134,7 @@ public class UsersService {
     protected Users isActiveUserById(int id) {
         return usersRepository.findById(id)
                 .filter(Users::isActive)
-                .orElseThrow(() -> new UserNotFoundException("User not found or inactive"));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
 }
 
