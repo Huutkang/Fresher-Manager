@@ -17,7 +17,7 @@ public class ApplicationInitConfig {
         Optional<UserResDto> user = usersService.getUserById(1);
         if (user.isEmpty()) {
             usersService.newAdmin("Admin", "123456");
-            System.out.println("Admin đã tạo thành công");
+            System.out.println("Đã khởi tạo thành công Admin");
         }
     }
 }

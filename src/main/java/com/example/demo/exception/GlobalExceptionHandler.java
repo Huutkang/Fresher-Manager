@@ -30,21 +30,7 @@ public class GlobalExceptionHandler {
         response.setMessage("RuntimeException:    "+e.getMessage());
         return ResponseEntity.badRequest().body(response);
     }
-    @ExceptionHandler(JOSEException.class)
-    ResponseEntity<ApiResponse> handleJOSEException(JOSEException e) {
-        ApiResponse response = new ApiResponse();
-        response.setCode(100);
-        response.setMessage("JOSEException:    "+e.getMessage());
-        return ResponseEntity.badRequest().body(response);
-    }
-
-    @ExceptionHandler(ParseException.class)
-    ResponseEntity<ApiResponse> handleParseException(ParseException e) {
-        ApiResponse response = new ApiResponse();
-        response.setCode(100);
-        response.setMessage("ParseException:    "+e.getMessage());
-        return ResponseEntity.badRequest().body(response);
-    }
+   
 
     // @ExceptionHandler(Exception.class)
     // ResponseEntity<ApiResponse> handleException(Exception e) {

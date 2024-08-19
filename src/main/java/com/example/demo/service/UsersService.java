@@ -37,16 +37,20 @@ public class UsersService {
 
     // Thêm mới User
     public Users addUser(NewUserReqDto user) {
-        Users newUser = new Users();
-        HashSet<String> roles = new HashSet<>();
-        newUser.setUsername(user.getUsername());
-        newUser.setPassword_hash(passwordEncoder(user.getPassword()));
-        newUser.setName(user.getName());
-        newUser.setEmail(user.getEmail());
-        newUser.setPhoneNumber(user.getPhoneNumber());
-        roles.add(Role.USER.name());
-        newUser.setRoles(roles);
-        return usersRepository.save(newUser);
+        try{
+            Users newUser = new Users();
+            HashSet<String> roles = new HashSet<>();
+            newUser.setUsername(user.getUsername());
+            newUser.setPassword_hash(passwordEncoder(user.getPassword()));
+            newUser.setName(user.getName());
+            newUser.setEmail(user.getEmail());
+            newUser.setPhoneNumber(user.getPhoneNumber());
+            roles.add(Role.USER.name());
+            newUser.setRoles(roles);
+            return usersRepository.save(newUser);
+        }catch (RuntimeException e) {
+            throw new AppException(ErrorCode.ENTER_MISS_INFO);
+        }
     }
 
     // hàm này tạo duy nhất một admin id=1, còn lại add role admin cho user
@@ -141,12 +145,16 @@ public class UsersService {
     }
     
     public Users updateUser(int id, SetUserReqDto userDto) {
-        Users user = isActiveUserById(id);
-        user.setUsername(userDto.getUsername());
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
-        user.setPhoneNumber(userDto.getPhoneNumber());
-        return usersRepository.save(user);
+        try{
+            Users user = isActiveUserById(id);
+            user.setUsername(userDto.getUsername());
+            user.setName(userDto.getName());
+            user.setEmail(userDto.getEmail());
+            user.setPhoneNumber(userDto.getPhoneNumber());
+            return usersRepository.save(user);
+        }catch (RuntimeException e) {
+            throw new AppException(ErrorCode.ENTER_MISS_INFO);
+        }
     }
 
     // Xóa User theo ID

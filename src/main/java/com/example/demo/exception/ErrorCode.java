@@ -12,6 +12,7 @@ public enum ErrorCode {
     USER_NOT_EXISTED(404, "Người dùng không tồn tại", HttpStatus.NOT_FOUND),
     UNAUTHENTICATED(401, "Không được xác thực", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(403, "Bạn không có quyền", HttpStatus.FORBIDDEN),
+    ENTER_MISS_INFO(405, "Nhập thiếu thông tin", HttpStatus.METHOD_NOT_ALLOWED),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
