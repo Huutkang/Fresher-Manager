@@ -31,10 +31,16 @@ public class SecurityConfig {
         "/auth/introspect"
     };
 
+    private final String[] PUBLIC_PUT_ENDPOINTS = {
+        "/users/*"
+    };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(requests -> requests.requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
-        .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll());
+        httpSecurity.authorizeHttpRequests(requests -> requests
+        .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
+        .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
+        .requestMatchers(HttpMethod.PUT, PUBLIC_PUT_ENDPOINTS).permitAll());
         
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));
 

@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.example.demo.enums.Role;
@@ -48,6 +49,22 @@ public class UsersService {
         return usersRepository.save(newUser);
     }
 
+    // hàm này tạo duy nhất một admin id=1, còn lại add role admin cho user
+    public void newAdmin(String name, String password){
+        try{
+            Users admin = new Users();
+            admin.setUsername("admin");
+            admin.setPassword_hash(passwordEncoder(password));
+            admin.setName(name);
+            Set<String> roles = new HashSet<>();
+            roles.add(Role.ADMIN.name());
+            admin.setRoles(roles);
+            usersRepository.save(admin);
+        }catch(RuntimeException e){
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
+    }
+
     // Lấy tất cả Users dưới dạng userResDto
     public List<UserResDto> getAllUsers() {
         return usersRepository.findAll().stream()
@@ -72,14 +89,14 @@ public class UsersService {
         }
     }
 
-    // public Optional<UserResDto> getUserByUsername(String username) {
-    //     try{
-    //         int id = getUserIdByUsername(username).get();
-    //         return getUserById(id);
-    //     } catch (RuntimeException e) {
-    //         return Optional.empty();
-    //     }
-    // }
+    public Optional<UserResDto> getUserByUsername(String username) {
+        try{
+            int id = getUserIdByUsername(username).get();
+            return getUserById(id);
+        } catch (RuntimeException e) {
+            return Optional.empty();
+        }
+    }
     
     // chuyển username sang id
     protected Optional<Integer> getUserIdByUsername(String username) {
@@ -95,17 +112,27 @@ public class UsersService {
         dto.setName(user.getName());
         dto.setEmail(user.getEmail());
         dto.setPhoneNumber(user.getPhoneNumber());
-        dto.setRole(user.getRole());
+        dto.setRoles(user.getRoles());
         return dto;
     }
 
-    protected Users setRole(int id, String role) {
+    protected void addRole(int id, Role role) {
+        if (id<2) return;
         Users user = isActiveUserById(id);
-        user.setRole(role);
-        return usersRepository.save(user);
+        Set<String> roles = user.ss();
+        roles.add(role.name());
+        user.setRoles(roles);
+        usersRepository.save(user);
     }
 
-    
+    protected void removeRole(int id, Role role) {
+        if (id<2) return;
+        Users user = isActiveUserById(id);
+        Set<String> roles = user.ss();
+        roles.remove(role.name());
+        user.setRoles(roles);
+        usersRepository.save(user);
+    }
 
     protected Users updatePassword(int id, String password) {
         Users user = isActiveUserById(id);
@@ -123,10 +150,11 @@ public class UsersService {
     }
 
     // Xóa User theo ID
-    public Users deleteUser(int id) {
+    public void deleteUser(int id) {
+        if (id<2) return;
         Users user = isActiveUserById(id);
         user.setActive(false);
-        return usersRepository.save(user);
+        usersRepository.save(user);
     }
 
     private String passwordEncoder(String password){

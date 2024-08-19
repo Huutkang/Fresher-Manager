@@ -1,5 +1,7 @@
 package com.example.demo.dto.response;
 
+import java.util.Set;
+
 import lombok.Data;
 
 
@@ -9,5 +11,5 @@ public class UserResDto {
     private String name;
     private String email;
     private String phoneNumber;
-    private String role;
+    private Set<String> roles;
 }
