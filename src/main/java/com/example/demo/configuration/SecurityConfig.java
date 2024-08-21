@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -20,8 +21,6 @@ public class SecurityConfig {
     private final static String SIGNER_KEY = "UqPgTaQLnqjwuOJ54TZnQekWcLyA+eR68BBKTULU/hD3IdIk5aHani1twPPQhlXf";
 
     private final String[] PUBLIC_GET_ENDPOINTS = {
-        "/users/*",
-        "/users",
         "/",
         "/home"
     };
@@ -32,30 +31,29 @@ public class SecurityConfig {
         "/auth/introspect"
     };
 
-    private final String[] PUBLIC_PUT_ENDPOINTS = {
-        "/users/*"
-    };
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(requests -> requests
-        .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).hasAnyAuthority("SCOPE_ADMIN")
-        .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
-        .requestMatchers(HttpMethod.PUT, PUBLIC_PUT_ENDPOINTS).permitAll());
+        httpSecurity
+            .authorizeHttpRequests(requests -> requests
+                .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).hasAnyAuthority("SCOPE_ADMIN")
+                .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
+                .anyRequest().authenticated()
+            )
+            .oauth2ResourceServer(oauth2 -> oauth2
+                .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder()))
+            )
+            .addFilterAfter(new TokenValidationFilter(), UsernamePasswordAuthenticationFilter.class)
+            .csrf(AbstractHttpConfigurer::disable);
         
-        httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));
-
-
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
         return httpSecurity.build();
     }
 
     @Bean
     JwtDecoder jwtDecoder() {
-        SecretKeySpec jwtSecretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(), "HS512");
+        SecretKeySpec jwtSecretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(), "HmacSHA512");
         return NimbusJwtDecoder
-        .withSecretKey(jwtSecretKeySpec)
-        .macAlgorithm(MacAlgorithm.HS512)
-        .build();
+            .withSecretKey(jwtSecretKeySpec)
+            .macAlgorithm(MacAlgorithm.HS512)
+            .build();
     }
 }

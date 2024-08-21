@@ -5,8 +5,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.example.demo.dto.response.ApiResponse;
-import com.nimbusds.jose.JOSEException;
-import java.text.ParseException;
+
+
+import org.springframework.security.access.AccessDeniedException;
 
 
 
@@ -29,7 +30,17 @@ public class GlobalExceptionHandler {
         response.setMessage("RuntimeException:    "+e.getMessage());
         return ResponseEntity.badRequest().body(response);
     }
-   
+    
+    @ExceptionHandler(value = AccessDeniedException.class)
+    ResponseEntity<ApiResponse> handlingAccessDeniedException(AccessDeniedException exception) {
+        ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
+
+        return ResponseEntity.status(errorCode.getStatusCode())
+                .body(ApiResponse.builder()
+                        .code(errorCode.getCode())
+                        .message(errorCode.getMessage())
+                        .build());
+    }
 
     @ExceptionHandler(Exception.class)
     ResponseEntity<ApiResponse> handleException(Exception e) {
@@ -38,4 +49,6 @@ public class GlobalExceptionHandler {
         response.setMessage("Exception:    "+e.getMessage());
         return ResponseEntity.badRequest().body(response);
     }
+
+    
 }
