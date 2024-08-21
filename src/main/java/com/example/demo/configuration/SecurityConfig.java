@@ -21,12 +21,13 @@ public class SecurityConfig {
 
     private final String[] PUBLIC_GET_ENDPOINTS = {
         "/users/*",
-        "/users"
+        "/users",
+        "/",
+        "/home"
     };
 
     private final String[] PUBLIC_POST_ENDPOINTS = {
         "/users",
-        "/auth/auth",
         "/auth/login",
         "/auth/introspect"
     };
@@ -38,7 +39,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(requests -> requests
-        .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
+        .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).hasAnyAuthority("SCOPE_ADMIN")
         .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
         .requestMatchers(HttpMethod.PUT, PUBLIC_PUT_ENDPOINTS).permitAll());
         

@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dto.request.ApiResponse;
 import com.example.demo.entity.Users;
 import com.example.demo.service.UsersService;
 import com.example.demo.dto.request.NewUserReqDto;
 import com.example.demo.dto.request.SetUserReqDto;
+import com.example.demo.dto.response.ApiResponse;
 import com.example.demo.dto.response.UserResDto;
 
 @RestController

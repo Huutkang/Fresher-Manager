@@ -170,10 +170,22 @@ public class UsersService {
     }
 
     protected boolean checkPassword(int id, String password) {
-        Users user = isActiveUserById(id);
-        return encoder.matches(password, user.getPassword_hash());
+        try{
+            Users user = isActiveUserById(id);
+            return encoder.matches(password, user.getPassword_hash());
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 
+    protected boolean checkPassword(String username, String password) {
+        Optional<Integer> id = getUserIdByUsername(username);
+        if (id.isPresent()){
+            return checkPassword(id.get(), password);
+        }
+        else return false;
+
+    }
     protected Users isActiveUserById(int id) {
         return usersRepository.findById(id)
                 .filter(Users::isActive)

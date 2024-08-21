@@ -4,8 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.example.demo.dto.request.ApiResponse;
-
+import com.example.demo.dto.response.ApiResponse;
 import com.nimbusds.jose.JOSEException;
 import java.text.ParseException;
 
@@ -32,11 +31,11 @@ public class GlobalExceptionHandler {
     }
    
 
-    // @ExceptionHandler(Exception.class)
-    // ResponseEntity<ApiResponse> handleException(Exception e) {
-    //     ApiResponse response = new ApiResponse();
-    //     response.setCode(500);
-    //     response.setMessage("Exception:    "+e.getMessage());
-    //     return ResponseEntity.badRequest().body(response);
-    // }
+    @ExceptionHandler(Exception.class)
+    ResponseEntity<ApiResponse> handleException(Exception e) {
+        ApiResponse response = new ApiResponse();
+        response.setCode(500);
+        response.setMessage("Exception:    "+e.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    }
 }
