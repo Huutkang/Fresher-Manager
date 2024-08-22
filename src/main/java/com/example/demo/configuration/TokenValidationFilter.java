@@ -5,7 +5,10 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.example.demo.dto.response.ApiResponse;
+import com.example.demo.exception.ErrorCode;
 import com.example.demo.service.AuthenticationService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -13,44 +16,44 @@ import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class TokenValidationFilter implements Filter {
-
     @Autowired
     private AuthenticationService authenticationService;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        System.out.println("Filter initialized");
+
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-        System.out.println("Before servlet processing");
-
-        // Giải mã token và lấy ID của token từ SecurityContext
-        String tokenId = authenticationService.getTokenId();
-
-        // Kiểm tra xem token có hợp lệ hay không
-        boolean isActive = authenticationService.activeToken(tokenId);
-
-        if (isActive) {
-            // Tiếp tục chuỗi filter nếu token hợp lệ
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        String tokenId;
+        try{
+            tokenId = authenticationService.getTokenId();
+        }catch(Exception e){
             chain.doFilter(request, response);
-        } else {
-            // Xử lý khi token không hợp lệ, có thể trả về lỗi hoặc thông báo
-            response.getWriter().write("Invalid token");
-            response.getWriter().flush();
             return;
         }
+        boolean isActive = authenticationService.activeToken(tokenId);
+        if (!isActive) {
+            ErrorCode errorCode = ErrorCode.UNAUTHENTICATED;
+            ApiResponse apiResponse = new ApiResponse();
+            apiResponse.setCode(errorCode.getCode());
+            apiResponse.setMessage(errorCode.getMessage());
 
-        System.out.println("After servlet processing");
+            HttpServletResponse httpResponse = (HttpServletResponse) response;
+            httpResponse.setContentType("application/json;charset=UTF-8");
+            httpResponse.setStatus(errorCode.getStatusCode().value());
+            httpResponse.getWriter().write(new ObjectMapper().writeValueAsString(apiResponse));
+            return;
+        }
+        chain.doFilter(request, response);
     }
 
     @Override
     public void destroy() {
-        System.out.println("Filter destroyed");
     }
 }

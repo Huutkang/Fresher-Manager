@@ -83,17 +83,18 @@ public class AuthenticationService {
 
     private String generateToken(UserResDto user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
-
+        String id = UUID.randomUUID().toString();
+        Date expiryTime = new Date(Instant.now().plus(1, ChronoUnit.DAYS).toEpochMilli());
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(user.getUsername())
                 // .issuer("meo meo")
                 .issueTime(new Date())
-                .expirationTime(new Date(
-                        Instant.now().plus(1, ChronoUnit.DAYS).toEpochMilli()))
-                .jwtID(UUID.randomUUID().toString())
+                .expirationTime(expiryTime)
+                .jwtID(id)
                 .claim("scope", buildScope(user.getRoles()))
                 .build();
-
+        
+        saveToken(id, expiryTime);
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
 
         JWSObject jwsObject = new JWSObject(header, payload);
