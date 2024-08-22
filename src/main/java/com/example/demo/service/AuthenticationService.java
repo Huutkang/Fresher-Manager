@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -39,8 +40,9 @@ import lombok.experimental.NonFinal;
 
 @Service
 public class AuthenticationService {
-    @NonFinal
-    private final static String SIGNER_KEY = "UqPgTaQLnqjwuOJ54TZnQekWcLyA+eR68BBKTULU/hD3IdIk5aHani1twPPQhlXf";
+    
+    @Value("${app.security.signer-key}")
+    private String SIGNER_KEY;
 
     @Autowired
     private UsersService userSv;

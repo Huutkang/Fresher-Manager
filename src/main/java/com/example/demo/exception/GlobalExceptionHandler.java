@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
         ApiResponse response = new ApiResponse();
         response.setCode(e.getCode());
         response.setMessage(e.getMessage());
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.status(400).body(response);
     }
 
     @ExceptionHandler(RuntimeException.class)
@@ -28,18 +28,15 @@ public class GlobalExceptionHandler {
         ApiResponse response = new ApiResponse();
         response.setCode(100);
         response.setMessage("RuntimeException:    "+e.getMessage());
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.status(500).body(response);
     }
     
     @ExceptionHandler(value = AccessDeniedException.class)
-    ResponseEntity<ApiResponse> handlingAccessDeniedException(AccessDeniedException exception) {
-        ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
-
-        return ResponseEntity.status(errorCode.getStatusCode())
-                .body(ApiResponse.builder()
-                        .code(errorCode.getCode())
-                        .message(errorCode.getMessage())
-                        .build());
+    ResponseEntity<ApiResponse> handlingAccessDeniedException(AccessDeniedException e) {
+        ApiResponse response = new ApiResponse();
+        response.setCode(403);
+        response.setMessage("bạn không có quyền");
+        return ResponseEntity.status(403).body(response);
     }
 
     @ExceptionHandler(Exception.class)
@@ -47,7 +44,7 @@ public class GlobalExceptionHandler {
         ApiResponse response = new ApiResponse();
         response.setCode(500);
         response.setMessage("Exception:    "+e.getMessage());
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.status(500).body(response);
     }
 
     
