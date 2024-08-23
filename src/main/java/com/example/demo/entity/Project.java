@@ -1,9 +1,10 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.sql.Date;
+
 
 @Entity
 @Data
@@ -27,12 +28,12 @@ public class Project {
 
     private String language;
 
-    @Column(nullable = false)
-    private String status;
+    //  "not start", "ongoing", "canceled", hoặc "closed".
+    private String status="not start";
 
-    private java.sql.Date startDate;
+    private Date startDate;
 
-    private java.sql.Date endDate;
+    private Date endDate;
 
     @Column(nullable = false)
     private boolean active = true;

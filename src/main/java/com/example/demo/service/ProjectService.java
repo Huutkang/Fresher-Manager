@@ -2,11 +2,14 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Project;
 import com.example.demo.repository.ProjectRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import com.example.demo.dto.request.ProjectReqDto;
 
 @Service
 public class ProjectService {
@@ -15,10 +18,21 @@ public class ProjectService {
     private ProjectRepository projectRepository;
 
     // Thêm mới Project
-    public Project addProject(Project project) {
+    public Project addProject(String name) {
+        Project project = new Project();
+        project.setName(name);
         return projectRepository.save(project);
     }
 
+    public Project addProject(ProjectReqDto reqDto) {
+        Project project = new Project();
+        project.setName(reqDto.getName());
+        project.setLanguage(reqDto.getLanguage());
+        project.setStartDate(reqDto.getStartDate());
+        project.setEndDate(reqDto.getEndDate());
+        return projectRepository.save(project);
+    }
+    
     // Lấy tất cả Projects
     public List<Project> getAllProjects() {
         return projectRepository.findAll();

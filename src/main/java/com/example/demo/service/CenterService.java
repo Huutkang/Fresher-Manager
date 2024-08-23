@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.request.CenterReqDto;
 import com.example.demo.entity.Center;
 import com.example.demo.repository.CenterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,17 @@ public class CenterService {
     private CenterRepository centerRepository;
 
     // Thêm mới Center
-    public Center addCenter(Center center) {
+    public Center addCenter(CenterReqDto centerReqDto) {
+        Center center = new Center();
+        center.setName(centerReqDto.getName());
+        center.setLocation(centerReqDto.getLocation());
+        return centerRepository.save(center);
+    }
+
+    public Center addCenter(String name, String location) {
+        Center center = new Center();
+        center.setName(name);
+        center.setLocation(location);
         return centerRepository.save(center);
     }
 
