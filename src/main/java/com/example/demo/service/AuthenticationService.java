@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
@@ -15,25 +14,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import com.example.demo.dto.request.AuthenticationRequest;
-import com.example.demo.dto.request.IntrospectRequest;
 import com.example.demo.dto.response.AuthenticationResponse;
-import com.example.demo.dto.response.IntrospectResponse;
 import com.example.demo.dto.response.UserResDto;
 import com.example.demo.entity.Token;
-import com.example.demo.exception.AppException;
 import com.example.demo.repository.TokenRepository;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSObject;
-import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
 
-import lombok.experimental.NonFinal;
 
 
 
@@ -70,23 +62,10 @@ public class AuthenticationService {
         return authenticationResponse;
     }
 
-    // public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
-    //     var token = request.getToken();
-    //     boolean isValid;
-    //     try {
-    //         isValid = verifyToken(token);
-    //     } catch (AppException e) {
-    //         isValid = false;
-    //     }
-    //     IntrospectResponse introspectResponse = new IntrospectResponse();
-    //     introspectResponse.setValid(isValid);
-    //     return introspectResponse;
-    // }
-
     private String generateToken(UserResDto user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         String id = UUID.randomUUID().toString();
-        Date expiryTime = new Date(Instant.now().plus(1, ChronoUnit.DAYS).toEpochMilli());
+        Date expiryTime = new Date(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli());
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(user.getUsername())
                 // .issuer("meo meo")
@@ -117,19 +96,6 @@ public class AuthenticationService {
             sb.append(role).append(" ");
         }
         return sb.toString().trim();
-    }
-
-    private boolean verifyToken(String token) throws JOSEException, ParseException {
-        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
-
-        SignedJWT signedJWT = SignedJWT.parse(token);
-
-        // Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-        
-        var verified = signedJWT.verify(verifier);
-
-        
-        return verified;
     }
 
     public boolean activeToken(String id) {

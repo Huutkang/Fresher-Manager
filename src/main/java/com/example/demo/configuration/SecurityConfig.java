@@ -35,7 +35,6 @@ public class SecurityConfig {
 
     private final String[] PUBLIC_POST_ENDPOINTS = {
         "/auth/login",
-        "/auth/introspect"
     };
 
     @Bean

@@ -53,6 +53,23 @@ public class UsersService {
         }
     }
 
+    public Users addUser(String userName, String password, String name, String email, String phoneNumber) {
+        try{
+            Users newUser = new Users();
+            HashSet<String> roles = new HashSet<>();
+            newUser.setUsername(userName);
+            newUser.setPassword_hash(passwordEncoder(password));
+            newUser.setName(name);
+            newUser.setEmail(email);
+            newUser.setPhoneNumber(phoneNumber);
+            roles.add(Role.USER.name());
+            newUser.setRoles(roles);
+            return usersRepository.save(newUser);
+        }catch (RuntimeException e) {
+            throw new AppException(ErrorCode.ENTER_MISS_INFO);
+        }
+    }
+
     // hàm này tạo duy nhất một admin id=1, còn lại add role admin cho user
     public void newAdmin(String name, String password){
         try{
@@ -62,6 +79,7 @@ public class UsersService {
             admin.setName(name);
             Set<String> roles = new HashSet<>();
             roles.add(Role.ADMIN.name());
+            roles.add(Role.USER.name());
             admin.setRoles(roles);
             usersRepository.save(admin);
         }catch(RuntimeException e){

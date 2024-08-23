@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class IntrospectRequest {
-    String token;
+    private String token;
 }

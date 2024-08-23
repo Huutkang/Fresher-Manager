@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Fresher {
 
     @Id
@@ -16,7 +15,7 @@ public class Fresher {
     private int id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user"), unique = true)
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user"), nullable = false, unique = true)
     private Users user;
 
     private String programmingLanguage;
