@@ -2,11 +2,16 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Notification;
 import com.example.demo.repository.NotificationRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import com.example.demo.exception.AppException;
+import com.example.demo.exception.ErrorCode;
 
 @Service
 public class NotificationService {
@@ -14,8 +19,20 @@ public class NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
 
+    @Autowired
+    private FresherService fresherService;
+
+    @Autowired
+    private ProjectService projectService;
+
+
     // Thêm mới Notification
-    public Notification addNotification(Notification notification) {
+    public Notification addNotification(int fresher_id, int project_id, String message) {
+        Notification notification = new Notification();
+        notification.setSentAt(LocalDateTime.now());
+        notification.setFresher(fresherService.getFresherById(fresher_id).orElseThrow(() -> new AppException(ErrorCode.FRESHER_NOT_EXISTED)));
+        notification.setProject(projectService.getProjectById(project_id).orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_EXISTED)));
+        notification.setMessage(message);
         return notificationRepository.save(notification);
     }
 

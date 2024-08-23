@@ -22,7 +22,7 @@ public class FresherService {
     private FresherRepository fresherRepository;
 
     @Autowired
-    UsersService usersService;
+    private UsersService usersService;
 
     public Fresher addFresher(Users user) {
         try{
@@ -84,5 +84,11 @@ public class FresherService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         fresher.setActive(false);
         return fresherRepository.save(fresher);
+    }
+
+    protected Users isActiveUserById(int id) {
+        return fresherRepository.findById(id)
+                .filter(Users::isActive)
+                .orElseThrow(() -> new AppException(ErrorCode.FRESHER_NOT_EXISTED));
     }
 }

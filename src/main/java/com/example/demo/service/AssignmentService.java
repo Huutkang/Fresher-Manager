@@ -14,8 +14,16 @@ public class AssignmentService {
     @Autowired
     private AssignmentRepository assignmentRepository;
 
+    @Autowired
+    private ProjectService projectService;
+
+    @Autowired
+    private FresherService fresherService;
+
     // Thêm mới Assignment
-    public Assignment addAssignment(Assignment assignment) {
+    public Assignment addAssignment(int fresher_id, int project_id, int assignment_number, Double score) {
+        Assignment assignment = new Assignment();
+        // code thêm
         return assignmentRepository.save(assignment);
     }
 

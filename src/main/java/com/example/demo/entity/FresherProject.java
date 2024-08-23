@@ -14,8 +14,8 @@ public class FresherProject {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user"))
-    private Users user;
+    @JoinColumn(name = "fresher_id", foreignKey = @ForeignKey(name = "fk_fresher"))
+    private Fresher fresher;
 
     @ManyToOne
     @JoinColumn(name = "project_id", foreignKey = @ForeignKey(name = "fk_project"))

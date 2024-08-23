@@ -10,6 +10,8 @@ public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(0, "Lỗi chưa được phân loại", HttpStatus.INTERNAL_SERVER_ERROR),
     USER_EXISTED(400, "Người dùng đã tồn tại", HttpStatus.BAD_REQUEST),
     USER_NOT_EXISTED(404, "Người dùng không tồn tại", HttpStatus.NOT_FOUND),
+    FRESHER_NOT_EXISTED(404, "Fresher không tồn tại", HttpStatus.NOT_FOUND),
+    PROJECT_NOT_EXISTED(404, "Fresher không tồn tại", HttpStatus.NOT_FOUND),
     UNAUTHENTICATED(401, "Không được xác thực", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(403, "Bạn không có quyền", HttpStatus.FORBIDDEN),
     ENTER_MISS_INFO(405, "Nhập thiếu thông tin", HttpStatus.METHOD_NOT_ALLOWED),
