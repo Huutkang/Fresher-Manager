@@ -4,11 +4,17 @@ import com.example.demo.entity.FresherProject;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrorCode;
 import com.example.demo.repository.FresherProjectRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.example.demo.dto.request.FresherProjectReqDto;
+import com.example.demo.dto.response.AssignmentResDto;
+import com.example.demo.dto.response.FresherProjectResDto;
 
 @Service
 public class FresherProjectService {
@@ -25,34 +31,62 @@ public class FresherProjectService {
     // Thêm mới FresherProject
     public FresherProject addFresherProject(int fresher_id, int project_id, String role) {
         FresherProject fresherProject = new FresherProject();
-        fresherProject.setFresher(fresherService.getFresherById(fresher_id).orElseThrow(() -> new AppException(ErrorCode.FRESHER_NOT_EXISTED)));
-        fresherProject.setProject(projectService.getProjectById(project_id).orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_EXISTED)));
+        fresherProject.setFresher(fresherService.getFresher(fresher_id));
+        fresherProject.setProject(projectService.getProject(project_id));
         fresherProject.setRole(role);
         return fresherProjectRepository.save(fresherProject);
     }
 
-    // Lấy tất cả FresherProjects
-    public List<FresherProject> getAllFresherProjects() {
-        return fresherProjectRepository.findAll();
+    public FresherProject addFresherProject(FresherProjectReqDto req) {
+        FresherProject fresherProject = new FresherProject();
+        fresherProject.setFresher(fresherService.getFresher(req.getIdFresher()));
+        fresherProject.setProject(projectService.getProject(req.getIdProject()));
+        fresherProject.setRole(req.getRole());
+        return fresherProjectRepository.save(fresherProject);
     }
 
-    // Lấy FresherProject theo ID
-    public Optional<FresherProject> getFresherProjectById(int id) {
-        return fresherProjectRepository.findById(id);
+    // Lấy tất cả FresherProjects
+    public List<FresherProjectResDto> getAllFresherProjects() {
+        return fresherProjectRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    protected FresherProject getFresherProject(int id) {
+        return fresherProjectRepository.findById(id)
+        .orElseThrow(() -> new AppException(ErrorCode.FRESHERPROJECT_NOT_EXISTED));
+    }
+
+    public Optional<FresherProjectResDto> getFresherProjectById(int id) {
+        try {
+            return Optional.of(convertToDTO(getFresherProject(id)));
+        } catch (RuntimeException e) {
+            return Optional.empty();
+        }
     }
 
     // Cập nhật FresherProject
-    public FresherProject updateFresherProject(int id, FresherProject fresherProjectDetails) {
-        FresherProject fresherProject = fresherProjectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("FresherProject not found"));
-        fresherProject.setUser(fresherProjectDetails.getUser());
-        fresherProject.setProject(fresherProjectDetails.getProject());
-        fresherProject.setRole(fresherProjectDetails.getRole());
+    public FresherProject updateFresherProject(int id, FresherProjectReqDto req) {
+        FresherProject fresherProject = getFresherProject(id);
+        fresherProject.setFresher(fresherService.getFresher(req.getIdFresher()));
+        fresherProject.setProject(projectService.getProject(req.getIdProject()));
+        fresherProject.setRole(req.getRole());
         return fresherProjectRepository.save(fresherProject);
     }
 
     // Xóa FresherProject theo ID
     public void deleteFresherProject(int id) {
         fresherProjectRepository.deleteById(id);
+    }
+
+    protected FresherProjectResDto convertToDTO(FresherProject fresherProject) {
+        FresherProjectResDto res = new FresherProjectResDto();
+        res.setId(fresherProject.getId());
+        res.setIdFresher(fresherProject.getFresher().getId());
+        res.setIdProject(fresherProject.getProject().getId());
+        res.setFresher(fresherProject.getFresher().getName());
+        res.setProject(fresherProject.getProject().getName());
+        res.setRole(fresherProject.getRole());
+        return res;
     }
 }

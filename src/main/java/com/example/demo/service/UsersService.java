@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -97,15 +98,18 @@ public class UsersService {
 
     // Hoặc sử dụng phân trang
     public Page<UserResDto> getAllUsers(Pageable pageable) {
-        return usersRepository.findAll(pageable)
+        Page<Users> usersPage = usersRepository.findAll(pageable);
+        List<UserResDto> filteredAndMappedUsers = usersPage.stream()
                 .filter(Users::isActive)
-                .map(this::convertToDTO);
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return new PageImpl<>(filteredAndMappedUsers, pageable, usersPage.getTotalElements());
     }
 
     // Lấy User theo ID dưới dạng userResDto
     public Optional<UserResDto> getUserById(int id) {
         try {
-            return Optional.of(convertToDTO(isActiveUserById(id)));
+            return Optional.of(convertToDTO(getUser(id)));
         } catch (RuntimeException e) {
             return Optional.empty();
         }
@@ -113,24 +117,36 @@ public class UsersService {
 
     public Optional<UserResDto> getUserByUsername(String username) {
         try{
-            int id = getUserIdByUsername(username).get();
-            return getUserById(id);
+            return Optional.of(convertToDTO(getUser(username)));
         } catch (RuntimeException e) {
             return Optional.empty();
         }
     }
     
-    // chuyển username sang id
-    protected Optional<Integer> getUserIdByUsername(String username) {
+    protected Users getUser(int id) {
+        return usersRepository.findById(id)
+                .filter(Users::isActive)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+    }
+
+    protected Users getUser(String username) {
         return usersRepository.findByUsername(username)
                 .filter(Users::isActive)
-                .map(Users::getId);
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+    }
+
+    // chuyển username sang id
+    protected int getUserIdByUsername(String username) {
+        return usersRepository.findByUsername(username)
+                .filter(Users::isActive)
+                .map(Users::getId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
     
     // Phương thức hỗ trợ chuyển đổi từ Users sang userResDto
-    private UserResDto convertToDTO(Users user) {
+    public UserResDto convertToDTO(Users user) {
         UserResDto dto = new UserResDto();
-        dto.setUsername(user.getUsername());
+        dto.setId(user.getId());
         dto.setName(user.getName());
         dto.setEmail(user.getEmail());
         dto.setPhoneNumber(user.getPhoneNumber());
@@ -140,7 +156,7 @@ public class UsersService {
 
     protected void addRole(int id, Role role) {
         if (id<2) return;
-        Users user = isActiveUserById(id);
+        Users user = getUser(id);
         Set<String> roles = user.ss();
         roles.add(role.name());
         user.setRoles(roles);
@@ -149,7 +165,7 @@ public class UsersService {
 
     protected void removeRole(int id, Role role) {
         if (id<2) return;
-        Users user = isActiveUserById(id);
+        Users user = getUser(id);
         Set<String> roles = user.ss();
         roles.remove(role.name());
         user.setRoles(roles);
@@ -157,14 +173,14 @@ public class UsersService {
     }
 
     protected Users updatePassword(int id, String password) {
-        Users user = isActiveUserById(id);
+        Users user = getUser(id);
         user.setPassword_hash(passwordEncoder(password));
         return usersRepository.save(user);
     }
     
     public Users updateUser(int id, SetUserReqDto userDto) {
+        Users user = getUser(id);
         try{
-            Users user = isActiveUserById(id);
             user.setUsername(userDto.getUsername());
             user.setName(userDto.getName());
             user.setEmail(userDto.getEmail());
@@ -178,7 +194,7 @@ public class UsersService {
     // Xóa User theo ID
     public void deleteUser(int id) {
         if (id<2) return;
-        Users user = isActiveUserById(id);
+        Users user = getUser(id);
         user.setActive(false);
         usersRepository.save(user);
     }
@@ -189,7 +205,7 @@ public class UsersService {
 
     protected boolean checkPassword(int id, String password) {
         try{
-            Users user = isActiveUserById(id);
+            Users user = getUser(id);
             return encoder.matches(password, user.getPassword_hash());
         } catch (RuntimeException e) {
             return false;
@@ -197,17 +213,13 @@ public class UsersService {
     }
 
     protected boolean checkPassword(String username, String password) {
-        Optional<Integer> id = getUserIdByUsername(username);
-        if (id.isPresent()){
-            return checkPassword(id.get(), password);
+        try{
+            Users user = getUser(username);
+            return encoder.matches(password, user.getPassword_hash());
+        } catch (RuntimeException e) {
+            return false;
         }
-        else return false;
-
     }
-    protected Users isActiveUserById(int id) {
-        return usersRepository.findById(id)
-                .filter(Users::isActive)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-    }
+    
 }
 

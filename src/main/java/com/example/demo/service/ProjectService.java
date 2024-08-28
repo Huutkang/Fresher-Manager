@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Project;
+import com.example.demo.exception.AppException;
+import com.example.demo.exception.ErrorCode;
 import com.example.demo.repository.ProjectRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +10,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.example.demo.dto.request.ProjectReqDto;
+import com.example.demo.dto.response.ProjectResDto;
 
 @Service
 public class ProjectService {
@@ -34,18 +38,31 @@ public class ProjectService {
     }
     
     // Lấy tất cả Projects
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+    public List<ProjectResDto> getAllProjects() {
+        return projectRepository.findAll().stream()
+                .filter(Project::isActive)
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     // Lấy Project theo ID
-    public Optional<Project> getProjectById(int id) {
-        return projectRepository.findById(id);
+    public Optional<ProjectResDto> getProjectById(int id) {
+        try {
+            return Optional.of(convertToDTO(getProject(id)));
+        } catch (RuntimeException e) {
+            return Optional.empty();
+        }
+    }
+
+    protected Project getProject(int id) {
+        return projectRepository.findById(id)
+                .filter(Project::isActive)
+                .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_EXISTED));
     }
 
     // Cập nhật Project
     public Project updateProject(int id, Project projectDetails) {
-        Project project = projectRepository.findById(id).orElseThrow(() -> new RuntimeException("Project not found"));
+        Project project = getProject(id);
         project.setName(projectDetails.getName());
         project.setCenter(projectDetails.getCenter());
         project.setManager(projectDetails.getManager());
@@ -58,9 +75,21 @@ public class ProjectService {
 
     // Xóa Project theo ID
     public Project deleteProject(int id) {
-        Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Project project = getProject(id);
         project.setActive(false);
         return projectRepository.save(project);
+    }
+
+    protected ProjectResDto convertToDTO(Project project) {
+        ProjectResDto dto = new ProjectResDto();
+        dto.setId(project.getId());
+        dto.setName(project.getName());
+        dto.setCenter(project.getCenter().getName());
+        dto.setManager(project.getManager().getName());
+        dto.setLanguage(project.getLanguage());
+        dto.setStatus(project.getStatus());
+        dto.setStartDate(project.getStartDate());
+        dto.setEndDate(project.getEndDate());
+        return dto;
     }
 }

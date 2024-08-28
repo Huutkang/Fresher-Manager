@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.request.CenterReqDto;
+import com.example.demo.dto.response.CenterResDto;
 import com.example.demo.entity.Center;
 import com.example.demo.service.CenterService;
 
@@ -25,20 +27,20 @@ public class CenterController {
 
     // Thêm mới Center
     @PostMapping
-    public Center createCenter(@RequestBody Center center) {
-        return centerService.addCenter(center);
+    public Center createCenter(@RequestBody CenterReqDto newCenter) {
+        return centerService.addCenter(newCenter);
     }
 
     // Lấy tất cả Centers
     @GetMapping
-    public List<Center> getAllCenters() {
+    public List<CenterResDto> getAllCenters() {
         return centerService.getAllCenters();
     }
 
     // Lấy Center theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<Center> getCenterById(@PathVariable int id) {
-        Center center = centerService.getCenterById(id).orElse(null);
+    public ResponseEntity<CenterResDto> getCenterById(@PathVariable int id) {
+        CenterResDto center = centerService.getCenterById(id).orElse(null);
         if (center == null) {
             return ResponseEntity.notFound().build();
         }
@@ -47,9 +49,9 @@ public class CenterController {
 
     // Cập nhật Center
     @PutMapping("/{id}")
-    public ResponseEntity<Center> updateCenter(@PathVariable int id, @RequestBody Center centerDetails) {
+    public ResponseEntity<CenterResDto> updateCenter(@PathVariable int id, @RequestBody Center centerDetails) {
         try {
-            Center updatedCenter = centerService.updateCenter(id, centerDetails);
+            CenterResDto updatedCenter = centerService.updateCenter(id, centerDetails);
             return ResponseEntity.ok(updatedCenter);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

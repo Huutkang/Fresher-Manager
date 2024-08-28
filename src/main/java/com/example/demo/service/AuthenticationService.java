@@ -147,4 +147,9 @@ public class AuthenticationService {
     
         return username;
     }
+
+    public Optional<UserResDto> getUser(){
+        String username = getUsernameFromToken();
+        return userSv.getUserByUsername(username);
+    } 
 }

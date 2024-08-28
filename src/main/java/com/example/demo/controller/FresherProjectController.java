@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.request.FresherProjectReqDto;
+import com.example.demo.dto.response.FresherProjectResDto;
 import com.example.demo.entity.FresherProject;
 import com.example.demo.service.FresherProjectService;
 
@@ -25,20 +27,20 @@ public class FresherProjectController {
 
     // Thêm mới FresherProject
     @PostMapping
-    public FresherProject createFresherProject(@RequestBody FresherProject fresherProject) {
+    public FresherProject createFresherProject(@RequestBody FresherProjectReqDto fresherProject) {
         return fresherProjectService.addFresherProject(fresherProject);
     }
 
     // Lấy tất cả FresherProjects
     @GetMapping
-    public List<FresherProject> getAllFresherProjects() {
+    public List<FresherProjectResDto> getAllFresherProjects() {
         return fresherProjectService.getAllFresherProjects();
     }
 
     // Lấy FresherProject theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<FresherProject> getFresherProjectById(@PathVariable int id) {
-        FresherProject fresherProject = fresherProjectService.getFresherProjectById(id).orElse(null);
+    public ResponseEntity<FresherProjectResDto> getFresherProjectById(@PathVariable int id) {
+        FresherProjectResDto fresherProject = fresherProjectService.getFresherProjectById(id).orElse(null);
         if (fresherProject == null) {
             return ResponseEntity.notFound().build();
         }
@@ -47,7 +49,7 @@ public class FresherProjectController {
 
     // Cập nhật FresherProject
     @PutMapping("/{id}")
-    public ResponseEntity<FresherProject> updateFresherProject(@PathVariable int id, @RequestBody FresherProject fresherProjectDetails) {
+    public ResponseEntity<FresherProject> updateFresherProject(@PathVariable int id, @RequestBody FresherProjectReqDto fresherProjectDetails) {
         try {
             FresherProject updatedFresherProject = fresherProjectService.updateFresherProject(id, fresherProjectDetails);
             return ResponseEntity.ok(updatedFresherProject);

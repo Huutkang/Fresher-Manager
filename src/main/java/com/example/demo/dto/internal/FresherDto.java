@@ -8,7 +8,8 @@ import lombok.Data;
 
 @Data
 public class FresherDto {
+    private int idUser;
     private String programmingLanguage;
-    private Center center;
+    private int idCenter;
 
 }

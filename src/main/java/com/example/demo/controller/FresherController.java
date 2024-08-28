@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.entity.Fresher;
+import com.example.demo.dto.request.FresherReqDto;
+import com.example.demo.dto.request.UpdateFresherReqDto;
+import com.example.demo.dto.response.ApiResponse;
+import com.example.demo.dto.response.FresherResDto;
 import com.example.demo.service.FresherService;
 
 @RestController
@@ -25,20 +28,22 @@ public class FresherController {
 
     // Thêm mới Fresher
     @PostMapping
-    public Fresher createFresher(@RequestBody Fresher fresher) {
-        return fresherService.addFresher(fresher);
+    public ApiResponse createFresher(@RequestBody FresherReqDto fresherReqDto) {
+        ApiResponse response = new ApiResponse();
+        response.setResult(fresherService.addFresher(fresherReqDto));
+        return response;
     }
 
     // Lấy tất cả Freshers
     @GetMapping
-    public List<Fresher> getAllFreshers() {
+    public List<FresherResDto> getAllFreshers() {
         return fresherService.getAllFreshers();
     }
 
     // Lấy Fresher theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<Fresher> getFresherById(@PathVariable int id) {
-        Fresher fresher = fresherService.getFresherById(id).orElse(null);
+    public ResponseEntity<FresherResDto> getFresherById(@PathVariable int id) {
+        FresherResDto fresher = fresherService.getFresherById(id).orElse(null);
         if (fresher == null) {
             return ResponseEntity.notFound().build();
         }
@@ -47,9 +52,9 @@ public class FresherController {
 
     // Cập nhật Fresher
     @PutMapping("/{id}")
-    public ResponseEntity<Fresher> updateFresher(@PathVariable int id, @RequestBody Fresher fresherDetails) {
+    public ResponseEntity<FresherResDto> updateFresher(@PathVariable int id, @RequestBody UpdateFresherReqDto req) {
         try {
-            Fresher updatedFresher = fresherService.updateFresher(id, fresherDetails);
+            FresherResDto updatedFresher = fresherService.updateFresher(id, req);
             return ResponseEntity.ok(updatedFresher);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

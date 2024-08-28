@@ -33,7 +33,7 @@ public class UsersController {
     @PostMapping
     public ApiResponse createUser(@RequestBody NewUserReqDto newUserReq) {
         ApiResponse response = new ApiResponse();
-        response.setResult(usersService.addUser(newUserReq));
+        response.setResult(usersService.convertToDTO(usersService.addUser(newUserReq)));
         return response;
     }
 

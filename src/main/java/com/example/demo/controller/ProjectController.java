@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.request.ProjectReqDto;
+import com.example.demo.dto.response.ProjectResDto;
 import com.example.demo.entity.Project;
 import com.example.demo.service.ProjectService;
 
@@ -25,20 +27,20 @@ public class ProjectController {
 
     // Thêm mới Project
     @PostMapping
-    public Project createProject(@RequestBody Project project) {
-        return projectService.addProject(project);
+    public Project createProject(@RequestBody ProjectReqDto req) {
+        return projectService.addProject(req);
     }
 
     // Lấy tất cả Projects
     @GetMapping
-    public List<Project> getAllProjects() {
+    public List<ProjectResDto> getAllProjects() {
         return projectService.getAllProjects();
     }
 
     // Lấy Project theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<Project> getProjectById(@PathVariable int id) {
-        Project project = projectService.getProjectById(id).orElse(null);
+    public ResponseEntity<ProjectResDto> getProjectById(@PathVariable int id) {
+        ProjectResDto project = projectService.getProjectById(id).orElse(null);
         if (project == null) {
             return ResponseEntity.notFound().build();
         }

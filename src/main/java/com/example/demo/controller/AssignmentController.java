@@ -1,12 +1,22 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Assignment;
-import com.example.demo.service.AssignmentService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.example.demo.dto.request.AssignmentReqDto;
+import com.example.demo.dto.response.AssignmentResDto;
+import com.example.demo.entity.Assignment;
+import com.example.demo.service.AssignmentService;
 
 @RestController
 @RequestMapping("/assignments")
@@ -17,20 +27,20 @@ public class AssignmentController {
 
     // Thêm mới Assignment
     @PostMapping
-    public Assignment createAssignment(@RequestBody Assignment assignment) {
+    public Assignment createAssignment(@RequestBody AssignmentReqDto assignment) {
         return assignmentService.addAssignment(assignment);
     }
 
     // Lấy tất cả Assignments
     @GetMapping
-    public List<Assignment> getAllAssignments() {
+    public List<AssignmentResDto> getAllAssignments() {
         return assignmentService.getAllAssignments();
     }
 
     // Lấy Assignment theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<Assignment> getAssignmentById(@PathVariable int id) {
-        Assignment assignment = assignmentService.getAssignmentById(id).orElse(null);
+    public ResponseEntity<AssignmentResDto> getAssignmentById(@PathVariable int id) {
+        AssignmentResDto assignment = assignmentService.getAssignmentById(id).orElse(null);
         if (assignment == null) {
             return ResponseEntity.notFound().build();
         }
@@ -39,7 +49,7 @@ public class AssignmentController {
 
     // Cập nhật Assignment
     @PutMapping("/{id}")
-    public ResponseEntity<Assignment> updateAssignment(@PathVariable int id, @RequestBody Assignment assignmentDetails) {
+    public ResponseEntity<Assignment> updateAssignment(@PathVariable int id, @RequestBody AssignmentReqDto assignmentDetails) {
         try {
             Assignment updatedAssignment = assignmentService.updateAssignment(id, assignmentDetails);
             return ResponseEntity.ok(updatedAssignment);
