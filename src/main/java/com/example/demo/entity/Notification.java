@@ -23,8 +23,8 @@ public class Notification {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "fresher_id", foreignKey = @ForeignKey(name = "fk_fresher"), nullable = false)
-    private Fresher fresher;
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user"), nullable = false)
+    private Users user;
 
     @ManyToOne
     @JoinColumn(name = "project_id", foreignKey = @ForeignKey(name = "fk_project"), nullable = false)

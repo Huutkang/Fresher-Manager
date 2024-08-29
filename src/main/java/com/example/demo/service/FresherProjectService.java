@@ -13,7 +13,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.example.demo.dto.request.FresherProjectReqDto;
-import com.example.demo.dto.response.AssignmentResDto;
 import com.example.demo.dto.response.FresherProjectResDto;
 
 @Service
@@ -77,6 +76,18 @@ public class FresherProjectService {
     // Xóa FresherProject theo ID
     public void deleteFresherProject(int id) {
         fresherProjectRepository.deleteById(id);
+    }
+
+    public List<FresherProject> findFresherProjects(int fresherId, int projectId) {
+        if (fresherId > 0 && projectId > 0) {
+            return fresherProjectRepository.findByFresherIdAndProjectId(fresherId, projectId);
+        } else if (fresherId > 0) {
+            return fresherProjectRepository.findByFresherId(fresherId);
+        } else if (projectId > 0) {
+            return fresherProjectRepository.findByProjectId(projectId);
+        } else {
+            throw new IllegalArgumentException("At least one of fresherId or projectId must be provided");
+        }
     }
 
     protected FresherProjectResDto convertToDTO(FresherProject fresherProject) {

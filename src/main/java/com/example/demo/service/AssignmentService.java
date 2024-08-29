@@ -53,7 +53,6 @@ public class AssignmentService {
                 .collect(Collectors.toList());
     }
 
-    // Lấy Assignment theo ID
     protected Assignment getAssignment(int id) {
         return assignmentRepository.findById(id)
         .orElseThrow(() -> new AppException(ErrorCode.ASSIGNMENT_NOT_EXISTED));
@@ -92,5 +91,17 @@ public class AssignmentService {
         res.setAssignmentNumber(assignment.getAssignmentNumber());
         res.setScore(assignment.getScore());
         return res;
+    }
+
+    protected List<Assignment> findAssignments(Integer fresherId, Integer projectId) {
+        if (fresherId != null && projectId != null) {
+            return assignmentRepository.findByFresherIdAndProjectId(fresherId, projectId);
+        } else if (fresherId != null) {
+            return assignmentRepository.findByFresherId(fresherId);
+        } else if (projectId != null) {
+            return assignmentRepository.findByProjectId(projectId);
+        } else {
+            return assignmentRepository.findAll();
+        }
     }
 }

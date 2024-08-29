@@ -22,7 +22,7 @@ public class ProjectService {
     private ProjectRepository projectRepository;
 
     // Thêm mới Project
-    public Project addProject(String name) {
+    Project addProject(String name) {
         Project project = new Project();
         project.setName(name);
         return projectRepository.save(project);
@@ -79,12 +79,24 @@ public class ProjectService {
         project.setActive(false);
         return projectRepository.save(project);
     }
-
-    protected ProjectResDto convertToDTO(Project project) {
+    protected List<Project> findProjects(int centerId, int managerId){
+        if (centerId > 0 && managerId > 0) {
+            return projectRepository.findByCenterIdAndManagerId(centerId, managerId);
+        } else if (centerId > 0) {
+            return projectRepository.findByCenterId(centerId);
+        } else if (managerId > 0) {
+            return projectRepository.findByManagerId(managerId);
+        } else {
+            throw new IllegalArgumentException("At least one of userId or projectId must be provided");
+        }
+    }
+    public ProjectResDto convertToDTO(Project project) {
         ProjectResDto dto = new ProjectResDto();
         dto.setId(project.getId());
         dto.setName(project.getName());
+        dto.setIdCenter(project.getCenter().getId());
         dto.setCenter(project.getCenter().getName());
+        dto.setIdManager(project.getManager().getId());
         dto.setManager(project.getManager().getName());
         dto.setLanguage(project.getLanguage());
         dto.setStatus(project.getStatus());

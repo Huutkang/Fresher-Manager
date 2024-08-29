@@ -12,7 +12,7 @@ import lombok.Data;
 public class ProjectResDto {
     private int id;
     private String name;
-    private int idCounter;
+    private int idCenter;
     private String center;
     private int idManager;
     private String manager;

@@ -49,9 +49,9 @@ public class NotificationController {
 
     // Cập nhật Notification
     @PutMapping("/{id}")
-    public ResponseEntity<Notification> updateNotification(@PathVariable int id, @RequestBody Notification notificationDetails) {
+    public ResponseEntity<NotificationResDto> updateNotification(@PathVariable int id, @RequestBody Notification notificationDetails) {
         try {
-            Notification updatedNotification = notificationService.updateNotification(id, notificationDetails);
+            NotificationResDto updatedNotification = notificationService.updateNotification(id, notificationDetails);
             return ResponseEntity.ok(updatedNotification);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

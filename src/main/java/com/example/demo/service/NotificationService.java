@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.example.demo.dto.request.NotificationReqDto;
-import com.example.demo.dto.response.FresherProjectResDto;
 import com.example.demo.dto.response.NotificationResDto;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrorCode;
@@ -32,10 +31,10 @@ public class NotificationService {
 
 
     // Thêm mới Notification
-    public Notification addNotification(int fresher_id, int project_id, String message) {
+    Notification addNotification(int fresher_id, int project_id, String message) {
         Notification notification = new Notification();
         notification.setSentAt(LocalDateTime.now());
-        notification.setFresher(fresherService.getFresher(fresher_id));
+        notification.setUser(fresherService.getFresher(fresher_id).getUser());
         notification.setProject(projectService.getProject(project_id));
         notification.setMessage(message);
         return notificationRepository.save(notification);
@@ -44,7 +43,7 @@ public class NotificationService {
     public Notification addNotification(NotificationReqDto req) {
         Notification notification = new Notification();
         notification.setSentAt(LocalDateTime.now());
-        notification.setFresher(fresherService.getFresher(req.getIdFresher()));
+        notification.setUser(fresherService.getFresher(req.getIdFresher()).getUser());
         notification.setProject(projectService.getProject(req.getIdProject()));
         notification.setMessage(req.getMessage());
         return notificationRepository.save(notification);
@@ -72,13 +71,13 @@ public class NotificationService {
     }
 
     // Cập nhật Notification
-    public Notification updateNotification(int id, Notification notificationDetails) {
+    public NotificationResDto updateNotification(int id, Notification notificationDetails) {
         Notification notification = getNotification(id);
-        notification.setFresher(notificationDetails.getFresher());
+        notification.setUser(fresherService.getFresher(req.getIdFresher()).getUser());
         notification.setProject(notificationDetails.getProject());
         notification.setMessage(notificationDetails.getMessage());
         notification.setSentAt(notificationDetails.getSentAt());
-        return notificationRepository.save(notification);
+        return convertToDTO(notificationRepository.save(notification));
     }
 
     // Xóa Notification theo ID
@@ -86,12 +85,24 @@ public class NotificationService {
         notificationRepository.deleteById(id);
     }
 
+    public List<Notification> findNotifications(int userId, int projectId) {
+        if (userId > 0 && projectId > 0) {
+            return notificationRepository.findByUserIdAndProjectId(userId, projectId);
+        } else if (userId > 0) {
+            return notificationRepository.findByUserId(userId);
+        } else if (projectId > 0) {
+            return notificationRepository.findByProjectId(projectId);
+        } else {
+            throw new IllegalArgumentException("At least one of userId or projectId must be provided");
+        }
+    }
+    
     protected NotificationResDto convertToDTO(Notification notification) {
         NotificationResDto res = new NotificationResDto();
         res.setId(notification.getId());
-        res.setIdFresher(notification.getFresher().getId());
+        res.setIdUser(notification.getUser().getId());
         res.setIdProject(notification.getProject().getId());
-        res.setFresher(notification.getFresher().getName());
+        res.setUser(notification.getUser().getName());
         res.setProject(notification.getProject().getName());
         res.setMessage(notification.getMessage());
         return res;

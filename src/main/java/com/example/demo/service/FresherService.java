@@ -33,11 +33,11 @@ public class FresherService {
     private CenterService centerService;
 
     
-    public FresherResDto addFresher(Users user) {
+    Fresher addFresher(Users user) {
         try{
             Fresher fresher = new Fresher();
             fresher.setUser(user);
-            return convertToDTO(fresherRepository.save(fresher));
+            return fresherRepository.save(fresher);
         }catch (RuntimeException e) {
             throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
@@ -74,15 +74,22 @@ public class FresherService {
     // Lấy tất cả Freshers
     public List<FresherResDto> getAllFreshers() {
         return fresherRepository.findAll().stream()
-                .filter(Fresher::isActive)
+                .filter(fresher -> fresher.isActive() && fresher.getUser().isActive())
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+    
 
     protected Fresher getFresher(int id) {
-        return fresherRepository.findById(id)
+        Fresher fresher = fresherRepository.findById(id)
                .filter(Fresher::isActive)
                .orElseThrow(() -> new AppException(ErrorCode.FRESHER_NOT_EXISTED));
+        if (!fresher.getUser().isActive()) {
+            fresher.setActive(false);
+            fresherRepository.save(fresher);
+            throw new AppException(ErrorCode.FRESHER_NOT_EXISTED);
+        }
+        return fresher;
     }
 
     // Lấy Fresher theo ID
@@ -104,12 +111,27 @@ public class FresherService {
     }
 
     // Xóa Fresher theo ID
-    public Fresher deleteFresher(int id) {
+    public void deleteFresher(int id) {
         Fresher fresher = getFresher(id);
         fresher.setActive(false);
-        return fresherRepository.save(fresher);
+        fresherRepository.save(fresher);
     }
 
+    protected Fresher getFresherByUserId(int userId) {
+        Users user = usersService.getUser(userId);
+        Fresher fresher = fresherRepository.findByUser(user)
+                .filter(Fresher::isActive)
+                .orElseThrow(() -> new AppException(ErrorCode.FRESHER_NOT_EXISTED));
+        return fresher;
+    }
+
+    protected List<Fresher> findFreshers(int centerId) {
+        if (centerId > 0) {
+            return fresherRepository.findByCenterId(centerId);
+        } else {
+            throw new IllegalArgumentException("At least one of userId or projectId must be provided");
+        }
+    }
     public FresherResDto convertToDTO(Fresher fresher){
         FresherResDto fresherResDto = new FresherResDto();
         Users user = fresher.getUser();

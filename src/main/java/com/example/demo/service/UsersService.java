@@ -37,7 +37,7 @@ public class UsersService {
     private final PasswordEncoder encoder = new BCryptPasswordEncoder(10);
 
     // Thêm mới User
-    public Users addUser(NewUserReqDto user) {
+    public UserResDto addUser(NewUserReqDto user) {
         try{
             Users newUser = new Users();
             HashSet<String> roles = new HashSet<>();
@@ -48,13 +48,13 @@ public class UsersService {
             newUser.setPhoneNumber(user.getPhoneNumber());
             roles.add(Role.USER.name());
             newUser.setRoles(roles);
-            return usersRepository.save(newUser);
+            return convertToDTO(usersRepository.save(newUser));
         }catch (RuntimeException e) {
             throw new AppException(ErrorCode.ENTER_MISS_INFO);
         }
     }
 
-    public Users addUser(String userName, String password, String name, String email, String phoneNumber) {
+    Users addUser(String userName, String password, String name, String email, String phoneNumber) {
         try{
             Users newUser = new Users();
             HashSet<String> roles = new HashSet<>();
@@ -73,6 +73,10 @@ public class UsersService {
 
     // hàm này tạo duy nhất một admin id=1, còn lại add role admin cho user
     public void newAdmin(String name, String password){
+        try{
+            getUser(1);
+            return;
+        } catch (AppException e){}
         try{
             Users admin = new Users();
             admin.setUsername("admin");
@@ -123,13 +127,13 @@ public class UsersService {
         }
     }
     
-    protected Users getUser(int id) {
+    Users getUser(int id) {
         return usersRepository.findById(id)
                 .filter(Users::isActive)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
 
-    protected Users getUser(String username) {
+    Users getUser(String username) {
         return usersRepository.findByUsername(username)
                 .filter(Users::isActive)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -142,50 +146,42 @@ public class UsersService {
                 .map(Users::getId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
-    
-    // Phương thức hỗ trợ chuyển đổi từ Users sang userResDto
-    public UserResDto convertToDTO(Users user) {
-        UserResDto dto = new UserResDto();
-        dto.setId(user.getId());
-        dto.setName(user.getName());
-        dto.setEmail(user.getEmail());
-        dto.setPhoneNumber(user.getPhoneNumber());
-        dto.setRoles(user.getRoles());
-        return dto;
-    }
 
-    protected void addRole(int id, Role role) {
+    public void addRole(int id, Role role) {
         if (id<2) return;
         Users user = getUser(id);
-        Set<String> roles = user.ss();
+        Set<String> roles = user.getRoles();
         roles.add(role.name());
         user.setRoles(roles);
         usersRepository.save(user);
     }
 
-    protected void removeRole(int id, Role role) {
+    public void removeRole(int id, Role role) {
         if (id<2) return;
         Users user = getUser(id);
-        Set<String> roles = user.ss();
+        Set<String> roles = user.getRoles();
         roles.remove(role.name());
         user.setRoles(roles);
         usersRepository.save(user);
     }
 
-    protected Users updatePassword(int id, String password) {
-        Users user = getUser(id);
-        user.setPassword_hash(passwordEncoder(password));
-        return usersRepository.save(user);
+    public boolean updatePassword(int id, String password) {
+        try{
+            Users user = getUser(id);
+            user.setPassword_hash(passwordEncoder(password));
+            usersRepository.save(user);
+            return true;
+        } catch (AppException e) {return false;}
     }
     
-    public Users updateUser(int id, SetUserReqDto userDto) {
+    public UserResDto updateUser(int id, SetUserReqDto userDto) {
         Users user = getUser(id);
         try{
             user.setUsername(userDto.getUsername());
             user.setName(userDto.getName());
             user.setEmail(userDto.getEmail());
             user.setPhoneNumber(userDto.getPhoneNumber());
-            return usersRepository.save(user);
+            return convertToDTO(usersRepository.save(user));
         }catch (RuntimeException e) {
             throw new AppException(ErrorCode.ENTER_MISS_INFO);
         }
@@ -221,5 +217,15 @@ public class UsersService {
         }
     }
     
+    // Phương thức hỗ trợ chuyển đổi từ Users sang userResDto
+    public UserResDto convertToDTO(Users user) {
+        UserResDto dto = new UserResDto();
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setRoles(user.getRoles());
+        return dto;
+    }
 }
 

@@ -1,8 +1,9 @@
 package com.example.demo.dto.request;
 
-import com.example.demo.entity.Fresher;
-import com.example.demo.entity.Project;
+import lombok.Data;
 
+
+@Data
 public class AssignmentReqDto {
     private int IdFresher;
     private int IdProject;
