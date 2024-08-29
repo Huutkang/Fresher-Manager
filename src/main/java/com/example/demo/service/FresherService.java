@@ -125,13 +125,34 @@ public class FresherService {
         return fresher;
     }
 
-    protected List<Fresher> findFreshers(int centerId) {
+    protected List<Fresher> findFresherByCenterId(int centerId) {
         if (centerId > 0) {
             return fresherRepository.findByCenterId(centerId);
         } else {
             throw new IllegalArgumentException("At least one of userId or projectId must be provided");
         }
     }
+
+    protected List<FresherResDto> findFreshersByName(String name) {
+        return fresherRepository.findByUser_NameContainingIgnoreCase(name).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Tìm fresher theo ngôn ngữ lập trình
+    protected List<FresherResDto> findFreshersByProgrammingLanguage(String programmingLanguage) {
+        return fresherRepository.findByProgrammingLanguageContainingIgnoreCase(programmingLanguage).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Tìm fresher theo email
+    protected List<FresherResDto> findFreshersByEmail(String email) {
+        return fresherRepository.findByUser_EmailContainingIgnoreCase(email).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     public FresherResDto convertToDTO(Fresher fresher){
         FresherResDto fresherResDto = new FresherResDto();
         Users user = fresher.getUser();

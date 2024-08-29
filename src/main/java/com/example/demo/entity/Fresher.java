@@ -20,7 +20,7 @@ public class Fresher {
     private String programmingLanguage;
 
     @ManyToOne
-    @JoinColumn(name = "center_id", foreignKey = @ForeignKey(name = "fk_center"), unique = true)
+    @JoinColumn(name = "center_id", foreignKey = @ForeignKey(name = "fk_center"))
     private Center center;
     
     @Column(nullable = false)
