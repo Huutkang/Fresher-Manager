@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,13 +43,14 @@ public class SearchService {
     }
 
     // Tìm fresher theo tên, theo ngôn ngữ lập trình, theo email
-    public Search fresher(String keywords){
-        List<Fresher> n = fresher.findFreshersByName(keywords);
-        List<Fresher> p = fresher.findFreshersByProgrammingLanguage(keywords);
-        List<Fresher> e = fresher.findFreshersByEmail(keywords);
-        Search result = new Search();
-        return result;
-    }
+    public Map<String, List<Search>> fresher(String keywords) {
+        Map<String, List<Search>> result = new HashMap<>();
+        result.put("name", convertToListDTO(fresher.findFreshersByName(keywords)));
+        result.put("programmingLanguage", convertToListDTO(fresher.findFreshersByProgrammingLanguage(keywords)));
+        result.put("email", convertToListDTO(fresher.findFreshersByEmail(keywords)));
+        
+    return result;
+}
 
     public Search center(String name){
         Search result = new Search();
@@ -100,8 +103,7 @@ public class SearchService {
         return result;
     }
 
-    public List<Search> convertToListDTO(List<Object> obj) {
-        List<Search> result = obj.stream().map(o -> convertToDTO(o)).toList();
-        return result;
+    public List<Search> convertToListDTO(List<?> obj) {
+        return obj.stream().map(this::convertToDTO).toList();
     }
 }
