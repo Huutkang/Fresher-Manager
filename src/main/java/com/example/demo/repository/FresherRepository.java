@@ -14,7 +14,7 @@ import com.example.demo.entity.Users;
 public interface FresherRepository extends JpaRepository<Fresher, Integer> {
     Optional<Fresher> findByUser(Users user);
 
-    Optional<Fresher> findByCenterId(Integer centerId);
+    List<Fresher> findByCenterId(Integer centerId);
 
     List<Fresher> findByUser_PhoneNumber(String phoneNumber);
     Optional<Fresher> findByUser_Email(String email);

@@ -101,6 +101,10 @@ public class CenterService {
                .collect(Collectors.toList());
     }
 
+    public long countCenter() {
+        return centerRepository.count();
+    }
+
     protected CenterResDto convertToDTO(Center center) {
         CenterResDto res = new CenterResDto();
         res.setName(center.getName());

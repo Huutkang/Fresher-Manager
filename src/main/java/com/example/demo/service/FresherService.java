@@ -125,16 +125,17 @@ public class FresherService {
         return fresher;
     }
 
-    protected Fresher getFresherByCenterId(int centerId) {
+    protected List<Fresher> getFresherByCenterId(int centerId) { //
         return fresherRepository.findByCenterId(centerId)
+               .stream()
                .filter(Fresher::isActive)
-               .orElseThrow(() -> new AppException(ErrorCode.FRESHER_NOT_EXISTED));
+               .collect(Collectors.toList());
     }
 
     protected List<Fresher> getFresherByPhoneNumber(String phoneNumber){
         return fresherRepository.findByUser_PhoneNumber(phoneNumber).stream()
-                .filter(Fresher::isActive)
-                .collect(Collectors.toList());
+               .filter(Fresher::isActive)
+               .collect(Collectors.toList());
     }
 
     protected Fresher getFresherByEmail(String email){
@@ -175,6 +176,10 @@ public class FresherService {
                 .collect(Collectors.toList());
     }
     
+    public long countFresher() {
+        return fresherRepository.count();
+    }
+
     public FresherResDto convertToDTO(Fresher fresher){
         FresherResDto fresherResDto = new FresherResDto();
         Users user = fresher.getUser();

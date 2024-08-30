@@ -78,7 +78,7 @@ public class FresherProjectService {
         fresherProjectRepository.deleteById(id);
     }
 
-    public List<FresherProject> findFresherProjects(int fresherId, int projectId) {
+    public List<FresherProject> findFresherProjects(Integer fresherId, Integer projectId) {
         if (fresherId > 0 && projectId > 0) {
             return fresherProjectRepository.findByFresherIdAndProjectId(fresherId, projectId);
         } else if (fresherId > 0) {

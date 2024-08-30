@@ -9,8 +9,8 @@ import com.example.demo.entity.FresherProject;
 
 @Repository
 public interface FresherProjectRepository extends JpaRepository<FresherProject, Integer> {
-    List<FresherProject> findByFresherIdAndProjectId(int fresherId, int projectId);
-    List<FresherProject> findByFresherId(int fresherId);
-    List<FresherProject> findByProjectId(int projectId);
+    List<FresherProject> findByFresherIdAndProjectId(Integer fresherId, Integer projectId);
+    List<FresherProject> findByFresherId(Integer fresherId);
+    List<FresherProject> findByProjectId(Integer projectId);
     List<FresherProject> findByRole(String role);
 }
