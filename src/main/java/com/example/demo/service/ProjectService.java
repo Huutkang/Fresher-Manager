@@ -87,9 +87,24 @@ public class ProjectService {
         } else if (managerId > 0) {
             return projectRepository.findByManagerId(managerId);
         } else {
-            throw new IllegalArgumentException("At least one of userId or projectId must be provided");
+            throw new IllegalArgumentException("Phải cung cấp ít nhất một trong số userId hoặc projectId");
         }
     }
+
+    protected List<Project> findByName(String name) {
+        return projectRepository.findByName(name)
+               .stream()
+               .filter(Project::isActive)
+               .collect(Collectors.toList());
+    }
+
+    protected List<Project> findByLanguage(String language) {
+        return projectRepository.findByLanguage(language)
+               .stream()
+               .filter(Project::isActive)
+               .collect(Collectors.toList());
+    }   
+
     public ProjectResDto convertToDTO(Project project) {
         ProjectResDto dto = new ProjectResDto();
         dto.setId(project.getId());

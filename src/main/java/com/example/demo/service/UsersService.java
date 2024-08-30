@@ -38,23 +38,14 @@ public class UsersService {
 
     // Thêm mới User
     public UserResDto addUser(NewUserReqDto user) {
-        try{
-            Users newUser = new Users();
-            HashSet<String> roles = new HashSet<>();
-            newUser.setUsername(user.getUsername());
-            newUser.setPassword_hash(passwordEncoder(user.getPassword()));
-            newUser.setName(user.getName());
-            newUser.setEmail(user.getEmail());
-            newUser.setPhoneNumber(user.getPhoneNumber());
-            roles.add(Role.USER.name());
-            newUser.setRoles(roles);
-            return convertToDTO(usersRepository.save(newUser));
-        }catch (RuntimeException e) {
-            throw new AppException(ErrorCode.ENTER_MISS_INFO);
-        }
+        return convertToDTO(addUser(user.getUsername(),
+        user.getPassword(),
+        user.getName(),
+        user.getEmail(),
+        user.getPhoneNumber()));
     }
 
-    Users addUser(String userName, String password, String name, String email, String phoneNumber) {
+    protected Users addUser(String userName, String password, String name, String email, String phoneNumber) {
         try{
             Users newUser = new Users();
             HashSet<String> roles = new HashSet<>();
@@ -145,6 +136,36 @@ public class UsersService {
                 .filter(Users::isActive)
                 .map(Users::getId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+    }
+
+    protected Users getUserByEmail(String email) {
+        return usersRepository.findByEmail(email)
+                .filter(Users::isActive)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+    }
+
+    protected List<Users> getUserByPhoneNumber(String phoneNumber) {
+        return usersRepository.findByPhoneNumber(phoneNumber).stream()
+                .filter(Users::isActive)
+                .collect(Collectors.toList());
+    }
+    
+    protected List<Users> findUsersByEmail(String email){
+        return usersRepository.findByEmailContainingIgnoreCase(email).stream()
+                .filter(Users::isActive)
+                .collect(Collectors.toList());
+    }
+    
+    protected List<Users> findUsersByPhoneNumber(String phoneNumber){
+        return usersRepository.findByPhoneNumberContainingIgnoreCase(phoneNumber).stream()
+                .filter(Users::isActive)
+                .collect(Collectors.toList());
+    }
+
+    protected List<Users> findUsersByName(String name){
+        return usersRepository.findByNameContainingIgnoreCase(name).stream()
+                .filter(Users::isActive)
+                .collect(Collectors.toList());
     }
 
     public void addRole(int id, Role role) {

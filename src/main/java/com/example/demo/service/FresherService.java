@@ -125,34 +125,56 @@ public class FresherService {
         return fresher;
     }
 
-    protected List<Fresher> findFresherByCenterId(int centerId) {
-        if (centerId > 0) {
-            return fresherRepository.findByCenterId(centerId);
-        } else {
-            throw new IllegalArgumentException("At least one of userId or projectId must be provided");
-        }
+    protected Fresher getFresherByCenterId(int centerId) {
+        return fresherRepository.findByCenterId(centerId)
+               .filter(Fresher::isActive)
+               .orElseThrow(() -> new AppException(ErrorCode.FRESHER_NOT_EXISTED));
     }
 
-    protected List<FresherResDto> findFreshersByName(String name) {
+    protected List<Fresher> getFresherByPhoneNumber(String phoneNumber){
+        return fresherRepository.findByUser_PhoneNumber(phoneNumber).stream()
+                .filter(Fresher::isActive)
+                .collect(Collectors.toList());
+    }
+
+    protected Fresher getFresherByEmail(String email){
+        return fresherRepository.findByUser_Email(email)
+        .filter(Fresher::isActive)
+        .orElseThrow(() -> new AppException(ErrorCode.FRESHER_NOT_EXISTED));
+    }
+
+    protected List<Fresher> findFreshersByName(String name) {
         return fresherRepository.findByUser_NameContainingIgnoreCase(name).stream()
-                .map(this::convertToDTO)
+                .filter(Fresher::isActive)
                 .collect(Collectors.toList());
     }
 
     // Tìm fresher theo ngôn ngữ lập trình
-    protected List<FresherResDto> findFreshersByProgrammingLanguage(String programmingLanguage) {
+    protected List<Fresher> findFreshersByProgrammingLanguage(String programmingLanguage) {
         return fresherRepository.findByProgrammingLanguageContainingIgnoreCase(programmingLanguage).stream()
-                .map(this::convertToDTO)
+                .filter(Fresher::isActive)
                 .collect(Collectors.toList());
     }
 
     // Tìm fresher theo email
-    protected List<FresherResDto> findFreshersByEmail(String email) {
+    protected List<Fresher> findFreshersByEmail(String email) {
         return fresherRepository.findByUser_EmailContainingIgnoreCase(email).stream()
-                .map(this::convertToDTO)
+                .filter(Fresher::isActive)
                 .collect(Collectors.toList());
     }
 
+    protected List<Fresher> findFreshersByPhoneNumber(String phoneNumber) {
+        return fresherRepository.findByUser_PhoneNumberContainingIgnoreCase(phoneNumber).stream()
+                .filter(Fresher::isActive)
+                .collect(Collectors.toList());
+    }
+
+    protected List<Fresher> findFreshersByCenterName(String name) {
+        return fresherRepository.findByCenterNameContainingIgnoreCase(name).stream()
+                .filter(Fresher::isActive)
+                .collect(Collectors.toList());
+    }
+    
     public FresherResDto convertToDTO(Fresher fresher){
         FresherResDto fresherResDto = new FresherResDto();
         Users user = fresher.getUser();

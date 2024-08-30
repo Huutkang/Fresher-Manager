@@ -86,8 +86,12 @@ public class FresherProjectService {
         } else if (projectId > 0) {
             return fresherProjectRepository.findByProjectId(projectId);
         } else {
-            throw new IllegalArgumentException("At least one of fresherId or projectId must be provided");
+            throw new IllegalArgumentException("Phải cung cấp ít nhất một trong số FresherId hoặc projectId");
         }
+    }
+
+    protected List<FresherProject> findByRole(String role){
+        return fresherProjectRepository.findByRole(role);
     }
 
     protected FresherProjectResDto convertToDTO(FresherProject fresherProject) {

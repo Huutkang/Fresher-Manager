@@ -93,7 +93,7 @@ public class NotificationService {
         } else if (projectId > 0) {
             return notificationRepository.findByProjectId(projectId);
         } else {
-            throw new IllegalArgumentException("At least one of userId or projectId must be provided");
+            throw new IllegalArgumentException("Phải cung cấp ít nhất một trong số userId hoặc projectId");
         }
     }
     

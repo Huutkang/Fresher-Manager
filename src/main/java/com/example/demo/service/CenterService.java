@@ -81,10 +81,26 @@ public class CenterService {
         return centerRepository.save(center);
     }
 
-    protected List<Center> findCenters(int managerId) {
-        return centerRepository.findByManagerId(managerId);
+    protected Center getCenterByManagerId(int managerId) {
+        return centerRepository.findByManagerId(managerId)
+        .filter(Center::isActive)
+        .orElseThrow(() -> new AppException(ErrorCode.CENTER_NOT_EXISTED));
     }
     
+    protected List<Center> findByName(String name){
+        return centerRepository.findByNameContainingIgnoreCase(name)
+               .stream()
+               .filter(Center::isActive)
+               .collect(Collectors.toList());
+    }
+
+    protected List<Center> findByLocation(String location){
+        return centerRepository.findByLocationContainingIgnoreCase(location)
+               .stream()
+               .filter(Center::isActive)
+               .collect(Collectors.toList());
+    }
+
     protected CenterResDto convertToDTO(Center center) {
         CenterResDto res = new CenterResDto();
         res.setName(center.getName());

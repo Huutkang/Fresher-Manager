@@ -14,13 +14,16 @@ import com.example.demo.entity.Users;
 public interface FresherRepository extends JpaRepository<Fresher, Integer> {
     Optional<Fresher> findByUser(Users user);
 
-    List<Fresher> findByCenterId(Integer centerId);
+    Optional<Fresher> findByCenterId(Integer centerId);
 
-    Optional<Fresher> findByUser_PhoneNumber(String phoneNumber);
+    List<Fresher> findByUser_PhoneNumber(String phoneNumber);
     Optional<Fresher> findByUser_Email(String email);
-    List<Fresher> findByUser_NameContainingIgnoreCase(String name);
 
-    List<Fresher> findByProgrammingLanguageContainingIgnoreCase(String language);
+    List<Fresher> findByUser_NameContainingIgnoreCase(String name); //
+    List<Fresher> findByUser_PhoneNumberContainingIgnoreCase(String phoneNumber);
+    Optional<Fresher> findByUser_EmailContainingIgnoreCase(String email); //
+
+    List<Fresher> findByProgrammingLanguageContainingIgnoreCase(String language); //
     List<Fresher> findByCenterNameContainingIgnoreCase(String name);
 }
 

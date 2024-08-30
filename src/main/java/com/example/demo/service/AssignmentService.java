@@ -104,4 +104,16 @@ public class AssignmentService {
             return assignmentRepository.findAll();
         }
     }
+
+    protected List<Assignment> findByAssignmentNumber(Integer assignment_number){
+        return assignmentRepository.findByAssignmentNumber(assignment_number);
+    }
+
+    protected List<Assignment> findByScore(Double score){
+        return assignmentRepository.findByScore(score);
+    }
+
+    protected List<Assignment> findByAssignmentNumberAndScore(Integer assignment_number, Double score){
+        return assignmentRepository.findByAssignmentNumberAndScore(assignment_number, score);
+    }
 }
