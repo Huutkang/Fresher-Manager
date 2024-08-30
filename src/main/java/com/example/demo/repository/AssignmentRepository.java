@@ -17,4 +17,8 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Integer>
     
     List<Assignment> findByProjectId(Integer projectId);
     
+    List<Assignment> findByAssignmentNumber(Integer assignment_number);
+    List<Assignment> findByScore(Double score);
+    List<Assignment> findByAssignmentNumberAndScore(Integer assignment_number, Double score);
+    
 }

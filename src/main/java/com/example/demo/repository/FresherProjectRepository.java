@@ -12,4 +12,5 @@ public interface FresherProjectRepository extends JpaRepository<FresherProject, 
     List<FresherProject> findByFresherIdAndProjectId(int fresherId, int projectId);
     List<FresherProject> findByFresherId(int fresherId);
     List<FresherProject> findByProjectId(int projectId);
+    List<FresherProject> findByRole(String role);
 }

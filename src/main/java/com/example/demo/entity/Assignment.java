@@ -32,7 +32,7 @@ public class Assignment {
     private Project project;
 
     @Column
-    private int assignment_number;
+    private int assignmentNumber;
 
     @Column
     private Double score;
@@ -41,7 +41,7 @@ public class Assignment {
     @PrePersist
     @PreUpdate
     private void validateConstraints() {
-        if (assignment_number < 1 || assignment_number > 3) {
+        if (assignmentNumber < 1 || assignmentNumber > 3) {
             throw new IllegalArgumentException("Assignment number must be between 1 and 3.");
         }
         if (score < 0 || score > 10) {

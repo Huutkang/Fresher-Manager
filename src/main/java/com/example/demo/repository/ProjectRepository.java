@@ -9,7 +9,11 @@ import com.example.demo.entity.Project;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Integer> {
+    List<Project> findByNameContainingIgnoreCase(String name);
+
     List<Project> findByCenterId(Integer centerId);
     List<Project> findByManagerId(Integer managerId);
     List<Project> findByCenterIdAndManagerId(Integer centerId, Integer managerId);
+    
+    List<Project> findByLanguage(String language);
 }

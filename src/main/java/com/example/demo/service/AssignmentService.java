@@ -28,11 +28,11 @@ public class AssignmentService {
     private FresherService fresherService;
 
     // Thêm mới Assignment
-    public Assignment addAssignment(int fresher_id, int project_id, int assignment_number, Double score) {
+    public Assignment addAssignment(int fresher_id, int project_id, int assignmentNumber, Double score) {
         Assignment assignment = new Assignment();
         assignment.setFresher(fresherService.getFresher(fresher_id));
         assignment.setProject(projectService.getProject(project_id));
-        assignment.setAssignmentNumber(assignment_number);
+        assignment.setAssignmentNumber(assignmentNumber);
         assignment.setScore(score);
         return assignmentRepository.save(assignment);
     }
@@ -41,7 +41,7 @@ public class AssignmentService {
         Assignment assignment = new Assignment();
         assignment.setFresher(fresherService.getFresher(req.getIdFresher()));
         assignment.setProject(projectService.getProject(req.getProject()));
-        assignment.setAssignmentNumber(req.getAssignment_number());
+        assignment.setAssignmentNumber(req.getAssignmentNumber());
         assignment.setScore(req.getScore());
         return assignmentRepository.save(assignment);
     }
@@ -71,7 +71,7 @@ public class AssignmentService {
         Assignment assignment = getAssignment(id);
         assignment.setFresher(fresherService.getFresher(req.getIdFresher()));
         assignment.setProject(projectService.getProject(req.getProject()));
-        assignment.setAssignmentNumber(req.getAssignment_number());
+        assignment.setAssignmentNumber(req.getAssignmentNumber());
         assignment.setScore(req.getScore());
         return assignmentRepository.save(assignment);
     }
