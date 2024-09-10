@@ -1,9 +1,11 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.request.CenterReqDto;
+import com.example.demo.dto.response.Api;
 import com.example.demo.dto.response.CenterResDto;
+import com.example.demo.enums.Code;
 import com.example.demo.entity.Center;
 import com.example.demo.service.CenterService;
 
@@ -26,42 +30,47 @@ public class CenterController {
     private CenterService centerService;
 
     // Thêm mới Center
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PostMapping
-    public Center createCenter(@RequestBody CenterReqDto newCenter) {
-        return centerService.addCenter(newCenter);
+    public ResponseEntity<Api<CenterResDto>> createCenter(@RequestBody CenterReqDto newCenter) {
+        CenterResDto center = centerService.addCenter(newCenter);
+        return Api.response(Code.OK, center);
     }
 
     // Lấy tất cả Centers
     @GetMapping
-    public List<CenterResDto> getAllCenters() {
-        return centerService.getAllCenters();
+    public ResponseEntity<Api<List<CenterResDto>>> getAllCenters() {
+        List<CenterResDto> centers = centerService.getAllCenters();
+        return Api.response(Code.OK, centers);
     }
 
     // Lấy Center theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<CenterResDto> getCenterById(@PathVariable int id) {
-        CenterResDto center = centerService.getCenterById(id).orElse(null);
-        if (center == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Api<CenterResDto>> getCenterById(@PathVariable int id) {
+        Optional<CenterResDto> center = centerService.getCenterById(id);
+        if (center.isEmpty()) {
+            return Api.response(Code.CENTER_NOT_EXISTED);
         }
-        return ResponseEntity.ok(center);
+        return Api.response(Code.OK, center.get());
     }
 
     // Cập nhật Center
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<CenterResDto> updateCenter(@PathVariable int id, @RequestBody Center centerDetails) {
+    public ResponseEntity<Api<CenterResDto>> updateCenter(@PathVariable int id, @RequestBody Center centerDetails) {
         try {
             CenterResDto updatedCenter = centerService.updateCenter(id, centerDetails);
-            return ResponseEntity.ok(updatedCenter);
+            return Api.response(Code.OK, updatedCenter);
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return Api.response(Code.CENTER_NOT_EXISTED);
         }
     }
 
     // Xóa Center theo ID
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCenter(@PathVariable int id) {
+    public ResponseEntity<Api<Void>> deleteCenter(@PathVariable int id) {
         centerService.deleteCenter(id);
-        return ResponseEntity.noContent().build();
+        return Api.response(Code.OK);
     }
 }

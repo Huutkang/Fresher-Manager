@@ -1,8 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Assignment;
+import com.example.demo.enums.Code;
 import com.example.demo.exception.AppException;
-import com.example.demo.exception.ErrorCode;
 import com.example.demo.repository.AssignmentRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,10 @@ import java.util.stream.Collectors;
 
 import com.example.demo.dto.request.AssignmentReqDto;
 import com.example.demo.dto.response.AssignmentResDto;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 @Service
 public class AssignmentService {
@@ -27,6 +31,8 @@ public class AssignmentService {
     @Autowired
     private FresherService fresherService;
 
+    private static final Logger log = LogManager.getLogger(AssignmentService.class);
+    
     // Thêm mới Assignment
     public Assignment addAssignment(int fresher_id, int project_id, int assignmentNumber, Double score) {
         Assignment assignment = new Assignment();
@@ -37,13 +43,13 @@ public class AssignmentService {
         return assignmentRepository.save(assignment);
     }
 
-    public Assignment addAssignment(AssignmentReqDto req) {
+    public AssignmentResDto addAssignment(AssignmentReqDto req) {
         Assignment assignment = new Assignment();
         assignment.setFresher(fresherService.getFresher(req.getIdFresher()));
         assignment.setProject(projectService.getProject(req.getProject()));
         assignment.setAssignmentNumber(req.getAssignmentNumber());
         assignment.setScore(req.getScore());
-        return assignmentRepository.save(assignment);
+        return convertToDTO(assignmentRepository.save(assignment));
     }
 
     // Lấy tất cả Assignments
@@ -55,7 +61,7 @@ public class AssignmentService {
 
     protected Assignment getAssignment(int id) {
         return assignmentRepository.findById(id)
-        .orElseThrow(() -> new AppException(ErrorCode.ASSIGNMENT_NOT_EXISTED));
+        .orElseThrow(() -> new AppException(Code.ASSIGNMENT_NOT_EXISTED));
     }
 
     public Optional<AssignmentResDto> getAssignmentById(int id) {
@@ -67,13 +73,13 @@ public class AssignmentService {
     }
 
     // Cập nhật Assignment
-    public Assignment updateAssignment(int id, AssignmentReqDto req) {
+    public AssignmentResDto updateAssignment(int id, AssignmentReqDto req) {
         Assignment assignment = getAssignment(id);
         assignment.setFresher(fresherService.getFresher(req.getIdFresher()));
         assignment.setProject(projectService.getProject(req.getProject()));
         assignment.setAssignmentNumber(req.getAssignmentNumber());
         assignment.setScore(req.getScore());
-        return assignmentRepository.save(assignment);
+        return convertToDTO(assignmentRepository.save(assignment));
     }
 
     // Xóa Assignment theo ID
@@ -81,7 +87,46 @@ public class AssignmentService {
         assignmentRepository.deleteById(id);
     }
 
-    protected AssignmentResDto convertToDTO(Assignment assignment) {    
+    // Tìm kiếm Assignments theo fresherId và projectId và trả về DTO
+    public List<AssignmentResDto> findAssignments(Integer fresherId, Integer projectId) {
+        List<Assignment> assignments;
+        if (fresherId != null && projectId != null) {
+            assignments = assignmentRepository.findByFresherIdAndProjectId(fresherId, projectId);
+        } else if (fresherId != null) {
+            assignments = assignmentRepository.findByFresherId(fresherId);
+        } else if (projectId != null) {
+            assignments = assignmentRepository.findByProjectId(projectId);
+        } else {
+            assignments = assignmentRepository.findAll();
+        }
+        return assignments.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Tìm kiếm Assignment theo assignment number và trả về DTO
+    public List<AssignmentResDto> findByAssignmentNumber(Integer assignmentNumber) {
+        return assignmentRepository.findByAssignmentNumber(assignmentNumber).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Tìm kiếm Assignment theo điểm số và trả về DTO
+    public List<AssignmentResDto> findByScore(Double score) {
+        return assignmentRepository.findByScore(score).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Tìm kiếm Assignment theo assignment number và điểm số, trả về DTO
+    public List<AssignmentResDto> findByAssignmentNumberAndScore(Integer assignmentNumber, Double score) {
+        return assignmentRepository.findByAssignmentNumberAndScore(assignmentNumber, score).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Chuyển đổi từ entity sang DTO
+    protected AssignmentResDto convertToDTO(Assignment assignment) {
         AssignmentResDto res = new AssignmentResDto();
         res.setId(assignment.getId());
         res.setIdFresher(assignment.getFresher().getId());
@@ -91,29 +136,5 @@ public class AssignmentService {
         res.setAssignmentNumber(assignment.getAssignmentNumber());
         res.setScore(assignment.getScore());
         return res;
-    }
-
-    protected List<Assignment> findAssignments(Integer fresherId, Integer projectId) {
-        if (fresherId != null && projectId != null) {
-            return assignmentRepository.findByFresherIdAndProjectId(fresherId, projectId);
-        } else if (fresherId != null) {
-            return assignmentRepository.findByFresherId(fresherId);
-        } else if (projectId != null) {
-            return assignmentRepository.findByProjectId(projectId);
-        } else {
-            return assignmentRepository.findAll();
-        }
-    }
-
-    protected List<Assignment> findByAssignmentNumber(Integer assignment_number){
-        return assignmentRepository.findByAssignmentNumber(assignment_number);
-    }
-
-    protected List<Assignment> findByScore(Double score){
-        return assignmentRepository.findByScore(score);
-    }
-
-    protected List<Assignment> findByAssignmentNumberAndScore(Integer assignment_number, Double score){
-        return assignmentRepository.findByAssignmentNumberAndScore(assignment_number, score);
     }
 }

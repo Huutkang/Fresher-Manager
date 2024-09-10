@@ -16,8 +16,13 @@ import com.example.demo.dto.request.UpdateFresherReqDto;
 import com.example.demo.dto.response.FresherResDto;
 import com.example.demo.entity.Center;
 import com.example.demo.entity.Users;
+import com.example.demo.enums.Code;
 import com.example.demo.exception.AppException;
-import com.example.demo.exception.ErrorCode;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.example.demo.enums.Role;
 
 
 @Service
@@ -32,19 +37,23 @@ public class FresherService {
     @Autowired
     private CenterService centerService;
 
+    private static final Logger log = LogManager.getLogger(FresherService.class);
     
     Fresher addFresher(Users user) {
         try{
             Fresher fresher = new Fresher();
+            usersService.addRole(user.getId(), Role.FRESHER);
             fresher.setUser(user);
+            log.info("Fresher added");
             return fresherRepository.save(fresher);
         }catch (RuntimeException e) {
-            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+            throw new AppException(Code.UNCATEGORIZED_EXCEPTION);
         }
     }
 
     public FresherResDto addFresher(FresherDto fresherDto) {
-        Users user = usersService.getUser(fresherDto.getIdUser());
+        int idUser = fresherDto.getIdUser();
+        Users user = usersService.getUser(idUser);
         Fresher fresher = new Fresher();
         try{
             fresher.setUser(user);
@@ -53,9 +62,11 @@ public class FresherService {
                 Center center = centerService.getCenter(fresherDto.getIdCenter());
                 fresher.setCenter(center);
             } catch (AppException e) {}
+            usersService.addRole(idUser, Role.FRESHER);
             return convertToDTO(fresherRepository.save(fresher));
         }catch (RuntimeException e) {
-            throw new AppException(ErrorCode.ENTER_MISS_INFO);
+            log.error("Fresher not added\n"+e);
+            throw new AppException(Code.ENTER_MISS_INFO);
         }
     }
 
@@ -65,9 +76,11 @@ public class FresherService {
             Fresher fresher = new Fresher();
             fresher.setUser(user);
             fresher.setProgrammingLanguage(fresherReqDto.getProgrammingLanguage());
+            usersService.addRole(user.getId(), Role.FRESHER);
             return convertToDTO(fresherRepository.save(fresher));
         }catch (RuntimeException e) {
-            throw new AppException(ErrorCode.ENTER_MISS_INFO);
+            log.error("Fresher not added\n"+e);
+            throw new AppException(Code.ENTER_MISS_INFO);
         }
     }
     
@@ -83,11 +96,11 @@ public class FresherService {
     protected Fresher getFresher(int id) {
         Fresher fresher = fresherRepository.findById(id)
                .filter(Fresher::isActive)
-               .orElseThrow(() -> new AppException(ErrorCode.FRESHER_NOT_EXISTED));
+               .orElseThrow(() -> new AppException(Code.FRESHER_NOT_EXISTED));
         if (!fresher.getUser().isActive()) {
             fresher.setActive(false);
             fresherRepository.save(fresher);
-            throw new AppException(ErrorCode.FRESHER_NOT_EXISTED);
+            throw new AppException(Code.FRESHER_NOT_EXISTED);
         }
         return fresher;
     }
@@ -107,6 +120,7 @@ public class FresherService {
         fresher.setProgrammingLanguage(req.getProgrammingLanguage());
         Center center = centerService.getCenter(req.getIdCenter());
         fresher.setCenter(center);
+        log.info("Updated fresher", id);
         return convertToDTO(fresherRepository.save(fresher));
     }
 
@@ -115,66 +129,82 @@ public class FresherService {
         Fresher fresher = getFresher(id);
         fresher.setActive(false);
         fresherRepository.save(fresher);
+        log.info("Deleted fresher", id);
     }
 
-    protected Fresher getFresherByUserId(int userId) {
+    // Hàm lấy Fresher theo ID người dùng
+    public FresherResDto getFresherByUserId(int userId) {
         Users user = usersService.getUser(userId);
         Fresher fresher = fresherRepository.findByUser(user)
                 .filter(Fresher::isActive)
-                .orElseThrow(() -> new AppException(ErrorCode.FRESHER_NOT_EXISTED));
-        return fresher;
+                .orElseThrow(() -> new AppException(Code.FRESHER_NOT_EXISTED));
+        return convertToDTO(fresher);
     }
 
-    protected List<Fresher> getFresherByCenterId(int centerId) { //
-        return fresherRepository.findByCenterId(centerId)
-               .stream()
+    // Lấy Fresher theo trung tâm
+    public List<FresherResDto> getFresherByCenterId(int centerId) {
+        return fresherRepository.findByCenterId(centerId).stream()
                .filter(Fresher::isActive)
+               .map(this::convertToDTO)
                .collect(Collectors.toList());
     }
 
-    protected List<Fresher> getFresherByPhoneNumber(String phoneNumber){
+    // Lấy Fresher theo số điện thoại
+    public List<FresherResDto> getFresherByPhoneNumber(String phoneNumber) {
         return fresherRepository.findByUser_PhoneNumber(phoneNumber).stream()
                .filter(Fresher::isActive)
+               .map(this::convertToDTO)
                .collect(Collectors.toList());
     }
 
-    protected Fresher getFresherByEmail(String email){
-        return fresherRepository.findByUser_Email(email)
+    // Lấy Fresher theo email
+    public FresherResDto getFresherByEmail(String email) {
+        Fresher fresher = fresherRepository.findByUser_Email(email)
         .filter(Fresher::isActive)
-        .orElseThrow(() -> new AppException(ErrorCode.FRESHER_NOT_EXISTED));
+        .orElseThrow(() -> new AppException(Code.FRESHER_NOT_EXISTED));
+        return convertToDTO(fresher);
     }
 
-    protected List<Fresher> findFreshersByName(String name) {
+    // Tìm Fresher theo tên
+    public List<FresherResDto> findFreshersByName(String name) {
         return fresherRepository.findByUser_NameContainingIgnoreCase(name).stream()
                 .filter(Fresher::isActive)
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    // Tìm fresher theo ngôn ngữ lập trình
-    protected List<Fresher> findFreshersByProgrammingLanguage(String programmingLanguage) {
+    // Tìm Fresher theo ngôn ngữ lập trình
+    public List<FresherResDto> findFreshersByProgrammingLanguage(String programmingLanguage) {
         return fresherRepository.findByProgrammingLanguageContainingIgnoreCase(programmingLanguage).stream()
                 .filter(Fresher::isActive)
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    // Tìm fresher theo email
-    protected List<Fresher> findFreshersByEmail(String email) {
+    // Tìm Fresher theo email
+    public List<FresherResDto> findFreshersByEmail(String email) {
         return fresherRepository.findByUser_EmailContainingIgnoreCase(email).stream()
                 .filter(Fresher::isActive)
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    protected List<Fresher> findFreshersByPhoneNumber(String phoneNumber) {
+    // Tìm Fresher theo số điện thoại
+    public List<FresherResDto> findFreshersByPhoneNumber(String phoneNumber) {
         return fresherRepository.findByUser_PhoneNumberContainingIgnoreCase(phoneNumber).stream()
                 .filter(Fresher::isActive)
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    protected List<Fresher> findFreshersByCenterName(String name) {
+    // Tìm Fresher theo tên trung tâm
+    public List<FresherResDto> findFreshersByCenterName(String name) {
         return fresherRepository.findByCenterNameContainingIgnoreCase(name).stream()
                 .filter(Fresher::isActive)
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+
     
     public long countFresher() {
         return fresherRepository.count();

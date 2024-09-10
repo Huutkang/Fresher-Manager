@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-    @GetMapping("/home")
+    @GetMapping("/login")
     public String home(Model model) {
         // Chèn một chuỗi vào biến dynamicContent
         model.addAttribute("dynamicContent", "This is dynamically added content!");
@@ -19,6 +19,6 @@ public class HomeController {
         List<String> items = Arrays.asList("chó", "mèo", "Item 3");
         model.addAttribute("items", items);
 
-        return "x"; // Trả về file x.html
+        return "login"; // Trả về file login.html
     }
 }

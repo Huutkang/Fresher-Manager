@@ -17,6 +17,9 @@ import com.example.demo.dto.request.AuthenticationRequest;
 import com.example.demo.dto.response.AuthenticationResponse;
 import com.example.demo.dto.response.UserResDto;
 import com.example.demo.entity.Token;
+import com.example.demo.entity.Users;
+import com.example.demo.enums.Code;
+import com.example.demo.exception.AppException;
 import com.example.demo.repository.TokenRepository;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -26,7 +29,9 @@ import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.security.core.Authentication;
 
 
 
@@ -36,36 +41,40 @@ public class AuthenticationService {
     @Value("${app.security.signer-key}")
     private String SIGNER_KEY;
 
+    @Value("${app.security.token-expiry-hours}")
+    private int tokenExpiryHours;
+
     @Autowired
     private UsersService userSv;
 
     @Autowired
     private TokenRepository tokenRepository;
 
-
+    private static final Logger log = LogManager.getLogger(AuthenticationService.class);
+    
     public AuthenticationResponse authenticate(AuthenticationRequest request){
-        Optional<UserResDto> user = userSv.getUserByUsername(request.getUsername());
+        Users user = userSv.getUser(request.getUsername());
         AuthenticationResponse authenticationResponse = new AuthenticationResponse();
-        if (user.isPresent()) {
+        try {
             // check password
             if (userSv.checkPassword(request.getUsername(), request.getPassword())) {
                 // generate token
-                String token = generateToken(user.get());
+                String token = generateToken(user);
                 authenticationResponse.setToken(token);
             } else {
                 authenticationResponse.setToken("failed");
             }
         }
-        else{
+        catch (RuntimeException e) {
             authenticationResponse.setToken("guest");
         }
         return authenticationResponse;
     }
 
-    private String generateToken(UserResDto user) {
+    private String generateToken(Users user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         String id = UUID.randomUUID().toString();
-        Date expiryTime = new Date(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli());
+        Date expiryTime = new Date(Instant.now().plus(tokenExpiryHours, ChronoUnit.HOURS).toEpochMilli());
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(user.getUsername())
                 // .issuer("meo meo")
@@ -85,7 +94,7 @@ public class AuthenticationService {
             jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
             return jwsObject.serialize();
         } catch (JOSEException e) {
-            // log.error("Cannot create token", e);
+            log.error("Token creation failed", e);
             throw new RuntimeException(e);
         }
     }
@@ -140,16 +149,56 @@ public class AuthenticationService {
     
     public String getUsernameFromToken() {
         // Lấy thông tin của JWT từ SecurityContext
-        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     
-        // Trích xuất username từ subject của JWT
-        String username = jwt.getSubject(); // subject chứa username
+        if (authentication != null && authentication.getPrincipal() instanceof Jwt) {
+            Jwt jwt = (Jwt) authentication.getPrincipal();
     
-        return username;
+            // Trích xuất username từ subject của JWT
+            String username = jwt.getSubject(); // subject chứa username
+    
+            return username;
+        } else {
+            throw new AppException(Code.UNAUTHENTICATED);
+        }
+    }
+    
+    public int getIdUser(){
+        String username = getUsernameFromToken();
+        return userSv.getUserIdByUsername(username);
     }
 
     public Optional<UserResDto> getUser(){
+        try{
+            String username = getUsernameFromToken();
+            return userSv.getUserByUsername(username);
+        } catch (AppException e){
+            return Optional.empty();
+        }
+    }
+
+    public AuthenticationResponse refreshToken() {
+        String tokenId = getTokenId();
+        tokenRepository.deleteById(tokenId);
         String username = getUsernameFromToken();
-        return userSv.getUserByUsername(username);
-    } 
+        Users user = userSv.getUser(username);
+        String newToken = generateToken(user);
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse();
+        authenticationResponse.setToken(newToken);
+        return authenticationResponse;
+    }
+    
+    public void logout() {
+        String tokenId = getTokenId();
+        tokenRepository.deleteById(tokenId);
+    }
+
+    public boolean checklogin(){
+        Optional<UserResDto> user = getUser();
+        if (user.isEmpty()){
+            return false;
+        }else{
+            return true;
+        }
+    }
 }

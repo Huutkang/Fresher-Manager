@@ -1,33 +1,282 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Homepage</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="static/style.c">
 </head>
 <body>
-    <form id="loginForm">
-        <div>
-            <label for="username">Tên đăng nhập</label>
-            <input type="text" id="username" name="username" required placeholder="Nhập 6-20 ký tự">
+    <h1>Welcome to my Spring Boot application</h1>
+    <div id="container">
+        <div id="auth">
+            <div id="login"></div>
+            <div id="refreshtoken"></div>
+            <div id="checklogin"></div>
+            <button type="button" onclick="logout()" id="btn">Logout</button>
         </div>
-        <div>
-            <label for="password">Mật khẩu</label>
-            <input type="password" id="password" name="password" required>
-            <img id="togglePassword" class="eye-icon" src="eye-icon.png" alt="Toggle password visibility">
+        <div id="users">
+            <h2>Users:</h2>
+            <h3>Add New User</h3>
+            <div id="add-new-user">
+                <form id="add-user-form">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required><br>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required><br>
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required><br>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required><br>
+                    <label for="phoneNumber">Phone Number:</label>
+                    <input type="text" id="phoneNumber" name="phoneNumber" required><br>
+                    <button type="button" onclick="addNewUser()">Add User</button>
+                </form>
+            </div>
+            <h3>Get All Users</h3>
+            <div id="get-all-users">
+                <button type="button" onclick="getAllUsers()">Fetch Users</button>
+            </div>
+            <h3>Get User By ID</h3>
+            <div id="get-user-by-id">
+                <form id="get-user-form">
+                    <label for="userId">User ID:</label>
+                    <input type="number" id="userId" name="userId" required><br>
+                    <button type="button" onclick="getUserById()">Fetch User</button>
+                </form>
+            </div>
+            <h3>Update User By ID</h3>
+            <div id="update-user">
+                <form id="update-user-form">
+                    <label for="userIdUpdate">User ID:</label>
+                    <input type="number" id="userIdUpdate" name="userIdUpdate" required><br>
+                    <label for="usernameUpdate">Username:</label>
+                    <input type="text" id="usernameUpdate" name="usernameUpdate"><br>
+                    <label for="nameUpdate">Name:</label>
+                    <input type="text" id="nameUpdate" name="nameUpdate"><br>
+                    <label for="emailUpdate">Email:</label>
+                    <input type="email" id="emailUpdate" name="emailUpdate"><br>
+                    <label for="phoneNumberUpdate">Phone Number:</label>
+                    <input type="text" id="phoneNumberUpdate" name="phoneNumberUpdate"><br>
+                    <button type="button" onclick="updateUser()">Update User</button>
+                </form>
+            </div>
+            <h3>Delete User By ID</h3>
+            <div id="delete-user">
+                <form id="delete-user-form">
+                    <label for="userIdDelete">User ID:</label>
+                    <input type="number" id="userIdDelete" name="userIdDelete" required><br>
+                    <button type="button" onclick="deleteUser()">Delete User</button>
+                </form>
+            </div>
+            <h3>Get Current User</h3>
+            <div id="get-user-me">
+                <button type="button" onclick="getUserMe()">Fetch Current User</button>
+            </div>
+            <h3>Update Current User</h3>
+            <div id="update-user-me">
+                <form id="update-me-form">
+                    <label for="usernameMe">Username:</label>
+                    <input type="text" id="usernameMe" name="usernameMe"><br>
+                    <label for="nameMe">Name:</label>
+                    <input type="text" id="nameMe" name="nameMe"><br>
+                    <label for="emailMe">Email:</label>
+                    <input type="email" id="emailMe" name="emailMe"><br>
+                    <label for="phoneNumberMe">Phone Number:</label>
+                    <input type="text" id="phoneNumberMe" name="phoneNumberMe"><br>
+                    <button type="button" onclick="updateUserMe()">Update Current User</button>
+                </form>
+            </div>
+           <div id="user-result"></div> 
         </div>
-        <button type="submit" id="loginButton" disabled>Đăng nhập</button>
-    </form>
-
-    <div id="welcomePopup" class="popup">
-        <div class="popup-content">
-            <p id="welcomeMessage"></p>
-            <button id="closePopup">Đóng</button>
+        <div id="freshers">
+            <h2>Freshers:</h2>
+            <h3>Add New Fresher</h3>
+            <div id="add-new-fresher">
+                <form id="add-fresher-form">
+                    <label for="fresherPassword">Password:</label>
+                    <input type="password" id="fresherPassword" name="fresherPassword" required><br>
+                    <label for="fresherName">Name:</label>
+                    <input type="text" id="fresherName" name="fresherName" required><br>
+                    <label for="fresherEmail">Email:</label>
+                    <input type="email" id="fresherEmail" name="fresherEmail" required><br>
+                    <label for="fresherPhoneNumber">Phone Number:</label>
+                    <input type="text" id="fresherPhoneNumber" name="fresherPhoneNumber" required><br>
+                    <label for="fresherProgrammingLanguage">Programming Language:</label>
+                    <input type="text" id="fresherProgrammingLanguage" name="fresherProgrammingLanguage" required><br>
+                    <button type="button" onclick="addNewFresher()">Add Fresher</button>
+                </form>
+            </div>
+            <h3>Get All Freshers</h3>
+            <div id="get-all-freshers">
+                <button type="button" onclick="getAllFreshers()">Fetch Freshers</button>
+            </div>
+            <h3>Get Fresher By ID</h3>
+            <div id="get-fresher-by-id">
+                <form id="get-fresher-form">
+                    <label for="fresherId">Fresher ID:</label>
+                    <input type="number" id="fresherId" name="fresherId" required><br>
+                    <button type="button" onclick="getFresherById()">Fetch Fresher</button>
+                </form>
+            </div>
+            <h3>Update Fresher By ID</h3>
+            <div id="update-fresher">
+                <form id="update-fresher-form">
+                    <label for="fresherIdUpdate">Fresher ID:</label>
+                    <input type="number" id="fresherIdUpdate" name="fresherIdUpdate" required><br>
+                    <label for="programmingLanguageUpdate">Programming Language:</label>
+                    <input type="text" id="programmingLanguageUpdate" name="programmingLanguageUpdate"><br>
+                    <label for="idCenterUpdate">Center ID:</label>
+                    <input type="number" id="idCenterUpdate" name="idCenterUpdate"><br>
+                    <button type="button" onclick="updateFresher()">Update Fresher</button>
+                </form>
+            </div>
+            <h3>Delete Fresher By ID</h3>
+            <div id="delete-fresher">
+                <form id="delete-fresher-form">
+                    <label for="fresherIdDelete">Fresher ID:</label>
+                    <input type="number" id="fresherIdDelete" name="fresherIdDelete" required><br>
+                    <button type="button" onclick="deleteFresher()">Delete Fresher</button>
+                </form>
+            </div>
+            <h3>Get Current Fresher</h3>
+            <div id="get-fresher-me">
+                <button type="button" onclick="getFresherMe()">Fetch Current Fresher</button>
+            </div>
+            <h3>Update Current Fresher</h3>
+            <div id="update-fresher-me">
+                <form id="update-me-fresher-form">
+                    <label for="programmingLanguageMe">Programming Language:</label>
+                    <input type="text" id="programmingLanguageMe" name="programmingLanguageMe"><br>
+                    <label for="idCenterMe">Center ID:</label>
+                    <input type="number" id="idCenterMe" name="idCenterMe"><br>
+                    <button type="button" onclick="updateFresherMe()">Update Current Fresher</button>
+                </form>
+            </div>
+            <div id="fresher-statistics"></div>
+            <div id="result-freshers"></div>
+        </div>
+        <div id="projects">
+            <h2>Projects:</h2>
+            <h3>Add New Project</h3>
+            <div id="add-new-project">
+                <form id="add-project-form">
+                    <label for="projectName">Project Name:</label>
+                    <input type="text" id="projectName" name="projectName" required><br>
+                    <label for="projectLanguage">Programming Language:</label>
+                    <input type="text" id="projectLanguage" name="projectLanguage" required><br>
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" id="startDate" name="startDate" required><br>
+                    <label for="endDate">End Date:</label>
+                    <input type="date" id="endDate" name="endDate" required><br>
+                    <button type="button" onclick="addNewProject()">Add Project</button>
+                </form>
+            </div>
+            <h3>Get All Projects</h3>
+            <div id="get-all-projects">
+                <button type="button" onclick="getAllProjects()">Fetch Projects</button>
+            </div>
+            <h3>Get Project By ID</h3>
+            <div id="get-project-by-id">
+                <form id="get-project-form">
+                    <label for="projectId">Project ID:</label>
+                    <input type="number" id="projectId" name="projectId" required><br>
+                    <button type="button" onclick="getProjectById()">Fetch Project</button>
+                </form>
+            </div>
+            <h3>Update Project By ID</h3>
+            <div id="update-project">
+                <form id="update-project-form">
+                    <label for="projectIdUpdate">Project ID:</label>
+                    <input type="number" id="projectIdUpdate" name="projectIdUpdate" required><br>
+                    <label for="projectNameUpdate">Project Name:</label>
+                    <input type="text" id="projectNameUpdate" name="projectNameUpdate"><br>
+                    <label for="projectLanguageUpdate">Programming Language:</label>
+                    <input type="text" id="projectLanguageUpdate" name="projectLanguageUpdate"><br>
+                    <label for="startDateUpdate">Start Date:</label>
+                    <input type="date" id="startDateUpdate" name="startDateUpdate"><br>
+                    <label for="endDateUpdate">End Date:</label>
+                    <input type="date" id="endDateUpdate" name="endDateUpdate"><br>
+                    <button type="button" onclick="updateProject()">Update Project</button>
+                </form>
+            </div>
+            <h3>Delete Project By ID</h3>
+            <div id="delete-project">
+                <form id="delete-project-form">
+                    <label for="projectIdDelete">Project ID:</label>
+                    <input type="number" id="projectIdDelete" name="projectIdDelete" required><br>
+                    <button type="button" onclick="deleteProject()">Delete Project</button>
+                </form>
+            </div>
+            <div id="result-projects"></div>
+        </div>
+        <p> --------------------------------------chưa kịp làm phần giao diện------------------------------------------------------------------------------</p>
+        <div id="centers">
+            <h2>Centers:</h2>
+            <div id="add-new-center"></div>
+            <div id="get-all-centers"></div>
+            <div id="get-center-by-id"></div>
+            <div id="update-center"></div>
+            <div id="delete-center"></div>
+            <div id="result-centers"></div>
+        </div>
+        <div id="aignments">
+            <h2>Assignments:</h2>
+            <div id="add-new-aignment"></div>
+            <div id="get-all-aignments"></div>
+            <div id="get-aignment-by-id"></div>
+            <div id="update-aignment"></div>
+            <div id="delete-aignment"></div>
+        </div>
+        <div id="fresherProjects">
+            <h2>Fresher Projects:</h2>
+            <div id="add-new-fresherProject"></div>
+            <div id="get-all-fresherProjects"></div>
+            <div id="get-fresherProject-by-id"></div>
+            <div id="update-fresherProject"></div>
+            <div id="delete-fresherProject"></div>
+        </div>
+        <div id="notifications">
+            <h2>Notifications:</h2>
+            <div id="add-new-notification"></div>
+            <div id="get-all-notifications"></div>
+            <div id="get-notification-by-id"></div>
+            <div id="update-notification"></div>
+            <div id="delete-notification"></div>
+        </div>
+        <div id="search">
+            <h2>Search:</h2>
+            <div id="add-new-search"></div>
+            <div id="get-all-searchs"></div>
+            <div id="get-search-by-id"></div>
+            <div id="update-search"></div>
+            <div id="delete-search"></div>
+        </div>
+        <div id="statistics">
+            <h2>Statistics:</h2>
+            <div id="add-new-statistics"></div>
+            <div id="get-all-statistics"></div>
+            <div id="get-statistics-by-id"></div>
+            <div id="update-statistics"></div>
+            <div id="delete-statistics"></div>
+        </div>
+        <p> --------------------------------------chưa kịp làm phần giao diện------------------------------------------------------------------------------</p>
+        <div id="email">
+            <h2>Send Email:</h2>
+            <form id="email-form">
+                <label for="to">To:</label>
+                <input type="email" id="to" name="to" required><br>
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" required><br>
+                <label for="body">Body:</label><br>
+                <textarea id="body" name="body" rows="4" cols="50" required></textarea><br>
+                <button type="button" onclick="sendemail()">Send</button>
+            </form>
         </div>
     </div>
-
-    <script src="script.js"></script>
+    <script src="static/api.js"></script>
+    <script src="static/main.js" async defer></script>
 </body>
 </html>
-

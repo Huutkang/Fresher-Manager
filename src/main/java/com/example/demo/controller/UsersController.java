@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.entity.Users;
-import com.example.demo.service.UsersService;
 import com.example.demo.dto.request.NewUserReqDto;
 import com.example.demo.dto.request.SetUserReqDto;
-import com.example.demo.dto.response.ApiResponse;
+import com.example.demo.dto.response.Api;
 import com.example.demo.dto.response.UserResDto;
+import com.example.demo.enums.Code;
+import com.example.demo.exception.AppException;
+import com.example.demo.service.AuthenticationService;
+import com.example.demo.service.UsersService;
 
 @RestController
 @RequestMapping("/users")
@@ -29,46 +31,75 @@ public class UsersController {
     @Autowired
     private UsersService usersService;
 
+    @Autowired
+    AuthenticationService authenticationService;
+
     // Thêm mới User
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PostMapping
-    public ApiResponse createUser(@RequestBody NewUserReqDto newUserReq) {
-        ApiResponse response = new ApiResponse();
-        response.setResult(usersService.convertToDTO(usersService.addUser(newUserReq)));
-        return response;
+    public ResponseEntity<Api<UserResDto>> createUser(@RequestBody NewUserReqDto newUserReq) {
+        UserResDto user = usersService.addUser(newUserReq);
+        return Api.response(Code.OK, user);
     }
 
     // Lấy tất cả Users
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @GetMapping
-    public List<UserResDto> getAllUsers() {
-        return usersService.getAllUsers();
+    public ResponseEntity<Api<List<UserResDto>>> getAllUsers() {
+        List<UserResDto> users = usersService.getAllUsers();
+        return Api.response(Code.OK, users);
     }
 
     // Lấy User theo ID
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<UserResDto> getUserById(@PathVariable int id) {
+    public ResponseEntity<Api<UserResDto>> getUserById(@PathVariable int id) {
         Optional<UserResDto> user = usersService.getUserById(id);
-        if (user == null) {
-            return ResponseEntity.notFound().build();
+        if (user.isEmpty()) {
+            return Api.response(Code.USER_NOT_EXISTED);
         }
-        return ResponseEntity.ok(user.get());
+        return Api.response(Code.OK, user.get());
     }
 
     // Cập nhật User
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<Users> updateUser(@PathVariable int id, @RequestBody SetUserReqDto userDetails) {
+    public ResponseEntity<Api<UserResDto>> updateUser(@PathVariable int id, @RequestBody SetUserReqDto userDetails) {
         try {
-            Users updatedUser = usersService.updateUser(id, userDetails);
-            return ResponseEntity.ok(updatedUser);
+            UserResDto updatedUser = usersService.updateUser(id, userDetails);
+            return Api.response(Code.OK, updatedUser);
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return Api.response(Code.USER_NOT_EXISTED);
         }
     }
 
     // Xóa User theo ID
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
+    public ResponseEntity<Api<Void>> deleteUser(@PathVariable int id) {
         usersService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+        return Api.response(Code.OK);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Api<UserResDto>> getUserById() {
+        int id = authenticationService.getIdUser();
+        Optional<UserResDto> user = usersService.getUserById(id);
+        if (user.isEmpty()) {
+            throw new AppException(Code.UNAUTHENTICATED);
+        }
+        return Api.response(Code.OK, user.get());
+    }
+    
+    // Cập nhật User
+    @PutMapping("/me")
+    public ResponseEntity<Api<UserResDto>> updateUser(@RequestBody SetUserReqDto userDetails) {
+        int id = authenticationService.getIdUser();
+        try {
+            UserResDto updatedUser = usersService.updateUser(id, userDetails);
+            return Api.response(Code.OK, updatedUser);
+        } catch (RuntimeException e) {
+            throw new AppException(Code.UNAUTHENTICATED);
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.request.CenterReqDto;
 import com.example.demo.entity.Center;
+import com.example.demo.enums.Code;
 import com.example.demo.repository.CenterRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,11 @@ import java.util.stream.Collectors;
 
 import com.example.demo.dto.response.CenterResDto;
 import com.example.demo.exception.AppException;
-import com.example.demo.exception.ErrorCode;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+
 
 @Service
 public class CenterService {
@@ -23,15 +28,20 @@ public class CenterService {
 
     @Autowired
     private UsersService usersService;
+
+    private static final Logger log = LogManager.getLogger(CenterService.class);
+
     // Thêm mới Center
-    public Center addCenter(CenterReqDto centerReqDto) {
+    public CenterResDto addCenter(CenterReqDto centerReqDto) {
         Center center = new Center();
         center.setName(centerReqDto.getName());
         center.setLocation(centerReqDto.getLocation());
-        try{
+        try {
             center.setManager(usersService.getUser(centerReqDto.getManagerId()));
-        }catch (AppException e){}
-        return centerRepository.save(center);
+        } catch (AppException e) {
+            log.error("Manager not found");
+        }
+        return convertToDTO(centerRepository.save(center));
     }
 
     public Center addCenter(String name, String location) {
@@ -42,7 +52,7 @@ public class CenterService {
     }
 
     // Lấy tất cả Centers
-    public List<CenterResDto> getAllCenters() { //
+    public List<CenterResDto> getAllCenters() { 
         return centerRepository.findAll().stream()
                 .filter(Center::isActive)
                 .map(this::convertToDTO)
@@ -61,16 +71,19 @@ public class CenterService {
     protected Center getCenter(int id) {
         return centerRepository.findById(id)
                .filter(Center::isActive)
-               .orElseThrow(() -> new AppException(ErrorCode.CENTER_NOT_EXISTED));
+               .orElseThrow(() -> new AppException(Code.CENTER_NOT_EXISTED));
     }
+
     // Cập nhật Center
-    public CenterResDto updateCenter(int id, Center req) { // xxxxxxx
+    public CenterResDto updateCenter(int id, CenterReqDto req) {
         Center center = getCenter(id);
         center.setName(req.getName());
         center.setLocation(req.getLocation());
-        try{
-            center.setManager(usersService.getUser(centerReqDto.getManagerId()));
-        }catch (AppException e){}
+        try {
+            center.setManager(usersService.getUser(req.getManagerId()));
+        } catch (AppException e) {
+            log.error("Manager not found");
+        }
         return convertToDTO(centerRepository.save(center));
     }
 
@@ -78,26 +91,32 @@ public class CenterService {
     public Center deleteCenter(int id) {
         Center center = getCenter(id);
         center.setActive(false);
+        log.info("Deleting Center " + id);
         return centerRepository.save(center);
     }
 
-    protected Center getCenterByManagerId(int managerId) {
+    // Tìm Center theo Manager ID và trả về DTO
+    public Optional<CenterResDto> getCenterByManagerId(int managerId) {
         return centerRepository.findByManagerId(managerId)
-        .filter(Center::isActive)
-        .orElseThrow(() -> new AppException(ErrorCode.CENTER_NOT_EXISTED));
+               .filter(Center::isActive)
+               .map(this::convertToDTO);
     }
-    
-    protected List<Center> findByName(String name){
+
+    // Tìm kiếm Center theo tên và trả về DTO
+    public List<CenterResDto> findByName(String name) {
         return centerRepository.findByNameContainingIgnoreCase(name)
                .stream()
                .filter(Center::isActive)
+               .map(this::convertToDTO)
                .collect(Collectors.toList());
     }
 
-    protected List<Center> findByLocation(String location){
+    // Tìm kiếm Center theo vị trí và trả về DTO
+    public List<CenterResDto> findByLocation(String location) {
         return centerRepository.findByLocationContainingIgnoreCase(location)
                .stream()
                .filter(Center::isActive)
+               .map(this::convertToDTO)
                .collect(Collectors.toList());
     }
 
@@ -105,6 +124,7 @@ public class CenterService {
         return centerRepository.count();
     }
 
+    // Chuyển đổi từ entity sang DTO
     protected CenterResDto convertToDTO(Center center) {
         CenterResDto res = new CenterResDto();
         res.setName(center.getName());

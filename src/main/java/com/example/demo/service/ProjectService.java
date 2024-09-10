@@ -1,8 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Project;
+import com.example.demo.enums.Code;
 import com.example.demo.exception.AppException;
-import com.example.demo.exception.ErrorCode;
 import com.example.demo.repository.ProjectRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,26 +15,33 @@ import java.util.stream.Collectors;
 import com.example.demo.dto.request.ProjectReqDto;
 import com.example.demo.dto.response.ProjectResDto;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 @Service
 public class ProjectService {
 
     @Autowired
     private ProjectRepository projectRepository;
 
+    private static final Logger log = LogManager.getLogger(ProjectService.class);
+    
     // Thêm mới Project
     Project addProject(String name) {
         Project project = new Project();
         project.setName(name);
+        log.info("Add Project " + project.getName());
         return projectRepository.save(project);
     }
 
-    public Project addProject(ProjectReqDto reqDto) {
+    public ProjectResDto addProject(ProjectReqDto reqDto) {
         Project project = new Project();
         project.setName(reqDto.getName());
         project.setLanguage(reqDto.getLanguage());
         project.setStartDate(reqDto.getStartDate());
         project.setEndDate(reqDto.getEndDate());
-        return projectRepository.save(project);
+        log.info("Add Project " + project.getName());
+        return convertToDTO(projectRepository.save(project));
     }
     
     // Lấy tất cả Projects
@@ -57,53 +64,61 @@ public class ProjectService {
     protected Project getProject(int id) {
         return projectRepository.findById(id)
                 .filter(Project::isActive)
-                .orElseThrow(() -> new AppException(ErrorCode.PROJECT_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(Code.PROJECT_NOT_EXISTED));
     }
 
     // Cập nhật Project
-    public Project updateProject(int id, Project projectDetails) {
+    public ProjectResDto updateProject(int id, ProjectReqDto reqDto) {
         Project project = getProject(id);
-        project.setName(projectDetails.getName());
-        project.setCenter(projectDetails.getCenter());
-        project.setManager(projectDetails.getManager());
-        project.setLanguage(projectDetails.getLanguage());
-        project.setStatus(projectDetails.getStatus());
-        project.setStartDate(projectDetails.getStartDate());
-        project.setEndDate(projectDetails.getEndDate());
-        return projectRepository.save(project);
+        project.setName(reqDto.getName());
+        project.setLanguage(reqDto.getLanguage());
+        project.setStartDate(reqDto.getStartDate());
+        project.setEndDate(reqDto.getEndDate());
+        log.info("Update Project " + project.getName());
+        return convertToDTO(projectRepository.save(project));
     }
 
     // Xóa Project theo ID
     public Project deleteProject(int id) {
         Project project = getProject(id);
         project.setActive(false);
+        log.info("Delete Project " + project.getName());
         return projectRepository.save(project);
     }
-    protected List<Project> findProjects(int centerId, int managerId){
+
+    public List<ProjectResDto> findProjects(int centerId, int managerId) {
+        List<Project> projects;
         if (centerId > 0 && managerId > 0) {
-            return projectRepository.findByCenterIdAndManagerId(centerId, managerId);
+            projects = projectRepository.findByCenterIdAndManagerId(centerId, managerId);
         } else if (centerId > 0) {
-            return projectRepository.findByCenterId(centerId);
+            projects = projectRepository.findByCenterId(centerId);
         } else if (managerId > 0) {
-            return projectRepository.findByManagerId(managerId);
+            projects = projectRepository.findByManagerId(managerId);
         } else {
-            throw new IllegalArgumentException("Phải cung cấp ít nhất một trong số userId hoặc projectId");
+            throw new IllegalArgumentException("Phải cung cấp ít nhất một trong số centerId hoặc managerId");
         }
+        return projects.stream()
+                       .filter(Project::isActive)
+                       .map(this::convertToDTO)
+                       .collect(Collectors.toList());
     }
-
-    protected List<Project> findByName(String name) {
+    
+    public List<ProjectResDto> findByName(String name) {
         return projectRepository.findByName(name)
-               .stream()
-               .filter(Project::isActive)
-               .collect(Collectors.toList());
+              .stream()
+              .filter(Project::isActive)
+              .map(this::convertToDTO)
+              .collect(Collectors.toList());
     }
-
-    protected List<Project> findByLanguage(String language) {
+    
+    public List<ProjectResDto> findByLanguage(String language) {
         return projectRepository.findByLanguage(language)
-               .stream()
-               .filter(Project::isActive)
-               .collect(Collectors.toList());
-    }   
+              .stream()
+              .filter(Project::isActive)
+              .map(this::convertToDTO)
+              .collect(Collectors.toList());
+    }
+    
 
     public ProjectResDto convertToDTO(Project project) {
         ProjectResDto dto = new ProjectResDto();

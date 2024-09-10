@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Notification;
+import com.example.demo.enums.Code;
 import com.example.demo.repository.NotificationRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,9 @@ import java.util.stream.Collectors;
 import com.example.demo.dto.request.NotificationReqDto;
 import com.example.demo.dto.response.NotificationResDto;
 import com.example.demo.exception.AppException;
-import com.example.demo.exception.ErrorCode;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Service
 public class NotificationService {
@@ -29,7 +31,8 @@ public class NotificationService {
     @Autowired
     private ProjectService projectService;
 
-
+    private static final Logger log = LogManager.getLogger(NotificationService.class);
+    
     // Thêm mới Notification
     Notification addNotification(int fresher_id, int project_id, String message) {
         Notification notification = new Notification();
@@ -37,16 +40,18 @@ public class NotificationService {
         notification.setUser(fresherService.getFresher(fresher_id).getUser());
         notification.setProject(projectService.getProject(project_id));
         notification.setMessage(message);
+        log.info("Added notification ");
         return notificationRepository.save(notification);
     }
 
-    public Notification addNotification(NotificationReqDto req) {
+    public NotificationResDto addNotification(NotificationReqDto req) {
         Notification notification = new Notification();
         notification.setSentAt(LocalDateTime.now());
         notification.setUser(fresherService.getFresher(req.getIdFresher()).getUser());
         notification.setProject(projectService.getProject(req.getIdProject()));
         notification.setMessage(req.getMessage());
-        return notificationRepository.save(notification);
+        log.info("Added notification ");
+        return convertToDTO(notificationRepository.save(notification));
     }
 
     // Lấy tất cả Notifications
@@ -59,7 +64,7 @@ public class NotificationService {
     // Lấy Notification theo ID
     protected Notification getNotification(int id) {
         return notificationRepository.findById(id)
-        .orElseThrow(() -> new AppException(ErrorCode.NOTIFICATION_NOT_EXISTED));
+        .orElseThrow(() -> new AppException(Code.NOTIFICATION_NOT_EXISTED));
     }
 
     public Optional<NotificationResDto> getNotificationById(int id) {
@@ -71,31 +76,39 @@ public class NotificationService {
     }
 
     // Cập nhật Notification
-    public NotificationResDto updateNotification(int id, Notification notificationDetails) {
+    public NotificationResDto updateNotification(int id, NotificationReqDto notificationDetails) {
         Notification notification = getNotification(id);
-        notification.setUser(fresherService.getFresher(req.getIdFresher()).getUser());
-        notification.setProject(notificationDetails.getProject());
+        notification.setUser(fresherService.getFresher(notificationDetails.getIdFresher()).getUser());
+        notification.setProject(projectService.getProject(notificationDetails.getIdProject()));
         notification.setMessage(notificationDetails.getMessage());
-        notification.setSentAt(notificationDetails.getSentAt());
+        notification.setSentAt(LocalDateTime.now()); // Nếu muốn cập nhật thời gian
+        log.info("Updated notification");
         return convertToDTO(notificationRepository.save(notification));
     }
+    
 
     // Xóa Notification theo ID
     public void deleteNotification(int id) {
         notificationRepository.deleteById(id);
+        log.info("Deleted notification");
     }
 
-    public List<Notification> findNotifications(int userId, int projectId) {
+    public List<NotificationResDto> findNotifications(int userId, int projectId) {
+        List<Notification> notifications;
         if (userId > 0 && projectId > 0) {
-            return notificationRepository.findByUserIdAndProjectId(userId, projectId);
+            notifications = notificationRepository.findByUserIdAndProjectId(userId, projectId);
         } else if (userId > 0) {
-            return notificationRepository.findByUserId(userId);
+            notifications = notificationRepository.findByUserId(userId);
         } else if (projectId > 0) {
-            return notificationRepository.findByProjectId(projectId);
+            notifications = notificationRepository.findByProjectId(projectId);
         } else {
             throw new IllegalArgumentException("Phải cung cấp ít nhất một trong số userId hoặc projectId");
         }
+        return notifications.stream()
+                            .map(this::convertToDTO)
+                            .collect(Collectors.toList());
     }
+    
     
     protected NotificationResDto convertToDTO(Notification notification) {
         NotificationResDto res = new NotificationResDto();

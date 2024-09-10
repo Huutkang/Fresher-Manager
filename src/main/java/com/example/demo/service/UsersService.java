@@ -7,7 +7,6 @@ import com.example.demo.repository.UsersRepository;
 import com.example.demo.dto.request.NewUserReqDto;
 import com.example.demo.dto.request.SetUserReqDto;
 import com.example.demo.dto.response.UserResDto;
-import com.example.demo.exception.ErrorCode;
 import com.example.demo.exception.AppException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +22,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.example.demo.enums.Code;
 import com.example.demo.enums.Role;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import org.modelmapper.ModelMapper;
 
 
 @Service
@@ -34,6 +37,10 @@ public class UsersService {
     @Autowired
     private UsersRepository usersRepository;
     
+    @Autowired
+    private ModelMapper modelMapper;
+
+    private static final Logger log = LogManager.getLogger(UsersService.class);
     private final PasswordEncoder encoder = new BCryptPasswordEncoder(10);
 
     // Thêm mới User
@@ -56,9 +63,11 @@ public class UsersService {
             newUser.setPhoneNumber(phoneNumber);
             roles.add(Role.USER.name());
             newUser.setRoles(roles);
+            log.info("thêm user mới: " + newUser);
             return usersRepository.save(newUser);
         }catch (RuntimeException e) {
-            throw new AppException(ErrorCode.ENTER_MISS_INFO);
+            log.error(e);
+            throw new AppException(Code.ENTER_MISS_INFO);
         }
     }
 
@@ -79,7 +88,7 @@ public class UsersService {
             admin.setRoles(roles);
             usersRepository.save(admin);
         }catch(RuntimeException e){
-            throw new AppException(ErrorCode.USER_EXISTED);
+            throw new AppException(Code.USER_EXISTED);
         }
     }
 
@@ -121,13 +130,13 @@ public class UsersService {
     Users getUser(int id) {
         return usersRepository.findById(id)
                 .filter(Users::isActive)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(Code.USER_NOT_EXISTED));
     }
 
     Users getUser(String username) {
         return usersRepository.findByUsername(username)
                 .filter(Users::isActive)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(Code.USER_NOT_EXISTED));
     }
 
     // chuyển username sang id
@@ -135,13 +144,13 @@ public class UsersService {
         return usersRepository.findByUsername(username)
                 .filter(Users::isActive)
                 .map(Users::getId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(Code.USER_NOT_EXISTED));
     }
 
     protected Users getUserByEmail(String email) {
         return usersRepository.findByEmail(email)
                 .filter(Users::isActive)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(Code.USER_NOT_EXISTED));
     }
 
     protected List<Users> getUserByPhoneNumber(String phoneNumber) {
@@ -175,6 +184,7 @@ public class UsersService {
         roles.add(role.name());
         user.setRoles(roles);
         usersRepository.save(user);
+        log.info("Thêm role: " + role.name() + " vào user ID: " + id);
     }
 
     public void removeRole(int id, Role role) {
@@ -184,6 +194,7 @@ public class UsersService {
         roles.remove(role.name());
         user.setRoles(roles);
         usersRepository.save(user);
+        log.info("Xóa role: " + role.name() + " khỏi user ID: " + id);
     }
 
     public boolean updatePassword(int id, String password) {
@@ -191,6 +202,7 @@ public class UsersService {
             Users user = getUser(id);
             user.setPassword_hash(passwordEncoder(password));
             usersRepository.save(user);
+            log.info("Đổi mật khẩu user ID: " + id);
             return true;
         } catch (AppException e) {return false;}
     }
@@ -202,9 +214,11 @@ public class UsersService {
             user.setName(userDto.getName());
             user.setEmail(userDto.getEmail());
             user.setPhoneNumber(userDto.getPhoneNumber());
+            log.info("Đã thay đổi thông tin với user ID: " + id);
             return convertToDTO(usersRepository.save(user));
         }catch (RuntimeException e) {
-            throw new AppException(ErrorCode.ENTER_MISS_INFO);
+            log.error(e);
+            throw new AppException(Code.ENTER_MISS_INFO);
         }
     }
 
@@ -214,6 +228,7 @@ public class UsersService {
         Users user = getUser(id);
         user.setActive(false);
         usersRepository.save(user);
+        log.info("Đã xóa user ID: " + id);
     }
 
     private String passwordEncoder(String password){
@@ -240,13 +255,7 @@ public class UsersService {
     
     // Phương thức hỗ trợ chuyển đổi từ Users sang userResDto
     public UserResDto convertToDTO(Users user) {
-        UserResDto dto = new UserResDto();
-        dto.setId(user.getId());
-        dto.setName(user.getName());
-        dto.setEmail(user.getEmail());
-        dto.setPhoneNumber(user.getPhoneNumber());
-        dto.setRoles(user.getRoles());
-        return dto;
+        return modelMapper.map(user, UserResDto.class);
     }
 }
 
