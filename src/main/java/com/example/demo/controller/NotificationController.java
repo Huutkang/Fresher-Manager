@@ -18,7 +18,6 @@ import com.example.demo.dto.request.NotificationReqDto;
 import com.example.demo.dto.response.Api;
 import com.example.demo.dto.response.NotificationResDto;
 import com.example.demo.enums.Code;
-import com.example.demo.entity.Notification;
 import com.example.demo.service.NotificationService;
 
 @RestController
@@ -56,7 +55,7 @@ public class NotificationController {
     // Cập nhật Notification
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<Api<NotificationResDto>> updateNotification(@PathVariable int id, @RequestBody Notification notificationDetails) {
+    public ResponseEntity<Api<NotificationResDto>> updateNotification(@PathVariable int id, @RequestBody NotificationReqDto notificationDetails) {
         try {
             NotificationResDto updatedNotification = notificationService.updateNotification(id, notificationDetails);
             return Api.response(Code.OK, updatedNotification);

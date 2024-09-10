@@ -19,7 +19,6 @@ import com.example.demo.dto.request.CenterReqDto;
 import com.example.demo.dto.response.Api;
 import com.example.demo.dto.response.CenterResDto;
 import com.example.demo.enums.Code;
-import com.example.demo.entity.Center;
 import com.example.demo.service.CenterService;
 
 @RestController
@@ -57,9 +56,9 @@ public class CenterController {
     // Cập nhật Center
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<Api<CenterResDto>> updateCenter(@PathVariable int id, @RequestBody Center centerDetails) {
+    public ResponseEntity<Api<CenterResDto>> updateCenter(@PathVariable int id, @RequestBody CenterReqDto req) {
         try {
-            CenterResDto updatedCenter = centerService.updateCenter(id, centerDetails);
+            CenterResDto updatedCenter = centerService.updateCenter(id, req);
             return Api.response(Code.OK, updatedCenter);
         } catch (RuntimeException e) {
             return Api.response(Code.CENTER_NOT_EXISTED);
