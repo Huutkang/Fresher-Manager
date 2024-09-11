@@ -271,30 +271,8 @@ async function addfresher() {
 // Hàm lấy tất cả freshers
 async function getallfreshers() {
     var allfreshers = await getAllFreshers();
-    var allfresher_result = document.getElementById('get-all-freshers');
-
     console.log('Danh sách tất cả fresher:', allfreshers.result);
-
-    var fresherListHTML = "<ul>"; // Dùng thẻ <ul> để tạo danh sách fresher
-
-    allfreshers.result.forEach(fresher => {
-        fresherListHTML += "<li>";
-
-        for (const [key, value] of Object.entries(fresher)) {
-            if (Array.isArray(value)) {
-                fresherListHTML += `${key}: ${value.join(', ')}, `;
-            } else {
-                fresherListHTML += `${key}: ${value}, `;
-            }
-        }
-
-        fresherListHTML = fresherListHTML.slice(0, -2); // Loại bỏ dấu phẩy cuối cùng
-        fresherListHTML += "</li>";
-    });
-
-    fresherListHTML += "</ul>";
-
-    allfresher_result.innerHTML = fresherListHTML;
+    printJsonToElement('get-all-prj', allfreshers.result);
 }
 
 // Hàm lấy fresher theo ID
@@ -371,21 +349,79 @@ async function updatefresherme() {
 // --------------------------------------------------
 
 // Hàm thêm mới project
-async function addNewProject() {
-    // TODO: Thêm mới project
+async function addnewproject() {
+    // Lấy form và các trường trong form
+    const form = document.getElementById('add-project-form');
+    const formData = new FormData(form);
+    const project = {};
+
+    // Duyệt qua các trường dữ liệu của form
+    formData.forEach((value, key) => {
+        // Chỉ thêm vào JSON nếu giá trị không rỗng
+        if (value.trim() !== '') {
+            project[key] = value.trim();
+        }
+    });
+
+    var kq = await createProject(project);
+    console.log(kq);
+    printJsonToElement("add-project-result", kq);
 }
 
 // Hàm lấy tất cả projects
-async function getAllProjects() {
-    // TODO: Lấy danh sách tất cả projects
+async function getallprojects() {
+    var allprojects = await getAllProjects();
+    console.log('Danh sách tất cả projects:', allprojects.result);
+    printJsonToElement("get-all-project", allprojects.result);
 }
 
 // Hàm lấy project theo ID
-async function getProjectById() {
-    // TODO: Lấy thông tin project theo ID
+async function getprojectbyid() {
+    var projectIdInput = document.getElementById('projectId');
+    var id = projectIdInput.value;
+    if (id) {
+        try {
+            var kq = await getProjectById(id);
+            printJsonToElement("get-prj", kq);
+        } catch (error) {
+            console.error('Error fetching project:', error);
+        }
+    } else {
+        console.log('Please provide a valid project ID.');
+    }
 }
 
 // Hàm cập nhật project theo ID
-async function updateProject() {
-    // TODO: Cập nhật thông tin project theo ID
+async function updateproject() {
+    const form = document.getElementById('update-project-form');
+    const formData = new FormData(form);
+    const project = {};
+
+    formData.forEach((value, key) => {
+        if (value.trim() !== '') {
+            project[key] = value.trim();
+        }
+    });
+
+    const projectId = document.getElementById('projectIdUpdate').value;
+    var kq = await updateProject(projectId, project);
+    printJsonToElement("update-prj", kq);
 }
+
+// Hàm xóa project theo ID
+async function deleteproject() {
+    var projectIdInput = document.getElementById('projectIdDelete');
+    var id = projectIdInput.value;
+    if (id) {
+        try {
+            var kq = await deleteProject(id);
+            printJsonToElement("delete-prj", kq);
+        } catch (error) {
+            console.error('Error deleting project:', error);
+        }
+    } else {
+        console.log('Please provide a valid project ID.');
+    }
+}
+
+

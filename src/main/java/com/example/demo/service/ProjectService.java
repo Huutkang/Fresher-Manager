@@ -36,6 +36,7 @@ public class ProjectService {
 
     public ProjectResDto addProject(ProjectReqDto reqDto) {
         Project project = new Project();
+        System.out.println(reqDto);
         project.setName(reqDto.getName());
         project.setLanguage(reqDto.getLanguage());
         project.setStartDate(reqDto.getStartDate());
@@ -70,10 +71,18 @@ public class ProjectService {
     // Cập nhật Project
     public ProjectResDto updateProject(int id, ProjectReqDto reqDto) {
         Project project = getProject(id);
-        project.setName(reqDto.getName());
-        project.setLanguage(reqDto.getLanguage());
-        project.setStartDate(reqDto.getStartDate());
-        project.setEndDate(reqDto.getEndDate());
+            if (reqDto.getName() != null && !reqDto.getName().trim().isEmpty()) {
+            project.setName(reqDto.getName());
+        }
+        if (reqDto.getLanguage() != null && !reqDto.getLanguage().trim().isEmpty()) {
+            project.setLanguage(reqDto.getLanguage());
+        }
+        if (reqDto.getStartDate() != null) {
+            project.setStartDate(reqDto.getStartDate());
+        }
+        if (reqDto.getEndDate() != null) {
+            project.setEndDate(reqDto.getEndDate());
+        }
         log.info("Update Project " + project.getName());
         return convertToDTO(projectRepository.save(project));
     }
@@ -124,10 +133,14 @@ public class ProjectService {
         ProjectResDto dto = new ProjectResDto();
         dto.setId(project.getId());
         dto.setName(project.getName());
-        dto.setIdCenter(project.getCenter().getId());
-        dto.setCenter(project.getCenter().getName());
-        dto.setIdManager(project.getManager().getId());
-        dto.setManager(project.getManager().getName());
+        if (project.getCenter() != null){
+            dto.setIdCenter(project.getCenter().getId());
+            dto.setCenter(project.getCenter().getName());
+        }
+        if (project.getManager() != null){
+            dto.setIdManager(project.getManager().getId());
+            dto.setManager(project.getManager().getName());
+        }
         dto.setLanguage(project.getLanguage());
         dto.setStatus(project.getStatus());
         dto.setStartDate(project.getStartDate());

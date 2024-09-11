@@ -134,10 +134,10 @@
                     <input type="number" id="addfre" name="userId" required><br>
                     <button type="button" onclick="addfresher()">Fetch User</button>
                 </form>
-                <div id="add-fresher-result"></div>
+                <div id="new-project-result"></div>
             </div>
             <h3>Get All Freshers</h3>
-            <div id="get-all-freshers">
+            <div id="get-all-prj">
             </div>
             <button type="button" onclick="getallfreshers()">Fetch Freshers</button>
             <h3>Get Fresher By ID</h3>
@@ -196,29 +196,28 @@
             <div id="add-new-project">
                 <form id="add-project-form">
                     <label for="projectName">Project Name:</label>
-                    <input type="text" id="projectName" name="projectName" required><br>
+                    <input type="text" id="projectName" name="name" required><br>
                     <label for="projectLanguage">Programming Language:</label>
-                    <input type="text" id="projectLanguage" name="projectLanguage" required><br>
+                    <input type="text" id="projectLanguage" name="language" required><br>
                     <label for="startDate">Start Date:</label>
                     <input type="date" id="startDate" name="startDate" required><br>
                     <label for="endDate">End Date:</label>
                     <input type="date" id="endDate" name="endDate" required><br>
-                    <button type="button" onclick="addNewProject()">Add Project</button>
+                    <button type="button" onclick="addnewproject()">Add Project</button>
                 </form>
-                <div id=""></div>
+                <div id="add-project-result"></div>
             </div>
             <h3>Get All Projects</h3>
-            <div id="get-all-projects">
-                <button type="button" onclick="getAllProjects()">Fetch Projects</button>
-                <div id=""></div>
-            </div>
+            <div id="get-all-project"></div>
+            <button type="button" onclick="getallprojects()">Fetch Projects</button>
             <h3>Get Project By ID</h3>
             <div id="get-project-by-id">
-                <form id="get-project-form">
+                <form id="get-prj-form">
                     <label for="projectId">Project ID:</label>
                     <input type="number" id="projectId" name="projectId" required><br>
-                    <button type="button" onclick="getProjectById()">Fetch Project</button>
+                    <button type="button" onclick="getprojectbyid()">Fetch Project</button>
                 </form>
+                <div id="get-prj"></div>
             </div>
             <h3>Update Project By ID</h3>
             <div id="update-project">
@@ -226,23 +225,25 @@
                     <label for="projectIdUpdate">Project ID:</label>
                     <input type="number" id="projectIdUpdate" name="projectIdUpdate" required><br>
                     <label for="projectNameUpdate">Project Name:</label>
-                    <input type="text" id="projectNameUpdate" name="projectNameUpdate"><br>
+                    <input type="text" id="projectNameUpdate" name="name"><br>
                     <label for="projectLanguageUpdate">Programming Language:</label>
-                    <input type="text" id="projectLanguageUpdate" name="projectLanguageUpdate"><br>
+                    <input type="text" id="projectLanguageUpdate" name="language"><br>
                     <label for="startDateUpdate">Start Date:</label>
-                    <input type="date" id="startDateUpdate" name="startDateUpdate"><br>
+                    <input type="date" id="startDateUpdate" name="startDate"><br>
                     <label for="endDateUpdate">End Date:</label>
-                    <input type="date" id="endDateUpdate" name="endDateUpdate"><br>
-                    <button type="button" onclick="updateProject()">Update Project</button>
+                    <input type="date" id="endDateUpdate" name="endDate"><br>
+                    <button type="button" onclick="updateproject()">Update Project</button>
                 </form>
+                <div id="update-prj"></div>
             </div>
             <h3>Delete Project By ID</h3>
             <div id="delete-project">
                 <form id="delete-project-form">
                     <label for="projectIdDelete">Project ID:</label>
                     <input type="number" id="projectIdDelete" name="projectIdDelete" required><br>
-                    <button type="button" onclick="deleteProject()">Delete Project</button>
+                    <button type="button" onclick="deleteproject()">Delete Project</button>
                 </form>
+                <div id="delete-prj"></div>
             </div>
             <div id="result-projects"></div>
         </div>
