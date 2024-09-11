@@ -42,6 +42,7 @@ public enum Code {
     // 9xx: Input & Email Errors
     ENTER_MISS_INFO(900, "Nhập thiếu thông tin", HttpStatus.BAD_REQUEST),
     ERROR_SEND_EMAIL(901, "Lỗi gửi email", HttpStatus.INTERNAL_SERVER_ERROR),
+    ENTER_WRONG_INFO(902, "Nhập sai thông tin", HttpStatus.BAD_REQUEST),
 
     // 0xx: Uncategorized/Internal Errors
     INTERNAL_SERVER_ERROR(0, "Lỗi hệ thống", HttpStatus.INTERNAL_SERVER_ERROR),

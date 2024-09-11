@@ -180,7 +180,7 @@ async function updateuser() {
 
     // Lấy ID người dùng từ trường input 'userIdUpdate'
     const userId = document.getElementById('userIdUpdate').value;
-
+    console.log(user);
     // Gọi hàm updateUser với id và user data
     var kq = await updateUser(userId, user);
     printJsonToElement("user-update-id-result", kq);

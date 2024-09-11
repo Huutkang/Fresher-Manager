@@ -209,18 +209,28 @@ public class UsersService {
     
     public UserResDto updateUser(int id, SetUserReqDto userDto) {
         Users user = getUser(id);
-        try{
-            user.setUsername(userDto.getUsername());
-            user.setName(userDto.getName());
-            user.setEmail(userDto.getEmail());
-            user.setPhoneNumber(userDto.getPhoneNumber());
+        System.out.println(userDto);
+        try {
+            if (userDto.getUsername() != null && !userDto.getUsername().trim().isEmpty()) {
+                user.setUsername(userDto.getUsername());
+            }
+            if (userDto.getName() != null && !userDto.getName().trim().isEmpty()) {
+                user.setName(userDto.getName());
+            }
+            if (userDto.getEmail() != null && !userDto.getEmail().trim().isEmpty()) {
+                user.setEmail(userDto.getEmail());
+            }
+            if (userDto.getPhoneNumber() != null && !userDto.getPhoneNumber().trim().isEmpty()) {
+                user.setPhoneNumber(userDto.getPhoneNumber());
+            }
             log.info("Đã thay đổi thông tin với user ID: " + id);
             return convertToDTO(usersRepository.save(user));
-        }catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             log.error(e);
-            throw new AppException(Code.ENTER_MISS_INFO);
+            throw new AppException(Code.ENTER_WRONG_INFO);
         }
     }
+    
 
     // Xóa User theo ID
     public void deleteUser(int id) {
