@@ -44,9 +44,10 @@ public class AssignmentService {
     }
 
     public AssignmentResDto addAssignment(AssignmentReqDto req) {
+        System.out.println(req);
         Assignment assignment = new Assignment();
         assignment.setFresher(fresherService.getFresher(req.getIdFresher()));
-        assignment.setProject(projectService.getProject(req.getProject()));
+        assignment.setProject(projectService.getProject(req.getIdProject()));
         assignment.setAssignmentNumber(req.getAssignmentNumber());
         assignment.setScore(req.getScore());
         return convertToDTO(assignmentRepository.save(assignment));
@@ -131,7 +132,7 @@ public class AssignmentService {
         res.setId(assignment.getId());
         res.setIdFresher(assignment.getFresher().getId());
         res.setIdProject(assignment.getProject().getId());
-        res.setFresher(assignment.getFresher().getName());
+        res.setFresher(assignment.getFresher().getUser().getName());
         res.setProject(assignment.getProject().getName());
         res.setAssignmentNumber(assignment.getAssignmentNumber());
         res.setScore(assignment.getScore());

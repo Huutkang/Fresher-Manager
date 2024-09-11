@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dto.response.FresherResDto;
 import com.example.demo.dto.response.Search;
 import com.example.demo.entity.*;
 import com.example.demo.exception.AppException;
@@ -154,11 +155,11 @@ private int calculateRankForMerge(Search search) {
 
     // Smart Search Fresher by Name
     public List<Search> smartSearchFresherByName(String content) {
-        List<Fresher> freshers = fresherService.findAllFreshers();
+        List<FresherResDto> freshers = fresherService.getAllFreshers();
         List<SearchResult> results = new ArrayList<>();
 
-        for (Fresher fresher : freshers) {
-            String name = fresher.getUser().getName();
+        for (FresherResDto fresher : freshers) {
+            String name = fresher.getName();
             int rank = calculateRank(content, name);
             if (rank > 0) {
                 results.add(new SearchResult(convertToDTO(fresher), rank));
@@ -166,7 +167,7 @@ private int calculateRankForMerge(Search search) {
         }
 
         // Sắp xếp kết quả theo rank giảm dần
-        results.sort(Comparator.comparingInt(SearchResult::getRank).reversed());
+        results.sort(Comparator.comparingInt(SearchResult::getRank).reversed()); //
 
         // Chuyển thành danh sách DTO để trả về
         return results.stream().map(SearchResult::getSearch).collect(Collectors.toList());

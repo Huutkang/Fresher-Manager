@@ -20,6 +20,7 @@ import com.example.demo.dto.request.SetUserReqDto;
 import com.example.demo.dto.response.Api;
 import com.example.demo.dto.response.UserResDto;
 import com.example.demo.enums.Code;
+import com.example.demo.enums.Role;
 import com.example.demo.exception.AppException;
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.UsersService;
@@ -97,5 +98,43 @@ public class UsersController {
         } catch (RuntimeException e) {
             throw new AppException(Code.UNAUTHENTICATED);
         }
+    }
+
+    // Thêm role cho User
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PutMapping("/{id}/addrole")
+    public ResponseEntity<Api<Void>> addRoleToUser(@PathVariable int id, @RequestBody Role role) {
+        usersService.addRole(id, role);
+        return Api.response(Code.OK);
+    }
+
+    // Xóa role khỏi User
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PutMapping("/{id}/removerole")
+    public ResponseEntity<Api<Void>> removeRoleFromUser(@PathVariable int id, @RequestBody Role role) {
+        usersService.removeRole(id, role);
+        return Api.response(Code.OK);
+    }
+
+    // Cập nhật mật khẩu User
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PutMapping("/{id}/setpassword")
+    public ResponseEntity<Api<Void>> setPassword(@PathVariable int id, @RequestBody String newPassword) {
+        boolean updated = usersService.updatePassword(id, newPassword);
+        if (!updated) {
+            return Api.response(Code.USER_PASSWORD_UPDATE_FAILED);
+        }
+        return Api.response(Code.OK);
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PutMapping("/updatepassword")
+    public ResponseEntity<Api<Void>> updatePassword(@RequestBody String newPassword) {
+        int id = authenticationService.getIdUser();
+        boolean updated = usersService.updatePassword(id, newPassword);
+        if (!updated) {
+            return Api.response(Code.USER_PASSWORD_UPDATE_FAILED);
+        }
+        return Api.response(Code.OK);
     }
 }

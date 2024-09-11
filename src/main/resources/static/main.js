@@ -231,6 +231,29 @@ async function updateuserme() {
     printJsonToElement("update-me-result", kq);
 }
 
+// Thêm role cho User
+async function addroletouser() {
+    var kq = await addRoleToUser(id, role);
+
+}
+
+// Xóa role khỏi User
+async function removerolefromuser() {
+    var kq = await removeRoleFromUser(id, role);
+
+}
+
+async function setpassword() {
+    var kq = await setPassword(id, newPassword);
+
+}
+
+// Cập nhật mật khẩu User
+async function updatepassword() {
+    var kq = await updatePassword(newPassword);
+
+}
+
 // --------------------------------------------------
 
 // Hàm thêm mới fresher
@@ -424,4 +447,512 @@ async function deleteproject() {
     }
 }
 
+// --------------------------------------------------
+// Hàm thêm mới Center
+async function addnewcenter() {
+    // Lấy form và các trường trong form
+    const form = document.getElementById('add-center-form');
+    const formData = new FormData(form);
+    const center = {};
 
+    // Duyệt qua các trường dữ liệu của form
+    formData.forEach((value, key) => {
+        if (value.trim() !== '') {
+            center[key] = value.trim();
+        }
+    });
+
+    try {
+        var kq = await createCenter(center);
+        console.log(kq);
+        printJsonToElement("add-center-result", kq);
+    } catch (error) {
+        console.error('Error adding center:', error);
+    }
+}
+
+// Hàm lấy tất cả Centers
+async function getallcenters() {
+    try {
+        var allCenters = await getAllCenters();
+        console.log('Danh sách tất cả centers:', allCenters.result);
+        printJsonToElement("centers-list", allCenters.result);
+    } catch (error) {
+        console.error('Error fetching centers:', error);
+    }
+}
+
+// Hàm lấy Center theo ID
+async function getcenterbyid() {
+    var centerIdInput = document.getElementById('centerId');
+    var id = centerIdInput.value;
+    if (id) {
+        try {
+            var kq = await getCenterById(id);
+            printJsonToElement("center-info", kq);
+        } catch (error) {
+            console.error('Error fetching center:', error);
+        }
+    } else {
+        console.log('Please provide a valid center ID.');
+    }
+}
+
+// Hàm cập nhật Center theo ID
+async function updatecenter() {
+    const form = document.getElementById('update-center-form');
+    const formData = new FormData(form);
+    const center = {};
+
+    formData.forEach((value, key) => {
+        if (value.trim() !== '') {
+            center[key] = value.trim();
+        }
+    });
+
+    const centerId = document.getElementById('centerIdUpdate').value;
+    if (centerId) {
+        try {
+            var kq = await updateCenter(centerId, center);
+            printJsonToElement("update-center-result", kq);
+        } catch (error) {
+            console.error('Error updating center:', error);
+        }
+    } else {
+        console.log('Please provide a valid center ID.');
+    }
+}
+
+// Hàm xóa Center theo ID
+async function deletecenter() {
+    var centerIdInput = document.getElementById('centerIdDelete');
+    var id = centerIdInput.value;
+    if (id) {
+        try {
+            var kq = await deleteCenter(id);
+            printJsonToElement("delete-center-result", kq);
+        } catch (error) {
+            console.error('Error deleting center:', error);
+        }
+    } else {
+        console.log('Please provide a valid center ID.');
+    }
+}
+
+// --------------------------------------------------
+
+// Hàm thêm mới Assignment
+async function addnewassignment() {
+    // Lấy form và các trường trong form
+    const form = document.getElementById('add-assignment-form');
+    const formData = new FormData(form);
+    const assignment = {};
+
+    // Duyệt qua các trường dữ liệu của form
+    formData.forEach((value, key) => {
+        if (value.trim() !== '') {
+            assignment[key] = value.trim();
+        }
+    });
+
+    try {
+        var kq = await createAssignment(assignment);
+        console.log(kq);
+        printJsonToElement("add-assignment-result", kq);
+    } catch (error) {
+        console.error('Error adding assignment:', error);
+    }
+}
+
+// Hàm lấy tất cả Assignments
+async function getallassignments() {
+    try {
+        var allAssignments = await getAllAssignments();
+        console.log('Danh sách tất cả assignments:', allAssignments.result);
+        printJsonToElement("assignments-list", allAssignments.result);
+    } catch (error) {
+        console.error('Error fetching assignments:', error);
+    }
+}
+
+// Hàm lấy Assignment theo ID
+async function getassignmentbyid() {
+    var assignmentIdInput = document.getElementById('assignmentId');
+    var id = assignmentIdInput.value;
+    if (id) {
+        try {
+            var kq = await getAssignmentById(id);
+            printJsonToElement("assignment-info", kq);
+        } catch (error) {
+            console.error('Error fetching assignment:', error);
+        }
+    } else {
+        console.log('Please provide a valid assignment ID.');
+    }
+}
+
+// Hàm cập nhật Assignment theo ID
+async function updateassignment() {
+    const form = document.getElementById('update-assignment-form');
+    const formData = new FormData(form);
+    const assignment = {};
+
+    formData.forEach((value, key) => {
+        if (value.trim() !== '') {
+            assignment[key] = value.trim();
+        }
+    });
+
+    const assignmentId = document.getElementById('assignmentIdUpdate').value;
+    if (assignmentId) {
+        try {
+            var kq = await updateAssignment(assignmentId, assignment);
+            printJsonToElement("update-assignment-result", kq);
+        } catch (error) {
+            console.error('Error updating assignment:', error);
+        }
+    } else {
+        console.log('Please provide a valid assignment ID.');
+    }
+}
+
+// Hàm xóa Assignment theo ID
+async function deleteassignment() {
+    var assignmentIdInput = document.getElementById('assignmentIdDelete');
+    var id = assignmentIdInput.value;
+    if (id) {
+        try {
+            var kq = await deleteAssignment(id);
+            printJsonToElement("delete-assignment-result", kq);
+        } catch (error) {
+            console.error('Error deleting assignment:', error);
+        }
+    } else {
+        console.log('Please provide a valid assignment ID.');
+    }
+}
+
+// --------------------------------------------------
+
+// Hàm thêm mới Fresher Project
+async function addnewfresherproject() {
+    // Lấy form và các trường trong form
+    const form = document.getElementById('add-fresherProject-form');
+    const formData = new FormData(form);
+    const fresherProject = {};
+
+    // Duyệt qua các trường dữ liệu của form
+    formData.forEach((value, key) => {
+        if (value.trim() !== '') {
+            fresherProject[key] = value.trim();
+        }
+    });
+
+    try {
+        var kq = await createFresherProject(fresherProject);
+        console.log(kq);
+        printJsonToElement("add-fresherProject-result", kq);
+    } catch (error) {
+        console.error('Error adding fresher project:', error);
+    }
+}
+
+// Hàm lấy tất cả Fresher Projects
+async function getallfresherprojects() {
+    try {
+        var allFresherProjects = await getAllFresherProjects();
+        console.log('Danh sách tất cả fresher projects:', allFresherProjects.result);
+        printJsonToElement("fresherProjects-list", allFresherProjects.result);
+    } catch (error) {
+        console.error('Error fetching fresher projects:', error);
+    }
+}
+
+// Hàm lấy Fresher Project theo ID
+async function getfresherprojectbyid() {
+    var fresherProjectIdInput = document.getElementById('fresherProjectId');
+    var id = fresherProjectIdInput.value;
+    if (id) {
+        try {
+            var kq = await getFresherProjectById(id);
+            printJsonToElement("fresherProject-info", kq);
+        } catch (error) {
+            console.error('Error fetching fresher project:', error);
+        }
+    } else {
+        console.log('Please provide a valid fresher project ID.');
+    }
+}
+
+// Hàm cập nhật Fresher Project theo ID
+async function updatefresherproject() {
+    const form = document.getElementById('update-fresherProject-form');
+    const formData = new FormData(form);
+    const fresherProject = {};
+
+    formData.forEach((value, key) => {
+        if (value.trim() !== '') {
+            fresherProject[key] = value.trim();
+        }
+    });
+
+    const fresherProjectId = document.getElementById('fresherProjectIdUpdate').value;
+    if (fresherProjectId) {
+        try {
+            var kq = await updateFresherProject(fresherProjectId, fresherProject);
+            printJsonToElement("update-fresherProject-result", kq);
+        } catch (error) {
+            console.error('Error updating fresher project:', error);
+        }
+    } else {
+        console.log('Please provide a valid fresher project ID.');
+    }
+}
+
+// Hàm xóa Fresher Project theo ID
+async function deletefresherproject() {
+    var fresherProjectIdInput = document.getElementById('fresherProjectIdDelete');
+    var id = fresherProjectIdInput.value;
+    if (id) {
+        try {
+            var kq = await deleteFresherProject(id);
+            printJsonToElement("delete-fresherProject-result", kq);
+        } catch (error) {
+            console.error('Error deleting fresher project:', error);
+        }
+    } else {
+        console.log('Please provide a valid fresher project ID.');
+    }
+}
+
+// --------------------------------------------------
+
+// Hàm thêm mới Notification
+async function addnewnotification() {
+    const form = document.getElementById('add-notification-form');
+    const formData = new FormData(form);
+    const notification = {};
+
+    // Duyệt qua các trường dữ liệu của form
+    formData.forEach((value, key) => {
+        if (value.trim() !== '') {
+            notification[key] = value.trim();
+        }
+    });
+
+    try {
+        var kq = await createNotification(notification);
+        console.log(kq);
+        printJsonToElement("add-notification-result", kq);
+    } catch (error) {
+        console.error('Error adding notification:', error);
+    }
+}
+
+// Hàm lấy tất cả Notifications
+async function getallnotifications() {
+    try {
+        var allNotifications = await getAllNotifications();
+        console.log('Danh sách tất cả notifications:', allNotifications.result);
+        printJsonToElement("notifications-list", allNotifications.result);
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+    }
+}
+
+// Hàm lấy Notification theo ID
+async function getnotificationbyid() {
+    var notificationIdInput = document.getElementById('notificationId');
+    var id = notificationIdInput.value;
+    if (id) {
+        try {
+            var kq = await getNotificationById(id);
+            printJsonToElement("notification-info", kq);
+        } catch (error) {
+            console.error('Error fetching notification:', error);
+        }
+    } else {
+        console.log('Please provide a valid notification ID.');
+    }
+}
+
+// Hàm cập nhật Notification theo ID
+async function updatenotification() {
+    const form = document.getElementById('update-notification-form');
+    const formData = new FormData(form);
+    const notification = {};
+
+    formData.forEach((value, key) => {
+        if (value.trim() !== '') {
+            notification[key] = value.trim();
+        }
+    });
+
+    const notificationId = document.getElementById('notificationIdUpdate').value;
+    if (notificationId) {
+        try {
+            var kq = await updateNotification(notificationId, notification);
+            printJsonToElement("update-notification-result", kq);
+        } catch (error) {
+            console.error('Error updating notification:', error);
+        }
+    } else {
+        console.log('Please provide a valid notification ID.');
+    }
+}
+
+// Hàm xóa Notification theo ID
+async function deletenotification() {
+    var notificationIdInput = document.getElementById('notificationIdDelete');
+    var id = notificationIdInput.value;
+    if (id) {
+        try {
+            var kq = await deleteNotification(id);
+            printJsonToElement("delete-notification-result", kq);
+        } catch (error) {
+            console.error('Error deleting notification:', error);
+        }
+    } else {
+        console.log('Please provide a valid notification ID.');
+    }
+}
+
+// --------------------------------------------------
+
+// Tìm kiếm Fresher theo tiêu chí
+async function searchfresher() {
+    const keywordsInput = document.getElementById('keywords');
+    const keywords = keywordsInput.value.trim();
+    if (keywords) {
+        try {
+            const kq = await searchFresher(keywords);
+            printJsonToElement("fresher-search-result", kq);
+        } catch (error) {
+            console.error('Error searching fresher:', error);
+        }
+    } else {
+        console.log('Please provide valid keywords.');
+    }
+}
+
+// Tìm kiếm trung tâm theo tên
+async function searchcenterbyname() {
+    const centerNameInput = document.getElementById('centerName');
+    const centerName = centerNameInput.value.trim();
+    if (centerName) {
+        try {
+            const kq = await searchCenterByName(centerName);
+            printJsonToElement("center-search-result", kq);
+        } catch (error) {
+            console.error('Error searching center:', error);
+        }
+    } else {
+        console.log('Please provide a valid center name.');
+    }
+}
+
+// Tìm kiếm dự án theo tên
+async function searchprojectbyname() {
+    const projectNameInput = document.getElementById('projectName');
+    const projectName = projectNameInput.value.trim();
+    if (projectName) {
+        try {
+            const kq = await searchProjectByName(projectName);
+            printJsonToElement("project-search-result", kq);
+        } catch (error) {
+            console.error('Error searching project:', error);
+        }
+    } else {
+        console.log('Please provide a valid project name.');
+    }
+}
+
+// Tìm kiếm các dự án của Fresher dựa trên fresherId
+async function searchprojectsbyfresherid() {
+    const fresherIdInput = document.getElementById('fresherId');
+    const fresherId = fresherIdInput.value.trim();
+    if (fresherId) {
+        try {
+            const kq = await searchProjectsByFresherId(fresherId);
+            printJsonToElement("fresher-projects-search-result", kq);
+        } catch (error) {
+            console.error('Error searching projects by fresher ID:', error);
+        }
+    } else {
+        console.log('Please provide a valid fresher ID.');
+    }
+}
+
+// --------------------------------------------------
+
+// Tính điểm trung bình của Fresher dựa trên fresher_id
+async function calculateaveragescore() {
+    const fresherIdInput = document.getElementById('fresherId');
+    const fresherId = fresherIdInput.value.trim();
+    if (fresherId) {
+        try {
+            const kq = await averageScore(fresherId);
+            printResultToElement("average-score-result", kq);
+        } catch (error) {
+            console.error('Error calculating average score:', error);
+        }
+    } else {
+        console.log('Please provide a valid fresher ID.');
+    }
+}
+
+// Tính điểm của Fresher dựa trên fresher_id
+async function calculatescore() {
+    const fresherIdInput = document.getElementById('fresherIdScore');
+    const fresherId = fresherIdInput.value.trim();
+    if (fresherId) {
+        try {
+            const kq = await score(fresherId);
+            printResultToElement("score-result", kq);
+        } catch (error) {
+            console.error('Error calculating score:', error);
+        }
+    } else {
+        console.log('Please provide a valid fresher ID.');
+    }
+}
+
+// Lấy số lượng Fresher theo từng trung tâm
+async function getfresherbycenter() {
+    try {
+        const kq = await fresherByCenter();
+        printResultToElement("fresher-by-center-result", kq);
+    } catch (error) {
+        console.error('Error getting fresher by center:', error);
+    }
+}
+
+// Lấy số lượng Fresher theo điểm số
+async function getfresherbyscore() {
+    try {
+        const kq = await fresherByScore();
+        printResultToElement("fresher-by-score-result", kq);
+    } catch (error) {
+        console.error('Error getting fresher by score:', error);
+    }
+}
+
+// Lấy số lượng Fresher theo điểm chữ (grade)
+async function getfresherbygrade() {
+    try {
+        const kq = await fresherByGrade();
+        printResultToElement("fresher-by-grade-result", kq);
+    } catch (error) {
+        console.error('Error getting fresher by grade:', error);
+    }
+}
+
+// Lấy toàn bộ các thống kê liên quan đến fresher
+async function getfresherstatistics() {
+    try {
+        const kq = await getFresherStatistics();
+        printResultToElement("fresher-statistics-result", kq);
+    } catch (error) {
+        console.error('Error getting fresher statistics:', error);
+    }
+}

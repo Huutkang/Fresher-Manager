@@ -144,7 +144,7 @@
             <div id="get-fresher-by-id">
                 <form id="get-fresher-form">
                     <label for="fresherId">Fresher ID:</label>
-                    <input type="number" id="fresherId" name="fresherId" required><br>
+                    <input type="number" name="fresherId" required><br>
                     <button type="button" onclick="getfresherbyid()">Fetch Fresher</button>
                 </form>
                 <div id="fresher-id-result"></div>
@@ -153,7 +153,7 @@
             <div id="update-fresher">
                 <form id="update-fresher-form">
                     <label for="fresherIdUpdate">Fresher ID:</label>
-                    <input type="number" id="fresherIdUpdate" name="fresherIdUpdate" required><br>
+                    <input type="number" name="fresherIdUpdate" required><br>
                     <label for="programmingLanguage">Programming Language:</label>
                     <input type="text" name="programmingLanguage"><br>
                     <label for="idCenter">Center ID:</label>
@@ -196,7 +196,7 @@
             <div id="add-new-project">
                 <form id="add-project-form">
                     <label for="projectName">Project Name:</label>
-                    <input type="text" id="projectName" name="name" required><br>
+                    <input type="text" name="name" required><br>
                     <label for="projectLanguage">Programming Language:</label>
                     <input type="text" id="projectLanguage" name="language" required><br>
                     <label for="startDate">Start Date:</label>
@@ -214,7 +214,7 @@
             <div id="get-project-by-id">
                 <form id="get-prj-form">
                     <label for="projectId">Project ID:</label>
-                    <input type="number" id="projectId" name="projectId" required><br>
+                    <input type="number" name="projectId" required><br>
                     <button type="button" onclick="getprojectbyid()">Fetch Project</button>
                 </form>
                 <div id="get-prj"></div>
@@ -223,7 +223,7 @@
             <div id="update-project">
                 <form id="update-project-form">
                     <label for="projectIdUpdate">Project ID:</label>
-                    <input type="number" id="projectIdUpdate" name="projectIdUpdate" required><br>
+                    <input type="number" name="projectIdUpdate" required><br>
                     <label for="projectNameUpdate">Project Name:</label>
                     <input type="text" id="projectNameUpdate" name="name"><br>
                     <label for="projectLanguageUpdate">Programming Language:</label>
@@ -247,56 +247,397 @@
             </div>
             <div id="result-projects"></div>
         </div>
-        <p> --------------------------------------chưa kịp làm phần giao diện------------------------------------------------------------------------------</p>
+        
         <div id="centers">
             <h2>Centers:</h2>
-            <div id="add-new-center"></div>
-            <div id="get-all-centers"></div>
-            <div id="get-center-by-id"></div>
-            <div id="update-center"></div>
-            <div id="delete-center"></div>
+            
+            <!-- Thêm mới Center -->
+            <h3>Add New Center</h3>
+            <div id="add-new-center">
+                <form id="add-center-form">
+                    <label for="centerName">Center Name:</label>
+                    <input type="text" name="name" required><br>
+                    <label for="centerLocation">Location:</label>
+                    <input type="text" id="centerLocation" name="location" required><br>
+                    <label for="managerId">Manager ID:</label>
+                    <input type="number" id="managerId" name="idManager" required><br>
+                    <button type="button" onclick="addnewcenter()">Add Center</button>
+                </form>
+                <div id="add-center-result"></div>
+            </div>
+            
+            <!-- Lấy tất cả Centers -->
+            <h3>Get All Centers</h3>
+            <div id="get-all-centers">
+                <button type="button" onclick="getallcenters()">Fetch Centers</button>
+                <div id="centers-list"></div>
+            </div>
+            
+            <!-- Lấy Center theo ID -->
+            <h3>Get Center By ID</h3>
+            <div id="get-center-by-id">
+                <form id="get-center-form">
+                    <label for="centerId">Center ID:</label>
+                    <input type="number" id="centerId" name="centerId" required><br>
+                    <button type="button" onclick="getcenterbyid()">Fetch Center</button>
+                </form>
+                <div id="center-info"></div>
+            </div>
+            
+            <!-- Cập nhật Center -->
+            <h3>Update Center By ID</h3>
+            <div id="update-center">
+                <form id="update-center-form">
+                    <label for="centerIdUpdate">Center ID:</label>
+                    <input type="number" id="centerIdUpdate" name="centerIdUpdate" required><br>
+                    <label for="centerNameUpdate">Center Name:</label>
+                    <input type="text" id="centerNameUpdate" name="name"><br>
+                    <label for="centerLocationUpdate">Location:</label>
+                    <input type="text" id="centerLocationUpdate" name="location"><br>
+                    <label for="managerIdUpdate">Manager ID:</label>
+                    <input type="number" id="managerIdUpdate" name="idManager"><br>
+                    <button type="button" onclick="updatecenter()">Update Center</button>
+                </form>
+                <div id="update-center-result"></div>
+            </div>
+            
+            <!-- Xóa Center -->
+            <h3>Delete Center By ID</h3>
+            <div id="delete-center">
+                <form id="delete-center-form">
+                    <label for="centerIdDelete">Center ID:</label>
+                    <input type="number" id="centerIdDelete" name="centerIdDelete" required><br>
+                    <button type="button" onclick="deletecenter()">Delete Center</button>
+                </form>
+                <div id="delete-center-result"></div>
+            </div>
+            
             <div id="result-centers"></div>
         </div>
-        <div id="aignments">
+        
+        <div id="assignments">
             <h2>Assignments:</h2>
-            <div id="add-new-aignment"></div>
-            <div id="get-all-aignments"></div>
-            <div id="get-aignment-by-id"></div>
-            <div id="update-aignment"></div>
-            <div id="delete-aignment"></div>
+            
+            <!-- Thêm mới Assignment -->
+            <h3>Add New Assignment</h3>
+            <div id="add-new-assignment">
+                <form id="add-assignment-form">
+                    <label for="fresherId">Fresher ID:</label>
+                    <input type="number" name="idFresher" required><br>
+                    <label for="projectId">Project ID:</label>
+                    <input type="number" name="idProject" required><br>
+                    <label for="assignmentNumber">Assignment Number:</label>
+                    <input type="number" id="assignmentNumber" name="assignmentNumber" required><br>
+                    <label for="score">Score:</label>
+                    <input type="number" step="0.01" id="score" name="score"><br>
+                    <button type="button" onclick="addnewassignment()">Add Assignment</button>
+                </form>
+                <div id="add-assignment-result"></div>
+            </div>
+            
+            <!-- Lấy tất cả Assignments -->
+            <h3>Get All Assignments</h3>
+            <div id="get-all-assignments">
+                <button type="button" onclick="getallassignments()">Fetch Assignments</button>
+                <div id="assignments-list"></div>
+            </div>
+            
+            <!-- Lấy Assignment theo ID -->
+            <h3>Get Assignment By ID</h3>
+            <div id="get-assignment-by-id">
+                <form id="get-assignment-form">
+                    <label for="assignmentId">Assignment ID:</label>
+                    <input type="number" id="assignmentId" name="assignmentId" required><br>
+                    <button type="button" onclick="getassignmentbyid()">Fetch Assignment</button>
+                </form>
+                <div id="assignment-info"></div>
+            </div>
+            
+            <!-- Cập nhật Assignment -->
+            <h3>Update Assignment By ID</h3>
+            <div id="update-assignment">
+                <form id="update-assignment-form">
+                    <label for="assignmentIdUpdate">Assignment ID:</label>
+                    <input type="number" id="assignmentIdUpdate" name="assignmentIdUpdate" required><br>
+                    <label for="fresherIdUpdate">Fresher ID:</label>
+                    <input type="number" name="IdFresher"><br>
+                    <label for="projectIdUpdate">Project ID:</label>
+                    <input type="number" name="IdProject"><br>
+                    <label for="assignmentNumberUpdate">Assignment Number:</label>
+                    <input type="number" id="assignmentNumberUpdate" name="assignment_number"><br>
+                    <label for="scoreUpdate">Score:</label>
+                    <input type="number" step="0.01" id="scoreUpdate" name="score"><br>
+                    <button type="button" onclick="updateassignment()">Update Assignment</button>
+                </form>
+                <div id="update-assignment-result"></div>
+            </div>
+            
+            <!-- Xóa Assignment -->
+            <h3>Delete Assignment By ID</h3>
+            <div id="delete-assignment">
+                <form id="delete-assignment-form">
+                    <label for="assignmentIdDelete">Assignment ID:</label>
+                    <input type="number" id="assignmentIdDelete" name="assignmentIdDelete" required><br>
+                    <button type="button" onclick="deleteassignment()">Delete Assignment</button>
+                </form>
+                <div id="delete-assignment-result"></div>
+            </div>
+            
+            <div id="result-assignments"></div>
         </div>
+
+        
         <div id="fresherProjects">
             <h2>Fresher Projects:</h2>
-            <div id="add-new-fresherProject"></div>
-            <div id="get-all-fresherProjects"></div>
-            <div id="get-fresherProject-by-id"></div>
-            <div id="update-fresherProject"></div>
-            <div id="delete-fresherProject"></div>
+        
+            <!-- Thêm mới FresherProject -->
+            <h3>Add New Fresher Project</h3>
+            <div id="add-new-fresherProject">
+                <form id="add-fresherProject-form">
+                    <label for="fresherId">Fresher ID:</label>
+                    <input type="number" name="idFresher" required><br>
+                    <label for="projectId">Project ID:</label>
+                    <input type="number" name="idProject" required><br>
+                    <label for="role">Role:</label>
+                    <input type="text" id="role" name="role" required><br>
+                    <button type="button" onclick="addnewfresherproject()">Add Fresher Project</button>
+                </form>
+                <div id="add-fresherProject-result"></div>
+            </div>
+        
+            <!-- Lấy tất cả FresherProjects -->
+            <h3>Get All Fresher Projects</h3>
+            <div id="get-all-fresherProjects">
+                <button type="button" onclick="getallfresherprojects()">Fetch Fresher Projects</button>
+                <div id="fresherProjects-list"></div>
+            </div>
+        
+            <!-- Lấy FresherProject theo ID -->
+            <h3>Get Fresher Project By ID</h3>
+            <div id="get-fresherProject-by-id">
+                <form id="get-fresherProject-form">
+                    <label for="fresherProjectId">Fresher Project ID:</label>
+                    <input type="number" id="fresherProjectId" name="fresherProjectId" required><br>
+                    <button type="button" onclick="getfresherprojectbyid()">Fetch Fresher Project</button>
+                </form>
+                <div id="fresherProject-info"></div>
+            </div>
+        
+            <!-- Cập nhật FresherProject -->
+            <h3>Update Fresher Project By ID</h3>
+            <div id="update-fresherProject">
+                <form id="update-fresherProject-form">
+                    <label for="fresherProjectIdUpdate">Fresher Project ID:</label>
+                    <input type="number" id="fresherProjectIdUpdate" name="fresherProjectIdUpdate" required><br>
+                    <label for="fresherIdUpdate">Fresher ID:</label>
+                    <input type="number" name="idFresher"><br>
+                    <label for="projectIdUpdate">Project ID:</label>
+                    <input type="number" name="idProject"><br>
+                    <label for="roleUpdate">Role:</label>
+                    <input type="text" id="roleUpdate" name="role"><br>
+                    <button type="button" onclick="updatefresherproject()">Update Fresher Project</button>
+                </form>
+                <div id="update-fresherProject-result"></div>
+            </div>
+        
+            <!-- Xóa FresherProject -->
+            <h3>Delete Fresher Project By ID</h3>
+            <div id="delete-fresherProject">
+                <form id="delete-fresherProject-form">
+                    <label for="fresherProjectIdDelete">Fresher Project ID:</label>
+                    <input type="number" id="fresherProjectIdDelete" name="fresherProjectIdDelete" required><br>
+                    <button type="button" onclick="deletefresherproject()">Delete Fresher Project</button>
+                </form>
+                <div id="delete-fresherProject-result"></div>
+            </div>
+        
+            <div id="result-fresherProjects"></div>
         </div>
+        
         <div id="notifications">
             <h2>Notifications:</h2>
-            <div id="add-new-notification"></div>
-            <div id="get-all-notifications"></div>
-            <div id="get-notification-by-id"></div>
-            <div id="update-notification"></div>
-            <div id="delete-notification"></div>
+        
+            <!-- Thêm mới Notification -->
+            <h3>Add New Notification</h3>
+            <div id="add-new-notification">
+                <form id="add-notification-form">
+                    <label for="fresherId">Fresher ID:</label>
+                    <input type="number" name="idFresher" required><br>
+                    <label for="projectId">Project ID:</label>
+                    <input type="number" name="idProject" required><br>
+                    <label for="message">Message:</label>
+                    <input type="text" id="message" name="message" required><br>
+                    <button type="button" onclick="addnewnotification()">Add Notification</button>
+                </form>
+                <div id="add-notification-result"></div>
+            </div>
+        
+            <!-- Lấy tất cả Notifications -->
+            <h3>Get All Notifications</h3>
+            <div id="get-all-notifications">
+                <button type="button" onclick="getallnotifications()">Fetch Notifications</button>
+                <div id="notifications-list"></div>
+            </div>
+        
+            <!-- Lấy Notification theo ID -->
+            <h3>Get Notification By ID</h3>
+            <div id="get-notification-by-id">
+                <form id="get-notification-form">
+                    <label for="notificationId">Notification ID:</label>
+                    <input type="number" id="notificationId" name="notificationId" required><br>
+                    <button type="button" onclick="getnotificationbyid()">Fetch Notification</button>
+                </form>
+                <div id="notification-info"></div>
+            </div>
+        
+            <!-- Cập nhật Notification -->
+            <h3>Update Notification By ID</h3>
+            <div id="update-notification">
+                <form id="update-notification-form">
+                    <label for="notificationIdUpdate">Notification ID:</label>
+                    <input type="number" id="notificationIdUpdate" name="notificationIdUpdate" required><br>
+                    <label for="fresherIdUpdate">Fresher ID:</label>
+                    <input type="number" name="idFresher"><br>
+                    <label for="projectIdUpdate">Project ID:</label>
+                    <input type="number" name="idProject"><br>
+                    <label for="messageUpdate">Message:</label>
+                    <input type="text" id="messageUpdate" name="message"><br>
+                    <button type="button" onclick="updatenotification()">Update Notification</button>
+                </form>
+                <div id="update-notification-result"></div>
+            </div>
+        
+            <!-- Xóa Notification -->
+            <h3>Delete Notification By ID</h3>
+            <div id="delete-notification">
+                <form id="delete-notification-form">
+                    <label for="notificationIdDelete">Notification ID:</label>
+                    <input type="number" id="notificationIdDelete" name="notificationIdDelete" required><br>
+                    <button type="button" onclick="deletenotification()">Delete Notification</button>
+                </form>
+                <div id="delete-notification-result"></div>
+            </div>
+        
+            <div id="result-notifications"></div>
         </div>
+        
+        <p> --------------------------------------chưa kịp làm phần giao diện------------------------------------------------------------------------------</p>
+        
         <div id="search">
             <h2>Search:</h2>
-            <div id="add-new-search"></div>
-            <div id="get-all-searchs"></div>
-            <div id="get-search-by-id"></div>
-            <div id="update-search"></div>
-            <div id="delete-search"></div>
+        
+            <!-- Tìm kiếm fresher theo các tiêu chí như tên, ngôn ngữ lập trình, email -->
+            <h3>Search Fresher</h3>
+            <div id="search-fresher">
+                <form id="search-fresher-form">
+                    <label for="keywords">Keywords:</label>
+                    <input type="text" id="keywords" name="keywords" required><br>
+                    <button type="button" onclick="searchfresher()">Search Fresher</button>
+                </form>
+                <div id="fresher-search-result"></div>
+            </div>
+        
+            <!-- Tìm kiếm trung tâm theo tên -->
+            <h3>Search Center By Name</h3>
+            <div id="search-center-by-name">
+                <form id="search-center-form">
+                    <label for="centerName">Center Name:</label>
+                    <input type="text" name="centerName" required><br>
+                    <button type="button" onclick="searchcenterbyname()">Search Center</button>
+                </form>
+                <div id="center-search-result"></div>
+            </div>
+        
+            <!-- Tìm kiếm dự án theo tên -->
+            <h3>Search Project By Name</h3>
+            <div id="search-project-by-name">
+                <form id="search-project-form">
+                    <label for="projectName">Project Name:</label>
+                    <input type="text" name="projectName" required><br>
+                    <button type="button" onclick="searchprojectbyname()">Search Project</button>
+                </form>
+                <div id="project-search-result"></div>
+            </div>
+        
+            <!-- Tìm kiếm các dự án của một fresher dựa trên fresherId -->
+            <h3>Search Projects By Fresher ID</h3>
+            <div id="search-projects-by-fresher-id">
+                <form id="search-projects-fresher-form">
+                    <label for="fresherId">Fresher ID:</label>
+                    <input type="number" name="fresherId" required><br>
+                    <button type="button" onclick="searchprojectsbyfresherid()">Search Projects</button>
+                </form>
+                <div id="fresher-projects-search-result"></div>
+            </div>
+        
+            <div id="result-search"></div>
         </div>
+        
         <div id="statistics">
             <h2>Statistics:</h2>
-            <div id="add-new-statistics"></div>
-            <div id="get-all-statistics"></div>
-            <div id="get-statistics-by-id"></div>
-            <div id="update-statistics"></div>
-            <div id="delete-statistics"></div>
+        
+            <!-- Đếm số lượng đối tượng (fresher hoặc center) -->
+            <h3>Count Objects</h3>
+            <div id="count-objects">
+                <form id="count-objects-form">
+                    <label for="object">Object (fresher/center):</label>
+                    <input type="text" id="object" name="object" required><br>
+                    <button type="button" onclick="countobjects()">Count</button>
+                </form>
+                <div id="object-count-result"></div>
+            </div>
+        
+            <!-- Tính điểm trung bình của fresher dựa trên fresher_id -->
+            <h3>Average Score</h3>
+            <div id="average-score">
+                <form id="average-score-form">
+                    <label for="fresherId">Fresher ID:</label>
+                    <input type="number" name="fresherId" required><br>
+                    <button type="button" onclick="calculateaveragescore()">Calculate Average Score</button>
+                </form>
+                <div id="average-score-result"></div>
+            </div>
+        
+            <!-- Tính điểm của fresher dựa trên fresher_id -->
+            <h3>Score</h3>
+            <div id="score">
+                <form id="score-form">
+                    <label for="fresherIdScore">Fresher ID:</label>
+                    <input type="number" id="fresherIdScore" name="fresherIdScore" required><br>
+                    <button type="button" onclick="calculatescore()">Calculate Score</button>
+                </form>
+                <div id="score-result"></div>
+            </div>
+        
+            <!-- Thống kê số lượng fresher theo từng trung tâm -->
+            <h3>Fresher by Center</h3>
+            <div id="fresher-by-center">
+                <button type="button" onclick="getfresherbycenter()">Get Fresher By Center</button>
+                <div id="fresher-by-center-result"></div>
+            </div>
+        
+            <!-- Thống kê số lượng fresher theo điểm số -->
+            <h3>Fresher by Score</h3>
+            <div id="fresher-by-score">
+                <button type="button" onclick="getfresherbyscore()">Get Fresher By Score</button>
+                <div id="fresher-by-score-result"></div>
+            </div>
+        
+            <!-- Thống kê số lượng fresher theo điểm chữ (grade) -->
+            <h3>Fresher by Grade</h3>
+            <div id="fresher-by-grade">
+                <button type="button" onclick="getfresherbygrade()">Get Fresher By Grade</button>
+                <div id="fresher-by-grade-result"></div>
+            </div>
+        
+            <!-- Lấy toàn bộ các thống kê liên quan đến fresher -->
+            <h3>Fresher Statistics</h3>
+            <div id="fresher-statistics">
+                <button type="button" onclick="getfresherstatistics()">Get Fresher Statistics</button>
+                <div id="fresher-statistics-result"></div>
+            </div>
         </div>
+        
         <p> --------------------------------------chưa kịp làm phần giao diện------------------------------------------------------------------------------</p>
         <div>
             <h2>Send Email:</h2>

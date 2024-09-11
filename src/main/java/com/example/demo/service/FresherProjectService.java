@@ -118,7 +118,7 @@ public class FresherProjectService {
         res.setId(fresherProject.getId());
         res.setIdFresher(fresherProject.getFresher().getId());
         res.setIdProject(fresherProject.getProject().getId());
-        res.setFresher(fresherProject.getFresher().getName());
+        res.setFresher(fresherProject.getFresher().getUser().getName());
         res.setProject(fresherProject.getProject().getName());
         res.setRole(fresherProject.getRole());
         return res;

@@ -46,6 +46,7 @@ async function sendRequest(url, data = null, method = 'POST') {
 }
 
 async function send(url, data = null, method = 'POST'){
+    console.log("Data gửi đi:", data);
     var kq = await sendRequest(url, data, method);
     return parseJsonData(kq);
 }
@@ -206,6 +207,29 @@ async function updateUserMe(data) {
     return await send(url, data, 'PUT');
 }
 
+// Thêm role cho User
+async function addRoleToUser(id, role) {
+    const url = `${baseUrl}/users/${id}/addrole`;
+    return await send(url, { role: role }, 'PUT');
+}
+
+// Xóa role khỏi User
+async function removeRoleFromUser(id, role) {
+    const url = `${baseUrl}/users/${id}/removerole`;
+    return await send(url, { role: role }, 'PUT');
+}
+
+// Cập nhật mật khẩu User
+async function setPassword(id, newPassword) {
+    const url = `${baseUrl}/users/${id}/setpassword`;
+    return await send(url, newPassword, 'PUT');
+}
+
+async function updatePassword(newPassword) {
+    const url = `${baseUrl}/users/updatepassword`;
+    return await send(url, newPassword, 'PUT');
+}
+
 // --------------------------------------------------
 
 async function createFresher(fresherData) {
@@ -344,31 +368,31 @@ async function deleteCenter(id) {
 
 // Thêm mới FresherProject
 async function createFresherProject(fresherProjectData) {
-    const url = `${baseUrl}/fresher-projects`;
+    const url = `${baseUrl}/fresherprojects`;
     return await send(url, fresherProjectData);
 }
 
 // Lấy tất cả FresherProjects
 async function getAllFresherProjects() {
-    const url = `${baseUrl}/fresher-projects`;
+    const url = `${baseUrl}/fresherprojects`;
     return await send(url, null, 'GET');
 }
 
 // Lấy FresherProject theo ID
 async function getFresherProjectById(id) {
-    const url = `${baseUrl}/fresher-projects/${id}`;
+    const url = `${baseUrl}/fresherprojects/${id}`;
     return await send(url, null, 'GET');
 }
 
 // Cập nhật FresherProject theo ID
 async function updateFresherProject(id, fresherProjectData) {
-    const url = `${baseUrl}/fresher-projects/${id}`;
+    const url = `${baseUrl}/fresherprojects/${id}`;
     return await send(url, fresherProjectData, 'PUT');
 }
 
 // Xóa FresherProject theo ID
 async function deleteFresherProject(id) {
-    const url = `${baseUrl}/fresher-projects/${id}`;
+    const url = `${baseUrl}/fresherprojects/${id}`;
     return await send(url, null, 'DELETE');
 }
 

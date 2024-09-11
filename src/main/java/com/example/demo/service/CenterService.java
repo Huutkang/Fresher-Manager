@@ -37,7 +37,7 @@ public class CenterService {
         center.setName(centerReqDto.getName());
         center.setLocation(centerReqDto.getLocation());
         try {
-            center.setManager(usersService.getUser(centerReqDto.getManagerId()));
+            center.setManager(usersService.getUser(centerReqDto.getIdManager()));
         } catch (AppException e) {
             log.error("Manager not found");
         }

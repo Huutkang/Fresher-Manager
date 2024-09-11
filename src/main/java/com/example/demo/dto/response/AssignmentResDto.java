@@ -11,7 +11,7 @@ public class AssignmentResDto {
     private int idProject;
     private String fresher;
     private String project;
-    private int assignment_number;
+    private int assignmentNumber;
     private Double score;
 
 }

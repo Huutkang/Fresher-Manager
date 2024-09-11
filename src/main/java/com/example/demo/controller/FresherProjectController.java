@@ -24,7 +24,7 @@ import com.example.demo.service.FresherProjectService;
 import com.example.demo.service.FresherService;
 
 @RestController
-@RequestMapping("/fresherProjects")
+@RequestMapping("/fresherprojects")
 public class FresherProjectController {
 
     @Autowired
@@ -41,7 +41,7 @@ public class FresherProjectController {
     @PostMapping
     public ResponseEntity<Api<String>> createFresherProject(@RequestBody FresherProjectReqDto fresherProject) {
         emailService.projectAnnouncement(
-            fresherService.getFresherById(fresherProject.getIdFresher()).getIdUser(), 
+            fresherService.getFresherById(fresherProject.getIdFresher()).get().getIdUser(), 
             fresherProject.getIdProject(), 
             true
         );
