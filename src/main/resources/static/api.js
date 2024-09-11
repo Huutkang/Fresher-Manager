@@ -45,6 +45,11 @@ async function sendRequest(url, data = null, method = 'POST') {
     return response.json();
 }
 
+async function send(url, data = null, method = 'POST'){
+    var kq = await sendRequest(url, data, method);
+    return parseJsonData(kq);
+}
+
 // Đăng nhập và lưu token vào localStorage
 async function login(username, password) {
     removeToken(); // Xóa token cũ khi đăng nhập
@@ -163,31 +168,32 @@ function parseJsonData(json) {
 // Thêm User mới
 async function createUser(data) {
     const url = `${baseUrl}/users`;
-    return await sendRequest(url, data);
+    return await send(url, data);
 }
 
 // Lấy tất cả Users
 async function getAllUsers() {
+
     const url = `${baseUrl}/users`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Lấy User theo ID
 async function getUserById(id) {
     const url = `${baseUrl}/users/${id}`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Cập nhật User theo ID
 async function updateUser(id, data) {
     const url = `${baseUrl}/users/${id}`;
-    return await sendRequest(url, data, 'PUT');
+    return await send(url, data, 'PUT');
 }
 
 // Xóa User theo ID
 async function deleteUser(id) {
     const url = `${baseUrl}/users/${id}`;
-    return await sendRequest(url, null, 'DELETE');
+    return await send(url, null, 'DELETE');
 }
 
 // --------------------------------------------------
@@ -195,27 +201,27 @@ async function deleteUser(id) {
 // Các hàm không cần token
 async function createFresher(fresherData) {
     const url = `${baseUrl}/freshers`;
-    return await sendRequest(url, fresherData);
+    return await send(url, fresherData);
 }
 
 async function getAllFreshers() {
     const url = `${baseUrl}/freshers`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 async function getFresherById(id) {
     const url = `${baseUrl}/freshers/${id}`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 async function updateFresher(id, fresherData) {
     const url = `${baseUrl}/freshers/${id}`;
-    return await sendRequest(url, fresherData, 'PUT');
+    return await send(url, fresherData, 'PUT');
 }
 
 async function deleteFresher(id) {
     const url = `${baseUrl}/freshers/${id}`;
-    return await sendRequest(url, null, 'DELETE');
+    return await send(url, null, 'DELETE');
 }
 
 // --------------------------------------------------
@@ -223,27 +229,27 @@ async function deleteFresher(id) {
 // Thêm mới Project
 async function createProject(projectData) {
     const url = `${baseUrl}/projects`;
-    return await sendRequest(url, projectData);
+    return await send(url, projectData);
 }
 
 async function getAllProjects() {
     const url = `${baseUrl}/projects`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 async function getProjectById(id) {
     const url = `${baseUrl}/projects/${id}`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 async function updateProject(id, projectDetails) {
     const url = `${baseUrl}/projects/${id}`;
-    return await sendRequest(url, projectDetails, 'PUT');
+    return await send(url, projectDetails, 'PUT');
 }
 
 async function deleteProject(id) {
     const url = `${baseUrl}/projects/${id}`;
-    return await sendRequest(url, null, 'DELETE');
+    return await send(url, null, 'DELETE');
 }
 
 // --------------------------------------------------
@@ -251,31 +257,31 @@ async function deleteProject(id) {
 // Thêm mới Notification
 async function createNotification(notificationData) {
     const url = `${baseUrl}/notifications`;
-    return await sendRequest(url, notificationData);
+    return await send(url, notificationData);
 }
 
 // Lấy tất cả Notifications
 async function getAllNotifications() {
     const url = `${baseUrl}/notifications`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Lấy Notification theo ID
 async function getNotificationById(id) {
     const url = `${baseUrl}/notifications/${id}`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Cập nhật Notification theo ID
 async function updateNotification(id, notificationData) {
     const url = `${baseUrl}/notifications/${id}`;
-    return await sendRequest(url, notificationData, 'PUT');
+    return await send(url, notificationData, 'PUT');
 }
 
 // Xóa Notification theo ID
 async function deleteNotification(id) {
     const url = `${baseUrl}/notifications/${id}`;
-    return await sendRequest(url, null, 'DELETE');
+    return await send(url, null, 'DELETE');
 }
 
 // --------------------------------------------------
@@ -283,31 +289,31 @@ async function deleteNotification(id) {
 // Thêm mới Center
 async function createCenter(centerData) {
     const url = `${baseUrl}/centers`;
-    return await sendRequest(url, centerData);
+    return await send(url, centerData);
 }
 
 // Lấy tất cả Centers
 async function getAllCenters() {
     const url = `${baseUrl}/centers`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Lấy Center theo ID
 async function getCenterById(id) {
     const url = `${baseUrl}/centers/${id}`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Cập nhật Center theo ID
 async function updateCenter(id, centerData) {
     const url = `${baseUrl}/centers/${id}`;
-    return await sendRequest(url, centerData, 'PUT');
+    return await send(url, centerData, 'PUT');
 }
 
 // Xóa Center theo ID
 async function deleteCenter(id) {
     const url = `${baseUrl}/centers/${id}`;
-    return await sendRequest(url, null, 'DELETE');
+    return await send(url, null, 'DELETE');
 }
 
 // --------------------------------------------------
@@ -315,31 +321,31 @@ async function deleteCenter(id) {
 // Thêm mới FresherProject
 async function createFresherProject(fresherProjectData) {
     const url = `${baseUrl}/fresher-projects`;
-    return await sendRequest(url, fresherProjectData);
+    return await send(url, fresherProjectData);
 }
 
 // Lấy tất cả FresherProjects
 async function getAllFresherProjects() {
     const url = `${baseUrl}/fresher-projects`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Lấy FresherProject theo ID
 async function getFresherProjectById(id) {
     const url = `${baseUrl}/fresher-projects/${id}`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Cập nhật FresherProject theo ID
 async function updateFresherProject(id, fresherProjectData) {
     const url = `${baseUrl}/fresher-projects/${id}`;
-    return await sendRequest(url, fresherProjectData, 'PUT');
+    return await send(url, fresherProjectData, 'PUT');
 }
 
 // Xóa FresherProject theo ID
 async function deleteFresherProject(id) {
     const url = `${baseUrl}/fresher-projects/${id}`;
-    return await sendRequest(url, null, 'DELETE');
+    return await send(url, null, 'DELETE');
 }
 
 // --------------------------------------------------
@@ -347,31 +353,31 @@ async function deleteFresherProject(id) {
 // Thêm mới Assignment
 async function createAssignment(assignmentData) {
     const url = `${baseUrl}/assignments`;
-    return await sendRequest(url, assignmentData);
+    return await send(url, assignmentData);
 }
 
 // Lấy tất cả Assignments
 async function getAllAssignments() {
     const url = `${baseUrl}/assignments`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Lấy Assignment theo ID
 async function getAssignmentById(id) {
     const url = `${baseUrl}/assignments/${id}`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Cập nhật Assignment theo ID
 async function updateAssignment(id, assignmentData) {
     const url = `${baseUrl}/assignments/${id}`;
-    return await sendRequest(url, assignmentData, 'PUT');
+    return await send(url, assignmentData, 'PUT');
 }
 
 // Xóa Assignment theo ID
 async function deleteAssignment(id) {
     const url = `${baseUrl}/assignments/${id}`;
-    return await sendRequest(url, null, 'DELETE');
+    return await send(url, null, 'DELETE');
 }
 
 // --------------------------------------------------
@@ -379,25 +385,25 @@ async function deleteAssignment(id) {
 // Tìm kiếm fresher theo các tiêu chí
 async function searchFresher(keywords) {
     const url = `${baseUrl}/search/fresher?keywords=${encodeURIComponent(keywords)}`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Tìm kiếm trung tâm theo tên
 async function searchCenterByName(name) {
     const url = `${baseUrl}/search/center/${encodeURIComponent(name)}`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Tìm kiếm dự án theo tên
 async function searchProjectByName(name) {
     const url = `${baseUrl}/search/project/${encodeURIComponent(name)}`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Tìm kiếm các dự án của một fresher dựa trên fresherId
 async function searchProjectsByFresherId(fresherId) {
     const url = `${baseUrl}/search/fresher/${fresherId}/projects`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // --------------------------------------------------
@@ -405,43 +411,43 @@ async function searchProjectsByFresherId(fresherId) {
 // Đếm số lượng đối tượng (fresher hoặc center)
 async function count(object) {
     const url = `${baseUrl}/statistics/count?object=${encodeURIComponent(object)}`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Tính điểm trung bình của fresher dựa trên fresher_id
 async function averageScore(fresherId) {
     const url = `${baseUrl}/statistics/average-score/${fresherId}`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Tính điểm của fresher dựa trên fresher_id
 async function score(fresherId) {
     const url = `${baseUrl}/statistics/score/${fresherId}`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Thống kê số lượng fresher theo từng trung tâm
 async function fresherByCenter() {
     const url = `${baseUrl}/statistics/fresher-by-center`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Thống kê số lượng fresher theo điểm số
 async function fresherByScore() {
     const url = `${baseUrl}/statistics/fresher-by-score`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Thống kê số lượng fresher theo điểm chữ (grade)
 async function fresherByGrade() {
     const url = `${baseUrl}/statistics/fresher-by-grade`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // Lấy toàn bộ các thống kê liên quan đến fresher
 async function getFresherStatistics() {
     const url = `${baseUrl}/statistics/fresher-statistics`;
-    return await sendRequest(url, null, 'GET');
+    return await send(url, null, 'GET');
 }
 
 // --------------------------------------------------

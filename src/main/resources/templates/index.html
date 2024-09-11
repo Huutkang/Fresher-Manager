@@ -43,20 +43,22 @@
                     <input type="email" id="email" name="email" required><br>
                     <label for="phoneNumber">Phone Number:</label>
                     <input type="text" id="phoneNumber" name="phoneNumber" required><br>
-                    <button type="button" onclick="addNewUser()">Add User</button>
+                    <button type="button" onclick="addnewuser()">Add User</button>
                 </form>
+                <div id="add-new-user-result"></div>
             </div>
             <h3>Get All Users</h3>
             <div id="get-all-users">
-                <button type="button" onclick="getAllUsers()">Fetch Users</button>
             </div>
+            <button type="button" onclick="getalllusers()">get All Users</button>
             <h3>Get User By ID</h3>
             <div id="get-user-by-id">
                 <form id="get-user-form">
                     <label for="userId">User ID:</label>
                     <input type="number" id="userId" name="userId" required><br>
-                    <button type="button" onclick="getUserById()">Fetch User</button>
+                    <button type="button" onclick="getuserbyid()">Fetch User</button>
                 </form>
+                <div id="user-id-result"><div>
             </div>
             <h3>Update User By ID</h3>
             <div id="update-user">
@@ -71,7 +73,7 @@
                     <input type="email" id="emailUpdate" name="emailUpdate"><br>
                     <label for="phoneNumberUpdate">Phone Number:</label>
                     <input type="text" id="phoneNumberUpdate" name="phoneNumberUpdate"><br>
-                    <button type="button" onclick="updateUser()">Update User</button>
+                    <button type="button" onclick="updateuser()">Update User</button>
                 </form>
             </div>
             <h3>Delete User By ID</h3>
@@ -79,12 +81,12 @@
                 <form id="delete-user-form">
                     <label for="userIdDelete">User ID:</label>
                     <input type="number" id="userIdDelete" name="userIdDelete" required><br>
-                    <button type="button" onclick="deleteUser()">Delete User</button>
+                    <button type="button" onclick="deleteuser()">Delete User</button>
                 </form>
             </div>
             <h3>Get Current User</h3>
             <div id="get-user-me">
-                <button type="button" onclick="getUserMe()">Fetch Current User</button>
+                <button type="button" onclick="getuserme()">Fetch Current User</button>
             </div>
             <h3>Update Current User</h3>
             <div id="update-user-me">
@@ -97,7 +99,7 @@
                     <input type="email" id="emailMe" name="emailMe"><br>
                     <label for="phoneNumberMe">Phone Number:</label>
                     <input type="text" id="phoneNumberMe" name="phoneNumberMe"><br>
-                    <button type="button" onclick="updateUserMe()">Update Current User</button>
+                    <button type="button" onclick="updateuserme()">Update Current User</button>
                 </form>
             </div>
            <div id="user-result"></div> 

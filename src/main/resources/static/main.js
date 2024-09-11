@@ -10,18 +10,8 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         console.log('Đã đăng nhập.');
 
-        // Gọi các hàm API để lấy dữ liệu
-        var allUsersResponse = await getAllUsers();
-        var allFreshersResponse = await getAllFreshers();
-        var fresherStatisticsResponse = await getFresherStatistics();
-
-        // Cập nhật nội dung vào các phần tử tương ứng
-        updateContent('get-all-users', allUsersResponse.result, formatUser);
-        updateContent('get-all-freshers', allFreshersResponse.result, formatFresher);
-        updateContent('fresher-statistics', fresherStatisticsResponse.result, formatStatistics);
-
     } catch (error) {
-        console.error('Lỗi khi lấy dữ liệu:', error);
+        console.error('Có lỗi xảy ra:');
     }
 });
 
@@ -54,17 +44,6 @@ function updateContent(elementId, data, formatFunction) {
     }
 }
 
-function formatUser(user) {
-    return `<p>ID: ${user.id}, Tên: ${user.name}, Email: ${user.email || 'N/A'}, Vai trò: ${user.roles.join(', ')}</p>`;
-}
-
-function formatFresher(fresher) {
-    return `<p>ID: ${fresher.id}, Tên: ${fresher.name}, Ngôn ngữ lập trình: ${fresher.programmingLanguage || 'N/A'}</p>`;
-}
-
-function formatStatistics(statistic) {
-    return `<p>${statistic.key}: ${statistic.value}</p>`;
-}
 
 
 // Hàm cho refresh token
@@ -96,91 +75,165 @@ async function cLg() {
 }
 
 // Hàm thêm mới user
-function addNewUser() {
-    // TODO: Thêm mới user
+async function addnewuser() {
+    // Lấy form và các trường trong form
+    const form = document.getElementById('add-user-form');
+    const formData = new FormData(form);
+    const user = {};
+
+    // Duyệt qua các trường dữ liệu của form
+    formData.forEach((value, key) => {
+        // Chỉ thêm vào JSON nếu giá trị không rỗng
+        if (value.trim() !== '') {
+            user[key] = value.trim();
+        }
+    });
+    var kq = await createUser(user);
+    printJsonToElement("add-new-user-result", kq);
+}
+
+function printJsonToElement(elementId, jsonData) {
+    // Lấy thẻ HTML dựa vào id
+    const element = document.getElementById(elementId);
+    
+    if (element) {
+        // Chuyển đối tượng JSON thành chuỗi có định dạng đẹp
+        const formattedJson = JSON.stringify(jsonData, null, 2);
+
+        // In chuỗi JSON vào thẻ HTML dưới dạng preformatted text
+        element.innerHTML = `<pre>${formattedJson}</pre>`;
+    } else {
+        console.error(`Element with id "${elementId}" not found.`);
+    }
 }
 
 // Hàm lấy tất cả users
-function getAllUsers() {
-    // TODO: Lấy danh sách tất cả users
+async function getalllusers() {
+    var alluser = await getAllUsers();
+    var alluser_result = document.getElementById('get-all-users');
+
+    console.log('Danh sách tất cả user:', alluser.result);
+
+    // Khởi tạo chuỗi HTML để hiển thị người dùng
+    var userListHTML = "<ul>"; // Dùng thẻ <ul> để tạo danh sách người dùng
+
+    alluser.result.forEach(user => {
+        userListHTML += "<li>";
+        
+        // Duyệt qua tất cả các thuộc tính của đối tượng user
+        for (const [key, value] of Object.entries(user)) {
+            if (Array.isArray(value)) {
+                // Nếu giá trị là mảng, nối các phần tử bằng dấu phẩy
+                userListHTML += `${key}: ${value.join(', ')}, `;
+            } else {
+                userListHTML += `${key}: ${value}, `;
+            }
+        }
+
+        userListHTML = userListHTML.slice(0, -2); // Loại bỏ dấu phẩy cuối cùng
+        userListHTML += "</li>";
+    });
+
+    userListHTML += "</ul>"; // Kết thúc danh sách
+
+    // Cập nhật nội dung của div 'get-all-users'
+    alluser_result.innerHTML = userListHTML;
 }
+
+
 
 // Hàm lấy user theo ID
-function getUserById() {
-    // TODO: Lấy thông tin user theo ID
+async function getuserbyid() {
+    // Lấy giá trị của id từ thẻ input
+    var userIdInput = document.getElementById('userId');
+    var id = userIdInput.value;
+    console.log(id)
+    if (id) {
+        try {
+            // Gọi API hoặc hàm lấy user theo id
+            var kq = await getUserById(id);
+            // In kết quả JSON vào thẻ 'user-id-result'
+            printJsonToElement("user-id-result", kq);
+        } catch (error) {
+            console.error('Error fetching user:', error);
+        }
+    } else {
+        console.log('Please provide a valid user ID.');
+    }
 }
 
+
 // Hàm cập nhật user theo ID
-function updateUser() {
+async function updateuser() {
     // TODO: Cập nhật thông tin user theo ID
 }
 
 // Hàm xóa user theo ID
-function deleteUser() {
+async function deleteuser() {
     // TODO: Xóa user theo ID
 }
 
 // Hàm lấy thông tin user hiện tại
-function getUserMe() {
+async function getuserme() {
     // TODO: Lấy thông tin user hiện tại
 }
 
 // Hàm cập nhật user hiện tại
-function updateUserMe() {
+async function updateuserme() {
     // TODO: Cập nhật thông tin user hiện tại
 }
 
 // Hàm thêm mới fresher
-function addNewFresher() {
+async function addNewFresher() {
     // TODO: Thêm mới fresher
 }
 
 // Hàm lấy tất cả freshers
-function getAllFreshers() {
+async function getAllFreshers() {
     // TODO: Lấy danh sách tất cả freshers
 }
 
 // Hàm lấy fresher theo ID
-function getFresherById() {
+async function getFresherById() {
     // TODO: Lấy thông tin fresher theo ID
 }
 
 // Hàm cập nhật fresher theo ID
-function updateFresher() {
+async function updateFresher() {
     // TODO: Cập nhật thông tin fresher theo ID
 }
 
 // Hàm xóa fresher theo ID
-function deleteFresher() {
+async function deleteFresher() {
     // TODO: Xóa fresher theo ID
 }
 
 // Hàm lấy thông tin fresher hiện tại
-function getFresherMe() {
+async function getFresherMe() {
     // TODO: Lấy thông tin fresher hiện tại
 }
 
 // Hàm cập nhật fresher hiện tại
-function updateFresherMe() {
+async function updateFresherMe() {
     // TODO: Cập nhật thông tin fresher hiện tại
 }
 
 // Hàm thêm mới project
-function addNewProject() {
+async function addNewProject() {
     // TODO: Thêm mới project
 }
 
 // Hàm lấy tất cả projects
-function getAllProjects() {
+async function getAllProjects() {
     // TODO: Lấy danh sách tất cả projects
 }
 
 // Hàm lấy project theo ID
-function getProjectById() {
+async function getProjectById() {
     // TODO: Lấy thông tin project theo ID
 }
 
 // Hàm cập nhật project theo ID
-function updateProject() {
+async function updateProject() {
     // TODO: Cập nhật thông tin project theo ID
 }
