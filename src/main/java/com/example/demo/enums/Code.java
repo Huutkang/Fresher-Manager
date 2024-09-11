@@ -20,8 +20,9 @@ public enum Code {
     PROJECT_NOT_FOUND(301, "Không tìm thấy Project", HttpStatus.NOT_FOUND),
 
     // 4xx: Fresher Errors
-    FRESHER_NOT_EXISTED(400, "Fresher không tồn tại", HttpStatus.NOT_FOUND),
-    FRESHER_NOT_FOUND(401, "Không tìm thấy Fresher", HttpStatus.NOT_FOUND),
+    FRESHER_EXISTED(400, "Fresher đã tồn tại", HttpStatus.BAD_REQUEST),
+    FRESHER_NOT_EXISTED(401, "Fresher không tồn tại", HttpStatus.NOT_FOUND),
+    FRESHER_NOT_FOUND(402, "Không tìm thấy Fresher", HttpStatus.NOT_FOUND),
 
     // 5xx: FresherProject Errors
     FRESHERPROJECT_NOT_EXISTED(500, "FresherProject không tồn tại", HttpStatus.NOT_FOUND),

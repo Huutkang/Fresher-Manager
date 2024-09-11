@@ -23,6 +23,8 @@ import com.example.demo.enums.Code;
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.FresherService;
 
+import jakarta.persistence.Id;
+
 @RestController
 @RequestMapping("/freshers")
 public class FresherController {
@@ -38,6 +40,13 @@ public class FresherController {
     @PostMapping
     public ResponseEntity<Api<FresherResDto>> createFresher(@RequestBody FresherReqDto fresherReqDto) {
         FresherResDto fresher = fresherService.addFresher(fresherReqDto);
+        return Api.response(Code.OK, fresher);
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PostMapping("/{id}")
+    public ResponseEntity<Api<FresherResDto>> createFresher(@PathVariable int id) {
+        FresherResDto fresher = fresherService.addFresher(id);
         return Api.response(Code.OK, fresher);
     }
 
@@ -76,22 +85,16 @@ public class FresherController {
         return Api.response(Code.OK);
     }
     
-    @PreAuthorize("hasAuthority('SCOPE_FRESHER')")
     @GetMapping("/me")
     public ResponseEntity<Api<FresherResDto>> getFresherById() {
         FresherResDto fresher = fresherService.getFresherByUserId(authenticationService.getIdUser());
         return Api.response(Code.OK, fresher);
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_FRESHER')")
     @PutMapping("/me")
     public ResponseEntity<Api<FresherResDto>> updateFresher(@RequestBody UpdateFresherReqDto req) {
-        try {
-            int id = fresherService.getFresherByUserId(authenticationService.getIdUser()).getId();
-            FresherResDto updatedFresher = fresherService.updateFresher(id, req);
-            return Api.response(Code.OK, updatedFresher);
-        } catch (RuntimeException e) {
-            return Api.response(Code.FRESHER_NOT_EXISTED);
-        }
+        int id = fresherService.getFresherByUserId(authenticationService.getIdUser()).getId();
+        FresherResDto updatedFresher = fresherService.updateFresher(id, req);
+        return Api.response(Code.OK, updatedFresher);
     }
 }

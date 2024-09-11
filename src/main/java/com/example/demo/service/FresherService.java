@@ -40,15 +40,16 @@ public class FresherService {
 
     private static final Logger log = LogManager.getLogger(FresherService.class);
     
-    Fresher addFresher(Users user) {
+    public FresherResDto addFresher(int id) {
+        Users user = usersService.getUser(id);
         try{
             Fresher fresher = new Fresher();
-            usersService.addRole(user.getId(), Role.FRESHER);
+            usersService.addRole(id, Role.FRESHER);
             fresher.setUser(user);
             log.info("Fresher added");
-            return fresherRepository.save(fresher);
+            return convertToDTO(fresherRepository.save(fresher));
         }catch (RuntimeException e) {
-            throw new AppException(Code.UNCATEGORIZED_EXCEPTION);
+            throw new AppException(Code.FRESHER_EXISTED);
         }
     }
 

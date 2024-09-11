@@ -213,6 +213,11 @@ async function createFresher(fresherData) {
     return await send(url, fresherData);
 }
 
+async function addFresher(id) {
+    const url = `${baseUrl}/freshers/${id}`;
+    return await send(url);
+}
+
 async function getAllFreshers() {
     const url = `${baseUrl}/freshers`;
     return await send(url, null, 'GET');

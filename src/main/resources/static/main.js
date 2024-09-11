@@ -252,6 +252,22 @@ async function addnewfresher() {
     printJsonToElement("new-fresher-result", kq);
 }
 
+async function addfresher() {
+    var fresherIdInput = document.getElementById('addfre');
+    var id = fresherIdInput.value;
+    if (id) {
+        try {
+            var kq = await addFresher(id);
+            printJsonToElement("add-fresher-result", kq);
+        } catch (error) {
+            console.error('Error fetching fresher:', error);
+        }
+    } else {
+        console.log('Please provide a valid fresher ID.');
+    }
+}
+
+
 // Hàm lấy tất cả freshers
 async function getallfreshers() {
     var allfreshers = await getAllFreshers();
@@ -347,7 +363,7 @@ async function updatefresherme() {
             fresher[key] = value.trim();
         }
     });
-
+    console.log(fresher);
     var kq = await updateFresherMe(fresher);
     printJsonToElement("update-me-fresher-result", kq);
 }
