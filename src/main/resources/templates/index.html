@@ -34,15 +34,15 @@
             <div id="add-new-user">
                 <form id="add-user-form">
                     <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" required><br>
+                    <input type="text" name="username" required><br>
                     <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required><br>
+                    <input type="password" name="password" required><br>
                     <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required><br>
+                    <input type="text" name="name" required><br>
                     <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required><br>
+                    <input type="email" name="email" required><br>
                     <label for="phoneNumber">Phone Number:</label>
-                    <input type="text" id="phoneNumber" name="phoneNumber" required><br>
+                    <input type="text" name="phoneNumber" required><br>
                     <button type="button" onclick="addnewuser()">Add User</button>
                 </form>
                 <div id="add-new-user-result"></div>
@@ -113,64 +113,70 @@
             <h3>Add New Fresher</h3>
             <div id="add-new-fresher">
                 <form id="add-fresher-form">
-                    <label for="fresherPassword">Password:</label>
-                    <input type="password" id="fresherPassword" name="fresherPassword" required><br>
-                    <label for="fresherName">Name:</label>
-                    <input type="text" id="fresherName" name="fresherName" required><br>
-                    <label for="fresherEmail">Email:</label>
-                    <input type="email" id="fresherEmail" name="fresherEmail" required><br>
-                    <label for="fresherPhoneNumber">Phone Number:</label>
-                    <input type="text" id="fresherPhoneNumber" name="fresherPhoneNumber" required><br>
-                    <label for="fresherProgrammingLanguage">Programming Language:</label>
-                    <input type="text" id="fresherProgrammingLanguage" name="fresherProgrammingLanguage" required><br>
-                    <button type="button" onclick="addNewFresher()">Add Fresher</button>
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" required><br>
+                    <label for="name">Name:</label>
+                    <input type="text" name="name" required><br>
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" required><br>
+                    <label for="phoneNumber">Phone Number:</label>
+                    <input type="text" name="phoneNumber" required><br>
+                    <label for="programmingLanguage">Programming Language:</label>
+                    <input type="text" name="programmingLanguage" required><br>
+                    <button type="button" onclick="addnewfresher()">Add Fresher</button>
                 </form>
+                <div id="new-fresher-result"></div>
             </div>
             <h3>Get All Freshers</h3>
             <div id="get-all-freshers">
-                <button type="button" onclick="getAllFreshers()">Fetch Freshers</button>
             </div>
+            <button type="button" onclick="getallfreshers()">Fetch Freshers</button>
             <h3>Get Fresher By ID</h3>
             <div id="get-fresher-by-id">
                 <form id="get-fresher-form">
                     <label for="fresherId">Fresher ID:</label>
                     <input type="number" id="fresherId" name="fresherId" required><br>
-                    <button type="button" onclick="getFresherById()">Fetch Fresher</button>
+                    <button type="button" onclick="getfresherbyid()">Fetch Fresher</button>
                 </form>
+                <div id="fresher-id-result"></div>
             </div>
             <h3>Update Fresher By ID</h3>
             <div id="update-fresher">
                 <form id="update-fresher-form">
                     <label for="fresherIdUpdate">Fresher ID:</label>
                     <input type="number" id="fresherIdUpdate" name="fresherIdUpdate" required><br>
-                    <label for="programmingLanguageUpdate">Programming Language:</label>
-                    <input type="text" id="programmingLanguageUpdate" name="programmingLanguageUpdate"><br>
-                    <label for="idCenterUpdate">Center ID:</label>
-                    <input type="number" id="idCenterUpdate" name="idCenterUpdate"><br>
-                    <button type="button" onclick="updateFresher()">Update Fresher</button>
+                    <label for="programmingLanguage">Programming Language:</label>
+                    <input type="text" name="programmingLanguage"><br>
+                    <label for="idCenter">Center ID:</label>
+                    <input type="number" id="idCenter" name="idCenter"><br>
+                    <button type="button" onclick="updatefresher()">Update Fresher</button>
                 </form>
+                <div id="fresher-update-id-result"></div>
             </div>
             <h3>Delete Fresher By ID</h3>
             <div id="delete-fresher">
                 <form id="delete-fresher-form">
                     <label for="fresherIdDelete">Fresher ID:</label>
                     <input type="number" id="fresherIdDelete" name="fresherIdDelete" required><br>
-                    <button type="button" onclick="deleteFresher()">Delete Fresher</button>
+                    <button type="button" onclick="deletefresher()">Delete Fresher</button>
                 </form>
+                <div id="fresher-delete-id-result"></div>
             </div>
             <h3>Get Current Fresher</h3>
             <div id="get-fresher-me">
-                <button type="button" onclick="getFresherMe()">Fetch Current Fresher</button>
+                <button type="button" onclick="getfresherme()">Fetch Current Fresher</button>
+                <div id="get-me-fresher-result"></div>
             </div>
             <h3>Update Current Fresher</h3>
             <div id="update-fresher-me">
                 <form id="update-me-fresher-form">
-                    <label for="programmingLanguageMe">Programming Language:</label>
-                    <input type="text" id="programmingLanguageMe" name="programmingLanguageMe"><br>
+                    <label for="programmingLanguag">Programming Language:</label>
+                    <input type="text" id="programmingLanguag" name="programmingLanguag"><br>
                     <label for="idCenterMe">Center ID:</label>
                     <input type="number" id="idCenterMe" name="idCenterMe"><br>
-                    <button type="button" onclick="updateFresherMe()">Update Current Fresher</button>
+                    <button type="button" onclick="updatefresherme()">Update Current Fresher</button>
                 </form>
+                <div id="update-me-fresher-result"></div>
             </div>
             <div id="fresher-statistics"></div>
             <div id="result-freshers"></div>
@@ -190,10 +196,12 @@
                     <input type="date" id="endDate" name="endDate" required><br>
                     <button type="button" onclick="addNewProject()">Add Project</button>
                 </form>
+                <div id=""></div>
             </div>
             <h3>Get All Projects</h3>
             <div id="get-all-projects">
                 <button type="button" onclick="getAllProjects()">Fetch Projects</button>
+                <div id=""></div>
             </div>
             <h3>Get Project By ID</h3>
             <div id="get-project-by-id">
@@ -280,7 +288,7 @@
             <div id="delete-statistics"></div>
         </div>
         <p> --------------------------------------chưa kịp làm phần giao diện------------------------------------------------------------------------------</p>
-        <div id="email">
+        <div>
             <h2>Send Email:</h2>
             <form id="email-form">
                 <label for="to">To:</label>

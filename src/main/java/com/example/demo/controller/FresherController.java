@@ -64,12 +64,8 @@ public class FresherController {
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Api<FresherResDto>> updateFresher(@PathVariable int id, @RequestBody UpdateFresherReqDto req) {
-        try {
-            FresherResDto updatedFresher = fresherService.updateFresher(id, req);
-            return Api.response(Code.OK, updatedFresher);
-        } catch (RuntimeException e) {
-            return Api.response(Code.FRESHER_NOT_EXISTED);
-        }
+        FresherResDto updatedFresher = fresherService.updateFresher(id, req);
+        return Api.response(Code.OK, updatedFresher);
     }
     
     // Xóa Fresher theo ID

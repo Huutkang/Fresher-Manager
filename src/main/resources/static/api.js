@@ -208,7 +208,6 @@ async function updateUserMe(data) {
 
 // --------------------------------------------------
 
-// Các hàm không cần token
 async function createFresher(fresherData) {
     const url = `${baseUrl}/freshers`;
     return await send(url, fresherData);
@@ -232,6 +231,16 @@ async function updateFresher(id, fresherData) {
 async function deleteFresher(id) {
     const url = `${baseUrl}/freshers/${id}`;
     return await send(url, null, 'DELETE');
+}
+
+async function getFresherMe() {
+    const url = `${baseUrl}/freshers/me`;
+    return await send(url, null, 'GET');
+}
+
+async function updateFresherMe(data) {
+    const url = `${baseUrl}/freshers/me`;
+    return await send(url, data, 'PUT');
 }
 
 // --------------------------------------------------

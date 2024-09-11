@@ -74,6 +74,23 @@ async function cLg() {
     }
 }
 
+function printJsonToElement(elementId, jsonData) {
+    // Lấy thẻ HTML dựa vào id
+    const element = document.getElementById(elementId);
+    
+    if (element) {
+        // Chuyển đối tượng JSON thành chuỗi có định dạng đẹp
+        const formattedJson = JSON.stringify(jsonData, null, 2);
+
+        // In chuỗi JSON vào thẻ HTML dưới dạng preformatted text
+        element.innerHTML = `<pre>${formattedJson}</pre>`;
+    } else {
+        console.error(`Element with id "${elementId}" not found.`);
+    }
+}
+
+// --------------------------------------------------
+
 // Hàm thêm mới user
 async function addnewuser() {
     // Lấy form và các trường trong form
@@ -90,21 +107,6 @@ async function addnewuser() {
     });
     var kq = await createUser(user);
     printJsonToElement("add-new-user-result", kq);
-}
-
-function printJsonToElement(elementId, jsonData) {
-    // Lấy thẻ HTML dựa vào id
-    const element = document.getElementById(elementId);
-    
-    if (element) {
-        // Chuyển đối tượng JSON thành chuỗi có định dạng đẹp
-        const formattedJson = JSON.stringify(jsonData, null, 2);
-
-        // In chuỗi JSON vào thẻ HTML dưới dạng preformatted text
-        element.innerHTML = `<pre>${formattedJson}</pre>`;
-    } else {
-        console.error(`Element with id "${elementId}" not found.`);
-    }
 }
 
 // Hàm lấy tất cả users
@@ -140,8 +142,6 @@ async function getalllusers() {
     alluser_result.innerHTML = userListHTML;
 }
 
-
-
 // Hàm lấy user theo ID
 async function getuserbyid() {
     // Lấy giá trị của id từ thẻ input
@@ -161,7 +161,6 @@ async function getuserbyid() {
         console.log('Please provide a valid user ID.');
     }
 }
-
 
 // Hàm cập nhật user theo ID
 async function updateuser() {
@@ -232,40 +231,128 @@ async function updateuserme() {
     printJsonToElement("update-me-result", kq);
 }
 
+// --------------------------------------------------
+
 // Hàm thêm mới fresher
-async function addNewFresher() {
-    // TODO: Thêm mới fresher
+async function addnewfresher() {
+    // Lấy form và các trường trong form
+    const form = document.getElementById('add-fresher-form');
+    const formData = new FormData(form);
+    const fresher = {};
+
+    // Duyệt qua các trường dữ liệu của form
+    formData.forEach((value, key) => {
+        // Chỉ thêm vào JSON nếu giá trị không rỗng
+        if (value.trim() !== '') {
+            fresher[key] = value.trim();
+        }
+    });
+
+    var kq = await createFresher(fresher);
+    printJsonToElement("new-fresher-result", kq);
 }
 
 // Hàm lấy tất cả freshers
-async function getAllFreshers() {
-    // TODO: Lấy danh sách tất cả freshers
+async function getallfreshers() {
+    var allfreshers = await getAllFreshers();
+    var allfresher_result = document.getElementById('get-all-freshers');
+
+    console.log('Danh sách tất cả fresher:', allfreshers.result);
+
+    var fresherListHTML = "<ul>"; // Dùng thẻ <ul> để tạo danh sách fresher
+
+    allfreshers.result.forEach(fresher => {
+        fresherListHTML += "<li>";
+
+        for (const [key, value] of Object.entries(fresher)) {
+            if (Array.isArray(value)) {
+                fresherListHTML += `${key}: ${value.join(', ')}, `;
+            } else {
+                fresherListHTML += `${key}: ${value}, `;
+            }
+        }
+
+        fresherListHTML = fresherListHTML.slice(0, -2); // Loại bỏ dấu phẩy cuối cùng
+        fresherListHTML += "</li>";
+    });
+
+    fresherListHTML += "</ul>";
+
+    allfresher_result.innerHTML = fresherListHTML;
 }
 
 // Hàm lấy fresher theo ID
-async function getFresherById() {
-    // TODO: Lấy thông tin fresher theo ID
+async function getfresherbyid() {
+    var fresherIdInput = document.getElementById('fresherId');
+    var id = fresherIdInput.value;
+    if (id) {
+        try {
+            var kq = await getFresherById(id);
+            printJsonToElement("fresher-id-result", kq);
+        } catch (error) {
+            console.error('Error fetching fresher:', error);
+        }
+    } else {
+        console.log('Please provide a valid fresher ID.');
+    }
 }
 
 // Hàm cập nhật fresher theo ID
-async function updateFresher() {
-    // TODO: Cập nhật thông tin fresher theo ID
+async function updatefresher() {
+    const form = document.getElementById('update-fresher-form');
+    const formData = new FormData(form);
+    const fresher = {};
+
+    formData.forEach((value, key) => {
+        if (value.trim() !== '') {
+            fresher[key] = value.trim();
+        }
+    });
+
+    const fresherId = document.getElementById('fresherIdUpdate').value;
+    var kq = await updateFresher(fresherId, fresher);
+    printJsonToElement("fresher-update-id-result", kq);
 }
 
 // Hàm xóa fresher theo ID
-async function deleteFresher() {
-    // TODO: Xóa fresher theo ID
+async function deletefresher() {
+    var fresherIdInput = document.getElementById('fresherIdDelete');
+    var id = fresherIdInput.value;
+    if (id) {
+        try {
+            var kq = await deleteFresher(id);
+            printJsonToElement("fresher-delete-id-result", kq);
+        } catch (error) {
+            console.error('Error deleting fresher:', error);
+        }
+    } else {
+        console.log('Please provide a valid fresher ID.');
+    }
 }
 
 // Hàm lấy thông tin fresher hiện tại
-async function getFresherMe() {
-    // TODO: Lấy thông tin fresher hiện tại
+async function getfresherme() {
+    var kq = await getFresherMe();
+    printJsonToElement("get-me-fresher-result", kq);
 }
 
 // Hàm cập nhật fresher hiện tại
-async function updateFresherMe() {
-    // TODO: Cập nhật thông tin fresher hiện tại
+async function updatefresherme() {
+    const form = document.getElementById('update-me-fresher-form');
+    const formData = new FormData(form);
+    const fresher = {};
+
+    formData.forEach((value, key) => {
+        if (value.trim() !== '') {
+            fresher[key] = value.trim();
+        }
+    });
+
+    var kq = await updateFresherMe(fresher);
+    printJsonToElement("update-me-fresher-result", kq);
 }
+
+// --------------------------------------------------
 
 // Hàm thêm mới project
 async function addNewProject() {

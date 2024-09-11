@@ -8,6 +8,6 @@ import lombok.Data;
 @Data
 public class UpdateFresherReqDto {
     private String programmingLanguage;
-    private int idCenter;
+    private Integer idCenter;
 
 }

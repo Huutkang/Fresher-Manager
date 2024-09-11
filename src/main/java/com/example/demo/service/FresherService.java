@@ -118,12 +118,19 @@ public class FresherService {
     // Cập nhật Fresher
     public FresherResDto updateFresher(int id, UpdateFresherReqDto req) {
         Fresher fresher = getFresher(id);
-        fresher.setProgrammingLanguage(req.getProgrammingLanguage());
-        Center center = centerService.getCenter(req.getIdCenter());
-        fresher.setCenter(center);
-        log.info("Updated fresher", id);
+        System.out.println("Fresher: " + req);
+        if (req.getProgrammingLanguage() != null && !req.getProgrammingLanguage().trim().isEmpty()) {
+            fresher.setProgrammingLanguage(req.getProgrammingLanguage());
+        }
+    
+        if (req.getIdCenter() != null) {
+            Center center = centerService.getCenter(req.getIdCenter());
+            fresher.setCenter(center);
+        }
+    
+        log.info("Updated fresher with ID: " + id);
         return convertToDTO(fresherRepository.save(fresher));
-    }
+    }    
 
     // Xóa Fresher theo ID
     public void deleteFresher(int id) {
