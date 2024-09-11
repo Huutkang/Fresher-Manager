@@ -196,6 +196,16 @@ async function deleteUser(id) {
     return await send(url, null, 'DELETE');
 }
 
+async function getUserMe() {
+    const url = `${baseUrl}/users/me`;
+    return await send(url, null, 'GET');
+}
+
+async function updateUserMe(data) {
+    const url = `${baseUrl}/users/me`;
+    return await send(url, data, 'PUT');
+}
+
 // --------------------------------------------------
 
 // Các hàm không cần token

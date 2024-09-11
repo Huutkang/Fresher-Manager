@@ -206,12 +206,30 @@ async function deleteuser() {
 
 // Hàm lấy thông tin user hiện tại
 async function getuserme() {
-    // TODO: Lấy thông tin user hiện tại
+    var kq = await getUserMe();
+    console.log(kq);
+    printJsonToElement("get-me-result", kq);
+
 }
 
 // Hàm cập nhật user hiện tại
 async function updateuserme() {
-    // TODO: Cập nhật thông tin user hiện tại
+    // Lấy form và các trường trong form
+    const form = document.getElementById('update-me-form'); // Cập nhật ID form
+    const formData = new FormData(form);
+    const user = {};
+
+    // Duyệt qua các trường dữ liệu của form
+    formData.forEach((value, key) => {
+        // Chỉ thêm vào JSON nếu giá trị không rỗng
+        if (value.trim() !== '') {
+            user[key] = value.trim();
+        }
+    });
+    console.log(user);
+    // Gọi hàm updateUser với id và user data
+    var kq = await updateUserMe(user);
+    printJsonToElement("update-me-result", kq);
 }
 
 // Hàm thêm mới fresher
