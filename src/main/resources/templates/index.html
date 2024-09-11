@@ -10,11 +10,22 @@
 </head>
 <body>
     <h1>Welcome to my Spring Boot application</h1>
+    <h2>Test một số chức năng</h2>
     <div id="container">
         <div id="auth">
-            <div id="login"></div>
-            <div id="refreshtoken"></div>
-            <div id="checklogin"></div>
+   
+            <!-- Form refresh token -->
+            <div id="refreshtoken">
+                <button type="button" onclick="rfTk()">Refresh Token</button>
+                <div id="rftk_result"></div>
+            </div>
+        
+            <!-- Kiểm tra trạng thái đăng nhập -->
+            <div id="checklogin">
+                <button type="button" onclick="cLg()">Check Login Status</button>
+                <div id="checklogin_result"></div>
+            </div>
+        
             <button type="button" onclick="logout()" id="btn">Logout</button>
         </div>
         <div id="users">

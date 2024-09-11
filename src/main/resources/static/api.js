@@ -75,7 +75,10 @@ async function checkLogin(){
             console.log("checkLogin: False");
             return false;
         }
-    }catch(error){return false;}
+    }catch(error){
+        console.error("Lỗi khi kiểm tra đăng nhập:", error);
+        return false;
+    }
 }
 
 // Đăng xuất và xóa token khỏi localStorage
@@ -113,16 +116,23 @@ async function checkAndRefreshToken() {
 
 // Hàm làm mới token được sửa lại
 async function refreshToken() {
-    const url = `${baseUrl}/auth/refresh-token`;
-    const response = await sendRequest(url, null, 'POST');
-    
-    if (response.token) {
-        setToken(response.token);  // Cập nhật token mới
+    const url = `${baseUrl}/auth/refreshtoken`;
+    var response = await sendRequest(url, null, 'POST');
+    response = parseJsonData(response);
+
+    console.log('Kết quả làm mới token:', response.result.token);
+
+    // Sửa để lấy token từ response.result
+    if (response.result.token) {
+        setToken(response.result.token);  // Cập nhật token mới
+        return response.result.token;
     } else {
         console.log('Không thể làm mới token, đăng xuất...');
         await logout();  // Đăng xuất nếu không thể làm mới token
+        window.location.href = '/login';
     }
 }
+
 
 function parseJsonData(json) {
     // Kiểm tra xem json có phải là chuỗi JSON hay không
