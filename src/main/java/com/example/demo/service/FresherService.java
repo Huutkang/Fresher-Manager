@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import com.example.demo.dto.internal.FresherDto;
@@ -72,7 +73,7 @@ public class FresherService {
 
     public FresherResDto addFresher(FresherReqDto fresherReqDto) {
         try{
-            Users user = usersService.addUser(fresherReqDto.getUsername(), fresherReqDto.getPassword(), fresherReqDto.getName(), fresherReqDto.getEmail(), fresherReqDto.getPhoneNumber());
+            Users user = usersService.addUser(generateRandomString(), fresherReqDto.getPassword(), fresherReqDto.getName(), fresherReqDto.getEmail(), fresherReqDto.getPhoneNumber());
             Fresher fresher = new Fresher();
             fresher.setUser(user);
             fresher.setProgrammingLanguage(fresherReqDto.getProgrammingLanguage());
@@ -222,5 +223,22 @@ public class FresherService {
         fresherResDto.setProgrammingLanguage(fresher.getProgrammingLanguage());
         fresherResDto.setCenter(fresher.getCenter());
         return fresherResDto;
+    }
+
+
+    private static String generateRandomString() {
+        String lowercaseLetters = "abcdefghijklmnopqrstuvwxyz";
+        String numbers = "0123456789";
+        String allowedChars = lowercaseLetters + numbers;
+        
+        Random random = new Random();
+        int length = random.nextInt(16) + 5; // Độ dài từ 5 đến 20
+        
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int randomIndex = random.nextInt(allowedChars.length());
+            sb.append(allowedChars.charAt(randomIndex));
+        }
+        return sb.toString();
     }
 }
