@@ -65,12 +65,8 @@ public class UsersController {
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Api<UserResDto>> updateUser(@PathVariable int id, @RequestBody SetUserReqDto userDetails) {
-        try {
-            UserResDto updatedUser = usersService.updateUser(id, userDetails);
-            return Api.response(Code.OK, updatedUser);
-        } catch (RuntimeException e) {
-            return Api.response(Code.USER_NOT_EXISTED);
-        }
+        UserResDto updatedUser = usersService.updateUser(id, userDetails);
+        return Api.response(Code.OK, updatedUser);
     }
 
     // Xóa User theo ID

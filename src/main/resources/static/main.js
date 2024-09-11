@@ -165,12 +165,43 @@ async function getuserbyid() {
 
 // Hàm cập nhật user theo ID
 async function updateuser() {
-    // TODO: Cập nhật thông tin user theo ID
+    // Lấy form và các trường trong form
+    const form = document.getElementById('update-user-form'); // Cập nhật ID form
+    const formData = new FormData(form);
+    const user = {};
+
+    // Duyệt qua các trường dữ liệu của form
+    formData.forEach((value, key) => {
+        // Chỉ thêm vào JSON nếu giá trị không rỗng
+        if (value.trim() !== '') {
+            user[key] = value.trim();
+        }
+    });
+
+    // Lấy ID người dùng từ trường input 'userIdUpdate'
+    const userId = document.getElementById('userIdUpdate').value;
+
+    // Gọi hàm updateUser với id và user data
+    var kq = await updateUser(userId, user);
+    printJsonToElement("user-update-id-result", kq);
 }
+
 
 // Hàm xóa user theo ID
 async function deleteuser() {
-    // TODO: Xóa user theo ID
+    var userIdInput = document.getElementById('userIdDelete');
+    var id = userIdInput.value;
+    if (id) {
+        try {
+            var kq = await deleteUser(id);
+            printJsonToElement("user-delete-id-result", kq);
+        } catch (error) {
+            console.error('Error fetching user:', error);
+        }
+    } else {
+        console.log('Please provide a valid user ID.');
+    }
+
 }
 
 // Hàm lấy thông tin user hiện tại
