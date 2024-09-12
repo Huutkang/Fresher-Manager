@@ -48,6 +48,7 @@ async function sendRequest(url, data = null, method = 'POST') {
 async function send(url, data = null, method = 'POST'){
     console.log("Data gửi đi:", data);
     var kq = await sendRequest(url, data, method);
+    console.log("Kết quả trả về:", kq);
     return parseJsonData(kq);
 }
 
@@ -458,8 +459,9 @@ async function searchProjectsByFresherId(fresherId) {
 
 // Đếm số lượng đối tượng (fresher hoặc center)
 async function count(object) {
-    const url = `${baseUrl}/statistics/count?object=${encodeURIComponent(object)}`;
-    return await send(url, null, 'GET');
+    const url = `${baseUrl}/statistics/count`;
+    const body = { object: object }; // Đặt dữ liệu vào một đối tượng
+    return await send(url, body);
 }
 
 // Tính điểm trung bình của fresher dựa trên fresher_id

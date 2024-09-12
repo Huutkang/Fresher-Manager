@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.response.Api;
@@ -23,11 +24,13 @@ public class CalculationStatisticsController {
     private CalculationStatisticsService calculationStatisticsService;
 
     // API để đếm số lượng đối tượng (fresher hoặc center)
-    @GetMapping("/count")
-    public ResponseEntity<Api<Long>> count(@RequestParam("object") String object) {
+    @PostMapping("/count")
+    public ResponseEntity<Api<Long>> count(@RequestBody Map<String, String> requestBody) {
+        String object = requestBody.get("object");
         long count = calculationStatisticsService.count(object);
         return Api.response(Code.OK, count);
     }
+
 
     // API để tính điểm trung bình của fresher dựa trên fresher_id
     @GetMapping("/average-score/{fresherId}")

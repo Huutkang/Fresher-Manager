@@ -110,7 +110,7 @@ private int calculateRankForMerge(Search search) {
 
     // Tìm kiếm các dự án mà fresher đã tham gia
     public List<Search> findProjectsByFresherId(int fresherId) {
-        return fresherProjectService.findFresherProjects(fresherId, null).stream()
+        return fresherProjectService.findFresherProjects(fresherId, 0).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }

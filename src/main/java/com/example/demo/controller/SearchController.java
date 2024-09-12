@@ -59,11 +59,8 @@ public class SearchController {
     // Tìm kiếm các dự án của một fresher dựa trên fresherId
     @GetMapping("/fresher/{fresherId}/projects")
     public ResponseEntity<Api<List<Search>>> searchProjectsByFresherId(@PathVariable int fresherId) {
-        try {
-            List<Search> result = searchService.findProjectsByFresherId(fresherId);
-            return Api.response(Code.OK, result);
-        } catch (Exception e) {
-            return Api.response(Code.INTERNAL_SERVER_ERROR);
-        }
+        System.out.println("fresherId = " + fresherId);
+        List<Search> result = searchService.findProjectsByFresherId(fresherId);
+        return Api.response(Code.OK, result);
     }
 }

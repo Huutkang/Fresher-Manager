@@ -853,7 +853,7 @@ async function searchcenterbyname() {
 
 // Tìm kiếm dự án theo tên
 async function searchprojectbyname() {
-    const projectNameInput = document.getElementById('projectName');
+    const projectNameInput = document.getElementById('spbn');
     const projectName = projectNameInput.value.trim();
     if (projectName) {
         try {
@@ -869,8 +869,9 @@ async function searchprojectbyname() {
 
 // Tìm kiếm các dự án của Fresher dựa trên fresherId
 async function searchprojectsbyfresherid() {
-    const fresherIdInput = document.getElementById('fresherId');
+    const fresherIdInput = document.getElementById('tkdafre');
     const fresherId = fresherIdInput.value.trim();
+    console.log(fresherId);
     if (fresherId) {
         try {
             const kq = await searchProjectsByFresherId(fresherId);
@@ -885,14 +886,21 @@ async function searchprojectsbyfresherid() {
 
 // --------------------------------------------------
 
+async function countobjects(){
+    var keywords = document.getElementById('object');
+    var object = keywords.value;
+    var kq = await count(object);
+    printJsonToElement("object-count-result", kq.result);
+}
+
 // Tính điểm trung bình của Fresher dựa trên fresher_id
 async function calculateaveragescore() {
-    const fresherIdInput = document.getElementById('fresherId');
+    const fresherIdInput = document.getElementById('cfasbofi');
     const fresherId = fresherIdInput.value.trim();
     if (fresherId) {
         try {
             const kq = await averageScore(fresherId);
-            printResultToElement("average-score-result", kq);
+            printJsonToElement("average-score-result", kq);
         } catch (error) {
             console.error('Error calculating average score:', error);
         }
@@ -908,7 +916,7 @@ async function calculatescore() {
     if (fresherId) {
         try {
             const kq = await score(fresherId);
-            printResultToElement("score-result", kq);
+            printJsonToElement("score-result", kq);
         } catch (error) {
             console.error('Error calculating score:', error);
         }
@@ -921,7 +929,7 @@ async function calculatescore() {
 async function getfresherbycenter() {
     try {
         const kq = await fresherByCenter();
-        printResultToElement("fresher-by-center-result", kq);
+        printJsonToElement("fresher-by-center-result", kq);
     } catch (error) {
         console.error('Error getting fresher by center:', error);
     }
@@ -931,7 +939,7 @@ async function getfresherbycenter() {
 async function getfresherbyscore() {
     try {
         const kq = await fresherByScore();
-        printResultToElement("fresher-by-score-result", kq);
+        printJsonToElement("fresher-by-score-result", kq);
     } catch (error) {
         console.error('Error getting fresher by score:', error);
     }
@@ -941,7 +949,7 @@ async function getfresherbyscore() {
 async function getfresherbygrade() {
     try {
         const kq = await fresherByGrade();
-        printResultToElement("fresher-by-grade-result", kq);
+        printJsonToElement("fresher-by-grade-result", kq);
     } catch (error) {
         console.error('Error getting fresher by grade:', error);
     }
@@ -951,7 +959,7 @@ async function getfresherbygrade() {
 async function getfresherstatistics() {
     try {
         const kq = await getFresherStatistics();
-        printResultToElement("fresher-statistics-result", kq);
+        printJsonToElement("fresher-statistics-result", kq);
     } catch (error) {
         console.error('Error getting fresher statistics:', error);
     }
