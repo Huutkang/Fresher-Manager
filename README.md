@@ -1,119 +1,59 @@
 
-# Fresher Management Application
+# Fresher Manager Application
 
-## Introduction
-
-This is a Spring Boot application designed for managing fresher employees. It allows users to perform operations such as viewing, adding, updating, and deleting freshers, as well as managing centers and projects that freshers are involved in.
-
-## Features
-
-### Fresher Management:
-- View the total number of freshers.
-- Add new freshers.
-- Delete old freshers.
-- Update fresher details.
-- Calculate fresher scores based on 3 major assignments, with the final score as the average of the three.
-- Search for freshers by name, programming language, or email.
-
-### Center Management:
-- View all centers.
-- Create new centers.
-- Delete centers.
-- Update center details.
-- Assign freshers to centers.
-
-### Dashboard:
-- View statistics of the number of freshers in each center.
-- View statistics of freshers by their scores.
-
-### Project Management:
-- View project details (ID, name, center, manager, start date, end date, language, status).
-- Add, edit, or delete projects.
-- Assign or remove freshers from projects, with email notifications for each action.
-- Allow freshers to search for projects they are involved in.
+This project is a **Spring Boot** application designed for managing **Fresher** trainees. The app allows users to create, update, and manage freshers, centers, and projects. It also provides tools for tracking fresher performance and statistics, as well as email notifications for project assignments.
 
 ## Technologies Used
 - **Java 17**
-- **Spring Boot**
-- **Spring JPA**
-- **PostgreSQL / MySQL**
-- **Swagger** for API documentation
-- **Postman** for API testing
-- **Token Authentication (Bearer)**
-- **Controller Advice** for exception handling
-- **Log4J2** for logging
+- **Spring Boot** (including JPA, Spring Security, Spring Mail)
+- **PostgreSQL** (as the database)
+- **Swagger** (for API documentation)
+- **Log4J2** (for logging)
 
-## Prerequisites
+## Features
+- **Fresher Management**:
+  - View all freshers.
+  - Add, update, and delete freshers.
+  - Track fresher performance across three large exercises (calculate average scores).
+  - Search for freshers by name, programming language, or email.
+- **Center Management**:
+  - View, add, update, and delete centers.
+  - Assign freshers to centers.
+- **Project Management**:
+  - View, add, update, and delete projects.
+  - Manage project details (code, name, center, manager, start/end date, language, status).
+  - Assign or remove freshers from projects (with email notifications).
+  - Fresher can search for their projects.
+- **Statistics**:
+  - View fresher statistics by center and score.
+  - Statistics on fresher performance based on grades.
+- **Authentication**:
+  - Token-based authentication (Bearer tokens).
+- **Dashboard**: 
+  - Overview of fresher counts and performance.
 
-1. **Java 17**
-2. **Maven**
-3. **PostgreSQL** or **MySQL**
-4. **Postman** (optional for testing)
-
-## How to Run
-
-1. Clone the repository:
-
-   ```bash
+## Installation
+1. Clone the repository from GitHub:
+   ```
    git clone https://github.com/Huutkang/Fresher-Manager.git
    ```
+2. Navigate to the project directory and set up the environment.
 
-2. Navigate to the project directory:
+3. Update the PostgreSQL database configuration in `application.properties`.
 
-   ```bash
-   cd fresher-management
+4. Run the project:
    ```
-
-3. Update the database configuration in `application.properties` to match your PostgreSQL/MySQL settings:
-
-   ```properties
-   spring.datasource.url=jdbc:postgresql://localhost:5432/fresher_db
-   spring.datasource.username=your_db_username
-   spring.datasource.password=your_db_password
-   ```
-
-4. Build the project:
-
-   ```bash
-   mvn clean install
-   ```
-
-5. Run the application:
-
-   ```bash
    mvn spring-boot:run
    ```
 
-6. Open a browser and navigate to:
+## Testing the Application
+- To access the API documentation, navigate to `http://localhost:8081/swagger-ui/index.html`.
+- For testing, use the following credentials:
+  - **Username**: `admin`
+  - **Password**: `123456`
+  
+You can test the APIs using tools like Postman.
 
-   ```
-   http://localhost:8081
-   ```
-
-   Use the following credentials to log in:
-   - **Username**: `admin`
-   - **Password**: `123456`
-
-## API Documentation
-
-You can access the Swagger API documentation at:
-
-```
-http://localhost:8081/swagger-ui/index.html
-```
-
-## Testing with Postman
-
-You can use Postman to test the API endpoints. Here are some examples of endpoints you can use:
-
-- **Get Fresher by ID**: `GET /users/{id}`
-- **Update Fresher**: `PUT /users/{id}`
-- **Delete Fresher**: `DELETE /users/{id}`
-- **Create Center**: `POST /centers`
-- **Assign Fresher to Center**: `PUT /centers/{centerId}/add-fresher/{fresherId}`
-
-For authorization, use the Bearer Token from your login response.
-
-## License
-
-This project is licensed under the MIT License.
+## Configuration Notes
+- Replace the email addresses in the email sending module with your own for testing purposes.
+- This project is configured to use **PostgreSQL**. Make sure your database is set up and the credentials in the project are correctly configured.
