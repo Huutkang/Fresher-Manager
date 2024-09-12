@@ -21,7 +21,7 @@ public interface FresherRepository extends JpaRepository<Fresher, Integer> {
 
     List<Fresher> findByUser_NameContainingIgnoreCase(String name); //
     List<Fresher> findByUser_PhoneNumberContainingIgnoreCase(String phoneNumber);
-    Optional<Fresher> findByUser_EmailContainingIgnoreCase(String email); //
+    List<Fresher> findByUser_EmailContainingIgnoreCase(String email); //
 
     List<Fresher> findByProgrammingLanguageContainingIgnoreCase(String language); //
     List<Fresher> findByCenterNameContainingIgnoreCase(String name);

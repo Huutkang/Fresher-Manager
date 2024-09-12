@@ -842,7 +842,7 @@ async function smartsearchfresher() {
     if (keywords) {
         try {
             const kq = await smartSearchFresher(keywords);
-            printJsonToElement("fresher-search-result", kq);
+            printJsonToElement("fsr", kq);
         } catch (error) {
             console.error('Error searching fresher:', error);
         }

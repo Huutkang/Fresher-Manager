@@ -53,6 +53,20 @@ public class SearchService {
 
     private static final Logger log = LogManager.getLogger(SearchService.class);
 
+    public Map<String, List<Search>> searchFresher(String keywords) {
+        Map<String, List<Search>> result = new HashMap<>();
+        
+        List<Search> byName = convertToListDTO(fresherService.findFreshersByName(keywords));
+        List<Search> byProgrammingLanguage = convertToListDTO(fresherService.findFreshersByProgrammingLanguage(keywords));
+        List<Search> byEmail = convertToListDTO(fresherService.findFreshersByEmail(keywords));
+
+        result.put("name", byName);
+        result.put("programmingLanguage", byProgrammingLanguage);
+        result.put("email", byEmail);
+        
+        return result;
+    }
+
     // Tìm kiếm fresher theo tên, ngôn ngữ lập trình, email
     public Map<String, List<Search>> smartSearchFresher(String keywords) {
         Map<String, List<Search>> result = new HashMap<>();
@@ -72,21 +86,6 @@ public class SearchService {
         
         return result;
     }
-
-    public Map<String, List<Search>> searchFresher(String keywords) {
-        Map<String, List<Search>> result = new HashMap<>();
-        
-        List<Search> byName = convertToListDTO(fresherService.findFreshersByName(keywords));
-        List<Search> byProgrammingLanguage = convertToListDTO(fresherService.findFreshersByProgrammingLanguage(keywords));
-        List<Search> byEmail = convertToListDTO(fresherService.findFreshersByEmail(keywords));
-
-        result.put("name", byName);
-        result.put("programmingLanguage", byProgrammingLanguage);
-        result.put("email", byEmail);
-        
-        return result;
-    }
-
 
     // Hàm trộn kết quả tìm kiếm và loại bỏ fresher trùng
     private List<Search> mergeSearchResults(List<Search>... searchResults) {
