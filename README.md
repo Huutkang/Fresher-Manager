@@ -55,7 +55,7 @@ This is a Spring Boot application designed for managing fresher employees. It al
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-repo/fresher-management.git
+   git clone https://github.com/Huutkang/Fresher-Manager.git
    ```
 
 2. Navigate to the project directory:
