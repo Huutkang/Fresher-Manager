@@ -113,7 +113,7 @@ public class ProjectService {
     }
     
     public List<ProjectResDto> findByName(String name) {
-        return projectRepository.findByName(name)
+        return projectRepository.findByNameContainingIgnoreCase(name)
               .stream()
               .filter(Project::isActive)
               .map(this::convertToDTO)

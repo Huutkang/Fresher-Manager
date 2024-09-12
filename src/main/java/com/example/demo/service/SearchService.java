@@ -18,7 +18,6 @@ import com.example.demo.dto.response.NotificationResDto;
 import com.example.demo.dto.response.ProjectResDto;
 import com.example.demo.dto.response.Search;
 import com.example.demo.dto.response.UserResDto;
-import com.example.demo.entity.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -120,7 +119,7 @@ public class SearchService {
 
     // Tìm kiếm dự án theo tên
     public List<Search> findProjectByName(String name) {
-        return convertToListDTO(centerService.findByName(name));
+        return convertToListDTO(projectService.findByName(name));
     }
 
     // Tìm kiếm các dự án mà fresher đã tham gia
