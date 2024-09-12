@@ -15,7 +15,8 @@ public enum Code {
     USER_NOT_EXISTED(201, "Người dùng không tồn tại", HttpStatus.NOT_FOUND),
     USER_NOT_FOUND(202, "Không tìm thấy người dùng", HttpStatus.NOT_FOUND),
     USER_PASSWORD_UPDATE_FAILED(203, "Cập nhật mật khẩu thất bại", HttpStatus.BAD_REQUEST),
-
+    USERNAME_OR_EMAIL_ALREADY_EXISTS(204, "Tên người dùng hoặc email đã tồn tại", HttpStatus.BAD_REQUEST),
+    
     // 3xx: Project Errors
     PROJECT_NOT_EXISTED(300, "Project không tồn tại", HttpStatus.NOT_FOUND),
     PROJECT_NOT_FOUND(301, "Không tìm thấy Project", HttpStatus.NOT_FOUND),

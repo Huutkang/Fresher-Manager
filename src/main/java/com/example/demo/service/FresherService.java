@@ -73,8 +73,8 @@ public class FresherService {
     }
 
     public FresherResDto addFresher(FresherReqDto fresherReqDto) {
+        Users user = usersService.addUser(generateRandomString(), fresherReqDto.getPassword(), fresherReqDto.getName(), fresherReqDto.getEmail(), fresherReqDto.getPhoneNumber());
         try{
-            Users user = usersService.addUser(generateRandomString(), fresherReqDto.getPassword(), fresherReqDto.getName(), fresherReqDto.getEmail(), fresherReqDto.getPhoneNumber());
             Fresher fresher = new Fresher();
             fresher.setUser(user);
             fresher.setProgrammingLanguage(fresherReqDto.getProgrammingLanguage());

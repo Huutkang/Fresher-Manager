@@ -53,6 +53,9 @@ public class UsersService {
     }
 
     protected Users addUser(String userName, String password, String name, String email, String phoneNumber) {
+        if (userName == null || password == null || name == null) {
+            throw new AppException(Code.ENTER_MISS_INFO);
+        }
         try{
             Users newUser = new Users();
             HashSet<String> roles = new HashSet<>();
@@ -66,8 +69,7 @@ public class UsersService {
             log.info("thêm user mới: " + newUser);
             return usersRepository.save(newUser);
         }catch (RuntimeException e) {
-            log.error(e);
-            throw new AppException(Code.ENTER_MISS_INFO);
+            throw new AppException(Code.USERNAME_OR_EMAIL_ALREADY_EXISTS);
         }
     }
 
@@ -227,7 +229,7 @@ public class UsersService {
             return convertToDTO(usersRepository.save(user));
         } catch (RuntimeException e) {
             log.error(e);
-            throw new AppException(Code.ENTER_WRONG_INFO);
+            throw new AppException(Code.USERNAME_OR_EMAIL_ALREADY_EXISTS);
         }
     }
     
