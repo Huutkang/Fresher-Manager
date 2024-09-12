@@ -48,7 +48,8 @@ This project is a **Spring Boot** application designed for managing **Fresher** 
 
 ## Testing the Application
 - To access the API documentation, navigate to `http://localhost:8081/swagger-ui/index.html`.
-- For testing, use the following credentials:
+- For testing, navigate to `http://localhost:8081/`.
+- Use the following credentials:
   - **Username**: `admin`
   - **Password**: `123456`
   
