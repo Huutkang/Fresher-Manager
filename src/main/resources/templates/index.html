@@ -536,13 +536,22 @@
                 </form>
                 <div id="fresher-search-result"></div>
             </div>
-        
+            <h3>Smart Search Fresher</h3>
+            <div id="sm-search-fresher">
+                <form id="search-fresher-form">
+                    <label for="keywords">Keywords:</label>
+                    <input type="text" id="sms" name="keywords" required><br>
+                    <button type="button" onclick="smartsearchfresher()">Search Fresher</button>
+                </form>
+                <div id="fresher-search-result"></div>
+            </div>
+
             <!-- Tìm kiếm trung tâm theo tên -->
             <h3>Search Center By Name</h3>
             <div id="search-center-by-name">
                 <form id="search-center-form">
                     <label for="centerName">Center Name:</label>
-                    <input type="text" name="centerName" required><br>
+                    <input type="text" id="scbn" name="centerName" required><br>
                     <button type="button" onclick="searchcenterbyname()">Search Center</button>
                 </form>
                 <div id="center-search-result"></div>

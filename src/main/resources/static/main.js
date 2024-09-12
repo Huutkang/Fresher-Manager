@@ -835,9 +835,25 @@ async function searchfresher() {
     }
 }
 
+// Tìm kiếm Fresher theo tiêu chí
+async function smartsearchfresher() {
+    const keywordsInput = document.getElementById('sms');
+    const keywords = keywordsInput.value.trim();
+    if (keywords) {
+        try {
+            const kq = await smartSearchFresher(keywords);
+            printJsonToElement("fresher-search-result", kq);
+        } catch (error) {
+            console.error('Error searching fresher:', error);
+        }
+    } else {
+        console.log('Please provide valid keywords.');
+    }
+}
+
 // Tìm kiếm trung tâm theo tên
 async function searchcenterbyname() {
-    const centerNameInput = document.getElementById('centerName');
+    const centerNameInput = document.getElementById('scbn');
     const centerName = centerNameInput.value.trim();
     if (centerName) {
         try {
@@ -855,6 +871,7 @@ async function searchcenterbyname() {
 async function searchprojectbyname() {
     const projectNameInput = document.getElementById('spbn');
     const projectName = projectNameInput.value.trim();
+    console.log(projectName);
     if (projectName) {
         try {
             const kq = await searchProjectByName(projectName);

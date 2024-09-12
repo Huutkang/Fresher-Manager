@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.Comparator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,8 +13,6 @@ import org.springframework.stereotype.Service;
 import com.example.demo.dto.response.FresherResDto;
 import com.example.demo.dto.response.Search;
 import com.example.demo.entity.*;
-import com.example.demo.exception.AppException;
-import com.example.demo.enums.Code;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,7 +49,7 @@ public class SearchService {
     private static final Logger log = LogManager.getLogger(SearchService.class);
 
     // Tìm kiếm fresher theo tên, ngôn ngữ lập trình, email
-    public Map<String, List<Search>> searchFresher(String keywords) {
+    public Map<String, List<Search>> smartSearchFresher(String keywords) {
         Map<String, List<Search>> result = new HashMap<>();
         
         // Tìm kiếm theo tên, ngôn ngữ lập trình, và email
@@ -69,43 +68,53 @@ public class SearchService {
         return result;
     }
 
+    public Map<String, List<Search>> searchFresher(String keywords) {
+        Map<String, List<Search>> result = new HashMap<>();
+        
+        List<Search> byName = convertToListDTO(fresherService.findFreshersByName(keywords));
+        List<Search> byProgrammingLanguage = convertToListDTO(fresherService.findFreshersByProgrammingLanguage(keywords));
+        List<Search> byEmail = convertToListDTO(fresherService.findFreshersByEmail(keywords));
 
-// Hàm trộn kết quả tìm kiếm và loại bỏ fresher trùng
-private List<Search> mergeSearchResults(List<Search>... searchResults) {
-    Map<Integer, SearchResult> mergedResults = new HashMap<>();
-
-    for (List<Search> searches : searchResults) {
-        for (Search search : searches) {
-            int id = search.getId();
-            // Nếu fresher chưa tồn tại trong mergedResults hoặc có rank cao hơn, thay thế kết quả
-            if (!mergedResults.containsKey(id) || mergedResults.get(id).getRank() < calculateRankForMerge(search)) {
-                mergedResults.put(id, new SearchResult(search, calculateRankForMerge(search)));
-            }
-        }
+        result.put("name", byName);
+        result.put("programmingLanguage", byProgrammingLanguage);
+        result.put("email", byEmail);
+        
+        return result;
     }
 
-    // Trả về danh sách đã loại bỏ fresher trùng với thứ hạng thấp hơn
-    return mergedResults.values().stream().map(SearchResult::getSearch).collect(Collectors.toList());
-}
 
-// Tính toán thứ hạng cho từng fresher (áp dụng cho quá trình merge)
-private int calculateRankForMerge(Search search) {
-    // Bạn có thể điều chỉnh logic tính rank cho quá trình merge dựa trên thông tin tìm kiếm
-    return 10; // Tạm thời giả sử rank cao nhất
-}
+    // Hàm trộn kết quả tìm kiếm và loại bỏ fresher trùng
+    private List<Search> mergeSearchResults(List<Search>... searchResults) {
+        Map<Integer, SearchResult> mergedResults = new HashMap<>();
+
+        for (List<Search> searches : searchResults) {
+            for (Search search : searches) {
+                int id = search.getId();
+                // Nếu fresher chưa tồn tại trong mergedResults hoặc có rank cao hơn, thay thế kết quả
+                if (!mergedResults.containsKey(id) || mergedResults.get(id).getRank() < calculateRankForMerge(search)) {
+                    mergedResults.put(id, new SearchResult(search, calculateRankForMerge(search)));
+                }
+            }
+        }
+
+        // Trả về danh sách đã loại bỏ fresher trùng với thứ hạng thấp hơn
+        return mergedResults.values().stream().map(SearchResult::getSearch).collect(Collectors.toList());
+    }
+
+    // Tính toán thứ hạng cho từng fresher (áp dụng cho quá trình merge)
+    private int calculateRankForMerge(Search search) {
+        // Bạn có thể điều chỉnh logic tính rank cho quá trình merge dựa trên thông tin tìm kiếm
+        return 10; // Tạm thời giả sử rank cao nhất
+    }
 
     // Tìm kiếm trung tâm theo tên
-    public Search findCenterByName(String name) {
-        return centerService.findByName(name)
-                .map(this::convertToDTO)
-                .orElseThrow(() -> new AppException(Code.CENTER_NOT_FOUND));
+    public List<Search> findCenterByName(String name) {
+        return convertToListDTO(centerService.findByName(name));
     }
 
     // Tìm kiếm dự án theo tên
-    public Search findProjectByName(String name) {
-        return centerService.findByName(name)
-                .map(this::convertToDTO)
-                .orElseThrow(() -> new AppException(Code.CENTER_NOT_FOUND));
+    public List<Search> findProjectByName(String name) {
+        return convertToListDTO(centerService.findByName(name));
     }
 
     // Tìm kiếm các dự án mà fresher đã tham gia
@@ -116,10 +125,10 @@ private int calculateRankForMerge(Search search) {
     }
 
     public List<Search> smartSearchFresherByEmail(String content) {
-        List<Fresher> freshers = fresherService.findAllFreshers();
+        List<FresherResDto> freshers = fresherService.getAllFreshers();
         List<SearchResult> results = new ArrayList<>();
     
-        for (Fresher fresher : freshers) {
+        for (FresherResDto fresher : freshers) {
             String email = fresher.getUser().getEmail();
             int rank = calculateRank(content, email);
             if (rank > 0) {
@@ -135,10 +144,10 @@ private int calculateRankForMerge(Search search) {
     }
     
     public List<Search> smartSearchFresherByProgrammingLanguage(String content) {
-        List<Fresher> freshers = fresherService.findAllFreshers();
+        List<FresherResDto> freshers = fresherService.getAllFreshers();
         List<SearchResult> results = new ArrayList<>();
     
-        for (Fresher fresher : freshers) {
+        for (FresherResDto fresher : freshers) {
             String programmingLanguage = fresher.getProgrammingLanguage();
             int rank = calculateRank(content, programmingLanguage);
             if (rank > 0) {

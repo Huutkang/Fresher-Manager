@@ -437,6 +437,11 @@ async function searchFresher(keywords) {
     return await send(url, null, 'GET');
 }
 
+async function smartSearchFresher(keywords) {
+    const url = `${baseUrl}/search/smartsearchfresher?keywords=${encodeURIComponent(keywords)}`;
+    return await send(url, null, 'GET');
+}
+
 // Tìm kiếm trung tâm theo tên
 async function searchCenterByName(name) {
     const url = `${baseUrl}/search/center/${encodeURIComponent(name)}`;
