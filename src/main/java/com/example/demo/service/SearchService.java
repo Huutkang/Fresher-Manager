@@ -128,13 +128,13 @@ public class SearchService {
                 .collect(Collectors.toList());
     }
 
-    public List<Search> smartSearchFresherByEmail(String content) {
-        List<FresherResDto> freshers = fresherService.getAllFreshers();
+    public List<Search> smartSearchFresherByEmail(String em) {
+        List<FresherResDto> freshers = fresherService.findFreshersByEmail(em);
         List<SearchResult> results = new ArrayList<>();
     
         for (FresherResDto fresher : freshers) {
-            String email = fresher.getUser().getEmail();
-            int rank = calculateRank(content, email);
+            String email = fresher.getEmail();
+            int rank = calculateRank(em, email);
             if (rank > 0) {
                 results.add(new SearchResult(convertToDTO(fresher), rank));
             }
@@ -147,13 +147,13 @@ public class SearchService {
         return results.stream().map(SearchResult::getSearch).collect(Collectors.toList());
     }
     
-    public List<Search> smartSearchFresherByProgrammingLanguage(String content) {
-        List<FresherResDto> freshers = fresherService.getAllFreshers();
+    public List<Search> smartSearchFresherByProgrammingLanguage(String prgr) {
+        List<FresherResDto> freshers = fresherService.findFreshersByProgrammingLanguage(prgr);
         List<SearchResult> results = new ArrayList<>();
     
         for (FresherResDto fresher : freshers) {
             String programmingLanguage = fresher.getProgrammingLanguage();
-            int rank = calculateRank(content, programmingLanguage);
+            int rank = calculateRank(prgr, programmingLanguage);
             if (rank > 0) {
                 results.add(new SearchResult(convertToDTO(fresher), rank));
             }
@@ -167,13 +167,13 @@ public class SearchService {
     }
 
     // Smart Search Fresher by Name
-    public List<Search> smartSearchFresherByName(String content) {
-        List<FresherResDto> freshers = fresherService.getAllFreshers();
+    public List<Search> smartSearchFresherByName(String ten) {
+        List<FresherResDto> freshers = fresherService.findFreshersByName(ten);
         List<SearchResult> results = new ArrayList<>();
 
         for (FresherResDto fresher : freshers) {
             String name = fresher.getName();
-            int rank = calculateRank(content, name);
+            int rank = calculateRank(ten, name);
             if (rank > 0) {
                 results.add(new SearchResult(convertToDTO(fresher), rank));
             }
@@ -188,42 +188,42 @@ public class SearchService {
 
     // Tính toán rank cho từng fresher dựa trên từ khóa và tên
     private int calculateRank(String content, String target) {
-    content = content.trim().toLowerCase();
-    target = target.trim().toLowerCase();
+        content = content.trim().toLowerCase();
+        target = target.trim().toLowerCase();
 
-    // 1. Exact Match
-    if (content.equals(target)) {
-        return 10;
-    }
-
-    // 2. Partial Match (các ký tự trong từ khóa xuất hiện liên tiếp)
-    if (target.contains(content)) {
-        return 9;
-    }
-
-    // 3. Fuzzy Match (Levenshtein Distance <= 2 được coi là gần đúng)
-    LevenshteinDistance levenshtein = new LevenshteinDistance();
-    int distance = levenshtein.apply(content, target);
-    if (distance <= 2) {
-        return 8;
-    }
-
-    // 4. Subword Search (tìm các từ con trong target)
-    String[] targetParts = target.split("\\s+");
-    for (String part : targetParts) {
-        if (part.contains(content)) {
-            return 7;
+        // 1. Exact Match
+        if (content.equals(target)) {
+            return 10;
         }
-    }
 
-    // 5. Prefix/Suffix Search
-    if (target.startsWith(content) || target.endsWith(content)) {
-        return 6;
-    }
+        // 2. Partial Match (các ký tự trong từ khóa xuất hiện liên tiếp)
+        if (target.contains(content)) {
+            return 9;
+        }
 
-    // Không tìm thấy phù hợp
-    return 0;
-}
+        // 3. Fuzzy Match (Levenshtein Distance <= 2 được coi là gần đúng)
+        LevenshteinDistance levenshtein = new LevenshteinDistance();
+        int distance = levenshtein.apply(content, target);
+        if (distance <= 2) {
+            return 8;
+        }
+
+        // 4. Subword Search (tìm các từ con trong target)
+        String[] targetParts = target.split("\\s+");
+        for (String part : targetParts) {
+            if (part.contains(content)) {
+                return 7;
+            }
+        }
+
+        // 5. Prefix/Suffix Search
+        if (target.startsWith(content) || target.endsWith(content)) {
+            return 6;
+        }
+
+        // Không tìm thấy phù hợp
+        return 0;
+    }
 
     // Inner class để chứa kết quả với rank
     private static class SearchResult {
