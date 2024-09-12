@@ -10,8 +10,14 @@ import java.util.Comparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dto.response.AssignmentResDto;
+import com.example.demo.dto.response.CenterResDto;
+import com.example.demo.dto.response.FresherProjectResDto;
 import com.example.demo.dto.response.FresherResDto;
+import com.example.demo.dto.response.NotificationResDto;
+import com.example.demo.dto.response.ProjectResDto;
 import com.example.demo.dto.response.Search;
+import com.example.demo.dto.response.UserResDto;
 import com.example.demo.entity.*;
 
 import org.apache.logging.log4j.LogManager;
@@ -243,29 +249,28 @@ public class SearchService {
     // Phương pháp chuyển đổi entity thành DTO Search
     public Search convertToDTO(Object obj) {
         Search result = new Search();
-        if (obj instanceof Fresher fresher) {
-            result.setId(fresher.getUser().getId());
-            result.setName(fresher.getUser().getName());
-            result.setUsername(fresher.getUser().getUsername());
-        } else if (obj instanceof Users user) {
+        if (obj instanceof FresherResDto fresher) {
+            result.setId(fresher.getId());
+            result.setName(fresher.getName());
+            result.setUsername(fresher.getUsername());
+        } else if (obj instanceof UserResDto user) {
             result.setId(user.getId());
             result.setName(user.getName());
             result.setUsername(user.getUsername());
-        } else if (obj instanceof Center center) {
+        } else if (obj instanceof CenterResDto center) {
             result.setId(center.getId());
             result.setName(center.getName());
-        } else if (obj instanceof Project project) {
+        } else if (obj instanceof ProjectResDto project) {
             result.setId(project.getId());
             result.setName(project.getName());
-        } else if (obj instanceof FresherProject fresherProject) {
-            result.setId(fresherProject.getProject().getId());
-            result.setName(fresherProject.getProject().getName());
-        } else if (obj instanceof Assignment assignment) {
-            result.setId(assignment.getProject().getId());
-            result.setName(assignment.getProject().getName());
-        } else if (obj instanceof Notification notification) {
+        } else if (obj instanceof FresherProjectResDto fresherProject) {
+            result.setId(fresherProject.getId());
+        } else if (obj instanceof AssignmentResDto assignment) {
+            result.setId(assignment.getId());
+        } else if (obj instanceof NotificationResDto notification) {
             result.setId(notification.getId());
-            result.setName(notification.getProject().getName());
+        }else{
+            System.out.println("Unknown type");
         }
         return result;
     }

@@ -127,6 +127,7 @@ public class CenterService {
     // Chuyển đổi từ entity sang DTO
     protected CenterResDto convertToDTO(Center center) {
         CenterResDto res = new CenterResDto();
+        res.setId(center.getId());
         res.setName(center.getName());
         res.setLocation(center.getLocation());
         res.setIdManager(center.getManager().getId());
