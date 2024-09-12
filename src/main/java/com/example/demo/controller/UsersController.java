@@ -120,6 +120,7 @@ public class UsersController {
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PutMapping("/{id}/setpassword")
     public ResponseEntity<Api<Void>> setPassword(@PathVariable int id, @RequestBody String newPassword) {
+        newPassword = newPassword.substring(1, newPassword.length() - 1);
         boolean updated = usersService.updatePassword(id, newPassword);
         if (!updated) {
             return Api.response(Code.USER_PASSWORD_UPDATE_FAILED);
@@ -127,9 +128,9 @@ public class UsersController {
         return Api.response(Code.OK);
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PutMapping("/updatepassword")
     public ResponseEntity<Api<Void>> updatePassword(@RequestBody String newPassword) {
+        newPassword = newPassword.substring(1, newPassword.length() - 1);
         int id = authenticationService.getIdUser();
         boolean updated = usersService.updatePassword(id, newPassword);
         if (!updated) {

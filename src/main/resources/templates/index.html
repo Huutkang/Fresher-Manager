@@ -106,6 +106,55 @@
                 </form>
                 <div id="update-me-result"></div>
             </div>
+            <!-- Thêm Role cho User -->
+            <h3>Add Role to User</h3>
+            <div id="add-role">
+                <form id="add-role-form">
+                    <label for="userIdRole">User ID:</label>
+                    <input type="number" id="userIdRole" name="userIdRole" required><br>
+                    <label for="role">Role:</label>
+                    <input type="text" id="addrole" name="role" required><br>
+                    <button type="button" onclick="addroletouser()">Add Role</button>
+                </form>
+                <div id="add-role-result"></div>
+            </div>
+
+            <!-- Xóa Role khỏi User -->
+            <h3>Remove Role from User</h3>
+            <div id="remove-role">
+                <form id="remove-role-form">
+                    <label for="userIdRemoveRole">User ID:</label>
+                    <input type="number" id="userIdRemoveRole" name="userIdRemoveRole" required><br>
+                    <label for="role">Role:</label>
+                    <input type="text" id="roleRemove" name="role" required><br>
+                    <button type="button" onclick="removerolefromuser()">Remove Role</button>
+                </form>
+                <div id="remove-role-result"></div>
+            </div>
+
+            <!-- Đặt mật khẩu mới cho User -->
+            <h3>Set Password for User</h3>
+            <div id="set-password">
+                <form id="set-password-form">
+                    <label for="userIdPassword">User ID:</label>
+                    <input type="number" id="userIdPassword" name="userIdPassword" required><br>
+                    <label for="newPassword">New Password:</label>
+                    <input type="password" id="newPassword" name="newPassword" required><br>
+                    <button type="button" onclick="setpassword()">Set Password</button>
+                </form>
+                <div id="set-password-result"></div>
+            </div>
+
+            <!-- Cập nhật mật khẩu cho User hiện tại -->
+            <h3>Update My Password</h3>
+            <div id="update-password-me">
+                <form id="update-password-form">
+                    <label for="newPasswordMe">New Password:</label>
+                    <input type="password" id="newPasswordMe" name="newPasswordMe" required><br>
+                    <button type="button" onclick="updatepassword()">Update Password</button>
+                </form>
+                <div id="update-password-result"></div>
+            </div>
            <div id="user-result"></div> 
         </div>
         <div id="freshers">
@@ -536,7 +585,7 @@
             </div>
             <h3>Smart Search Fresher</h3>
             <div id="sm-search-fresher">
-                <form id="search-fresher-form">
+                <form>
                     <label for="keywords">Keywords:</label>
                     <input type="text" id="sms" name="keywords" required><br>
                     <button type="button" onclick="smartsearchfresher()">Search Fresher</button>

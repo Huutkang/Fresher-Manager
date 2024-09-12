@@ -233,25 +233,69 @@ async function updateuserme() {
 
 // Thêm role cho User
 async function addroletouser() {
-    var kq = await addRoleToUser(id, role);
+    const userId = document.getElementById('userIdRole').value;
+    const role = document.getElementById('addrole').value;
 
+    if (userId && role) {
+        try {
+            const kq = await addRoleToUser(userId, role);
+            printJsonToElement("add-role-result", kq);
+        } catch (error) {
+            console.error('Error adding role:', error);
+        }
+    } else {
+        console.log('Please provide valid user ID and role.');
+    }
 }
+
 
 // Xóa role khỏi User
 async function removerolefromuser() {
-    var kq = await removeRoleFromUser(id, role);
+    const userId = document.getElementById('userIdRemoveRole').value;
+    const role = document.getElementById('roleRemove').value;
 
+    if (userId && role) {
+        try {
+            const kq = await removeRoleFromUser(userId, role);
+            printJsonToElement("remove-role-result", kq);
+        } catch (error) {
+            console.error('Error removing role:', error);
+        }
+    } else {
+        console.log('Please provide valid user ID and role.');
+    }
 }
 
+// Đặt mật khẩu cho người dùng khác
 async function setpassword() {
-    var kq = await setPassword(id, newPassword);
-
+    const userId = document.getElementById('userIdPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    if (userId && newPassword) {
+        try {
+            const kq = await setPassword(userId, newPassword);
+            printJsonToElement("set-password-result", kq);
+        } catch (error) {
+            console.error('Error setting password:', error);
+        }
+    } else {
+        console.log('Please provide valid user ID and password.');
+    }
 }
 
 // Cập nhật mật khẩu User
 async function updatepassword() {
-    var kq = await updatePassword(newPassword);
+    const newPassword = document.getElementById('newPasswordMe').value;
 
+    if (newPassword) {
+        try {
+            const kq = await updatePassword(newPassword);
+            printJsonToElement("update-password-result", kq);
+        } catch (error) {
+            console.error('Error updating password:', error);
+        }
+    } else {
+        console.log('Please provide a new password.');
+    }
 }
 
 // --------------------------------------------------
