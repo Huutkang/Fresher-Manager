@@ -103,16 +103,42 @@ public class UsersController {
     // Thêm role cho User
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PutMapping("/{id}/addrole")
-    public ResponseEntity<Api<Void>> addRoleToUser(@PathVariable int id, @RequestBody Role role) {
-        usersService.addRole(id, role);
+    public ResponseEntity<Api<Void>> addRoleToUser(@PathVariable int id, @RequestBody String role) {
+        role = role.substring(1, role.length() - 1);
+        switch (role) {
+            case "ADMIN":
+                usersService.addRole(id, Role.ADMIN);
+                break;
+            case "USER":
+                usersService.addRole(id, Role.USER);
+                break;
+            case "FRESHER":
+                usersService.addRole(id, Role.FRESHER);
+                break;
+            default:
+                return Api.response(Code.ROLE_NOT_EXISTED);
+        }
         return Api.response(Code.OK);
     }
 
     // Xóa role khỏi User
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PutMapping("/{id}/removerole")
-    public ResponseEntity<Api<Void>> removeRoleFromUser(@PathVariable int id, @RequestBody Role role) {
-        usersService.removeRole(id, role);
+    public ResponseEntity<Api<Void>> removeRoleFromUser(@PathVariable int id, @RequestBody String role) {
+        role = role.substring(1, role.length() - 1);
+        switch (role) {
+            case "ADMIN":
+                usersService.addRole(id, Role.ADMIN);
+                break;
+            case "USER":
+                usersService.addRole(id, Role.USER);
+                break;
+            case "FRESHER":
+                usersService.addRole(id, Role.FRESHER);
+                break;
+            default:
+                return Api.response(Code.ROLE_NOT_EXISTED);
+        }
         return Api.response(Code.OK);
     }
 

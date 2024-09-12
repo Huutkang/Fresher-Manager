@@ -211,13 +211,13 @@ async function updateUserMe(data) {
 // Thêm role cho User
 async function addRoleToUser(id, role) {
     const url = `${baseUrl}/users/${id}/addrole`;
-    return await send(url, { role: role }, 'PUT');
+    return await send(url, role, 'PUT');
 }
 
 // Xóa role khỏi User
 async function removeRoleFromUser(id, role) {
     const url = `${baseUrl}/users/${id}/removerole`;
-    return await send(url, { role: role }, 'PUT');
+    return await send(url, role, 'PUT');
 }
 
 // Cập nhật mật khẩu User

@@ -9,7 +9,7 @@ public enum Code {
     // 1xx: Authentication & Authorization Errors
     UNAUTHENTICATED(100, "Không được xác thực", HttpStatus.UNAUTHORIZED),
     ACCESS_DENIED(101, "Truy cập bị từ chối", HttpStatus.FORBIDDEN),
-
+    ROLE_NOT_EXISTED(102, "Role không tồn tại", HttpStatus.NOT_FOUND),
     // 2xx: User Errors
     USER_EXISTED(200, "Người dùng đã tồn tại", HttpStatus.BAD_REQUEST),
     USER_NOT_EXISTED(201, "Người dùng không tồn tại", HttpStatus.NOT_FOUND),
