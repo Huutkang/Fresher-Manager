@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AppException.class)
     ResponseEntity<Api<String>> handleAppException(AppException e) {
-        return Api.response(e.getCode()); // Gọi phương thức tĩnh trực tiếp
+        return Api.response(e.getCode());
     }
 
     @ExceptionHandler(RuntimeException.class)

@@ -128,13 +128,13 @@ public class UsersController {
         role = role.substring(1, role.length() - 1);
         switch (role) {
             case "ADMIN":
-                usersService.addRole(id, Role.ADMIN);
+                usersService.removeRole(id, Role.ADMIN);
                 break;
             case "USER":
-                usersService.addRole(id, Role.USER);
+                usersService.removeRole(id, Role.USER);
                 break;
             case "FRESHER":
-                usersService.addRole(id, Role.FRESHER);
+                usersService.removeRole(id, Role.FRESHER);
                 break;
             default:
                 return Api.response(Code.ROLE_NOT_EXISTED);
