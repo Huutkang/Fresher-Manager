@@ -29,18 +29,21 @@ public class NotificationService {
     private FresherService fresherService;
 
     @Autowired
+    private UsersService userService;
+
+    @Autowired
     private ProjectService projectService;
 
     private static final Logger log = LogManager.getLogger(NotificationService.class);
     
     // Thêm mới Notification
-    Notification addNotification(int fresher_id, int project_id, String message) {
+    Notification addNotification(int idUser, int project_id, String message) {
         Notification notification = new Notification();
         notification.setSentAt(LocalDateTime.now());
-        notification.setUser(fresherService.getFresher(fresher_id).getUser());
+        notification.setUser(userService.getUser(idUser));
         notification.setProject(projectService.getProject(project_id));
         notification.setMessage(message);
-        log.info("Added notification ");
+        log.info("Added notification ", idUser, project_id);
         return notificationRepository.save(notification);
     }
 
