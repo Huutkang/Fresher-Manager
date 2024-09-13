@@ -17,14 +17,14 @@ public class GlobalExceptionHandler {
         return Api.response(e.getCode());
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    ResponseEntity<Api<String>> handleRuntimeException(RuntimeException e) {
-        return Api.response(Code.RUNTIME_EXCEPTION, e.getMessage());
-    }
-
     @ExceptionHandler(AccessDeniedException.class)
     ResponseEntity<Api<String>> handleAccessDeniedException(AccessDeniedException e) {
         return Api.response(Code.ACCESS_DENIED);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    ResponseEntity<Api<String>> handleRuntimeException(RuntimeException e) {
+        return Api.response(Code.RUNTIME_EXCEPTION, e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

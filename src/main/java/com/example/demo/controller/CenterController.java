@@ -57,12 +57,8 @@ public class CenterController {
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Api<CenterResDto>> updateCenter(@PathVariable int id, @RequestBody CenterReqDto req) {
-        try {
-            CenterResDto updatedCenter = centerService.updateCenter(id, req);
-            return Api.response(Code.OK, updatedCenter);
-        } catch (RuntimeException e) {
-            return Api.response(Code.CENTER_NOT_EXISTED);
-        }
+        CenterResDto updatedCenter = centerService.updateCenter(id, req);
+        return Api.response(Code.OK, updatedCenter);
     }
 
     // Xóa Center theo ID

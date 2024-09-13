@@ -6,5 +6,5 @@ import lombok.Data;
 public class CenterReqDto {
     private String name;
     private String location;
-    private int idManager;
+    private Integer idManager;
 }

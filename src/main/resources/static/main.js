@@ -325,7 +325,7 @@ async function addfresher() {
     if (id) {
         try {
             var kq = await addFresher(id);
-            printJsonToElement("add-fresher-result", kq);
+            printJsonToElement("addfre-result", kq);
         } catch (error) {
             console.error('Error fetching fresher:', error);
         }
@@ -344,7 +344,7 @@ async function getallfreshers() {
 
 // Hàm lấy fresher theo ID
 async function getfresherbyid() {
-    var fresherIdInput = document.getElementById('fresherId');
+    var fresherIdInput = document.getElementById('gfId');
     var id = fresherIdInput.value;
     if (id) {
         try {
@@ -370,7 +370,7 @@ async function updatefresher() {
         }
     });
 
-    const fresherId = document.getElementById('fresherIdUpdate').value;
+    const fresherId = document.getElementById('udt-fre-id').value;
     var kq = await updateFresher(fresherId, fresher);
     printJsonToElement("fresher-update-id-result", kq);
 }
@@ -444,7 +444,7 @@ async function getallprojects() {
 
 // Hàm lấy project theo ID
 async function getprojectbyid() {
-    var projectIdInput = document.getElementById('projectId');
+    var projectIdInput = document.getElementById('prjbId');
     var id = projectIdInput.value;
     if (id) {
         try {
@@ -470,7 +470,7 @@ async function updateproject() {
         }
     });
 
-    const projectId = document.getElementById('projectIdUpdate').value;
+    const projectId = document.getElementById('prjidu').value;
     var kq = await updateProject(projectId, project);
     printJsonToElement("update-prj", kq);
 }

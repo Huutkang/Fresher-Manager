@@ -34,12 +34,20 @@ public class CenterService {
     // Thêm mới Center
     public CenterResDto addCenter(CenterReqDto centerReqDto) {
         Center center = new Center();
-        center.setName(centerReqDto.getName());
-        center.setLocation(centerReqDto.getLocation());
         try {
-            center.setManager(usersService.getUser(centerReqDto.getIdManager()));
-        } catch (AppException e) {
-            log.error("Manager not found");
+            center.setName(centerReqDto.getName());
+        center.setLocation(centerReqDto.getLocation());
+        } catch (Exception e) {
+            throw new AppException(Code.ENTER_MISS_INFO);
+        }
+        
+        if (centerReqDto.getIdManager() != null) {
+            try {
+                center.setManager(usersService.getUser(centerReqDto.getIdManager()));
+            } catch (RuntimeException e) {
+                log.error("Manager not found");
+                throw new AppException(Code.USER_NOT_EXISTED);
+            }
         }
         return convertToDTO(centerRepository.save(center));
     }
@@ -77,15 +85,23 @@ public class CenterService {
     // Cập nhật Center
     public CenterResDto updateCenter(int id, CenterReqDto req) {
         Center center = getCenter(id);
-        center.setName(req.getName());
-        center.setLocation(req.getLocation());
-        try {
-            center.setManager(usersService.getUser(req.getManagerId()));
-        } catch (AppException e) {
-            log.error("Manager not found");
+        if (req.getName() != null && !req.getName().isEmpty()) {
+            center.setName(req.getName());
+        }
+        if (req.getLocation() != null && !req.getLocation().isEmpty()) {
+            center.setLocation(req.getLocation());
+        }
+        if (req.getIdManager() != null) {
+            try {
+                center.setManager(usersService.getUser(req.getIdManager()));
+            } catch (AppException e) {
+                log.error("Manager not found");
+                throw new AppException(Code.USER_NOT_EXISTED);
+            }
         }
         return convertToDTO(centerRepository.save(center));
     }
+    
 
     // Xóa Center theo ID
     public Center deleteCenter(int id) {
@@ -130,8 +146,10 @@ public class CenterService {
         res.setId(center.getId());
         res.setName(center.getName());
         res.setLocation(center.getLocation());
-        res.setIdManager(center.getManager().getId());
-        res.setManager(center.getManager().getName());
+        if (center.getManager() != null) {
+            res.setIdManager(center.getManager().getId());
+            res.setManager(center.getManager().getName());
+        }
         return res;
     }
 }
