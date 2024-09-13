@@ -59,12 +59,9 @@ public class AssignmentController {
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Api<AssignmentResDto>> updateAssignment(@PathVariable int id, @RequestBody AssignmentReqDto assignmentDetails) {
-        try {
-            AssignmentResDto updatedAssignment = assignmentService.updateAssignment(id, assignmentDetails);
-            return Api.response(Code.OK, updatedAssignment);
-        } catch (RuntimeException e) {
-            return Api.response(Code.ASSIGNMENT_NOT_EXISTED);
-        }
+        AssignmentResDto updatedAssignment = assignmentService.updateAssignment(id, assignmentDetails);
+        return Api.response(Code.OK, updatedAssignment);
+
     }
 
     // Xóa Assignment theo ID

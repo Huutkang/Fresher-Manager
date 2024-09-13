@@ -87,7 +87,7 @@ public class FresherProjectController {
         Optional<FresherProjectResDto> frsprj = fresherProjectService.getFresherProjectById(id);
         if (frsprj.isPresent()) {
             emailService.projectAnnouncement(
-                fresherService.getFresherById(frsprj.get().getIdFresher()).getIdUser(), 
+                fresherService.getFresherById(frsprj.get().getIdFresher()).get().getIdUser(), 
                 frsprj.get().getIdProject(), 
                 false
             );

@@ -76,15 +76,22 @@ public class NotificationService {
     }
 
     // Cập nhật Notification
-    public NotificationResDto updateNotification(int id, NotificationReqDto notificationDetails) {
+    public NotificationResDto updateNotification(int id, NotificationReqDto notificationDto) {
         Notification notification = getNotification(id);
-        notification.setUser(fresherService.getFresher(notificationDetails.getIdFresher()).getUser());
-        notification.setProject(projectService.getProject(notificationDetails.getIdProject()));
-        notification.setMessage(notificationDetails.getMessage());
-        notification.setSentAt(LocalDateTime.now()); // Nếu muốn cập nhật thời gian
+        if (notificationDto.getIdFresher() != null) {
+            notification.setUser(fresherService.getFresher(notificationDto.getIdFresher()).getUser());
+        }
+        if (notificationDto.getIdProject() != null) {
+            notification.setProject(projectService.getProject(notificationDto.getIdProject()));
+        }
+        if (notificationDto.getMessage() != null) {
+            notification.setMessage(notificationDto.getMessage());
+        }
+        notification.setSentAt(LocalDateTime.now());
         log.info("Updated notification");
         return convertToDTO(notificationRepository.save(notification));
     }
+    
     
 
     // Xóa Notification theo ID

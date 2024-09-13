@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 public class AssignmentReqDto {
-    private int idFresher;
-    private int idProject;
-    private int assignmentNumber;
+    private Integer idFresher;
+    private Integer idProject;
+    private Integer assignmentNumber;
     private Double score;
 
 }

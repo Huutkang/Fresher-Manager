@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 public class FresherProjectReqDto {
-    private int idFresher;
-    private int idProject;
+    private Integer idFresher;
+    private Integer idProject;
     private String role;
 }

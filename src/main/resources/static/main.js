@@ -370,9 +370,13 @@ async function updatefresher() {
         }
     });
 
-    const fresherId = document.getElementById('udt-fre-id').value;
-    var kq = await updateFresher(fresherId, fresher);
-    printJsonToElement("fresher-update-id-result", kq);
+    const id = document.getElementById('udt-fre-id').value;
+    if (id) {
+        var kq = await updateFresher(id, fresher);
+        printJsonToElement("fresher-update-id-result", kq);
+    } else {
+        console.log('Please provide a valid fresher ID.');
+    }
 }
 
 // Hàm xóa fresher theo ID

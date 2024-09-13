@@ -76,12 +76,19 @@ public class FresherProjectService {
     // Cập nhật FresherProject
     public FresherProjectResDto updateFresherProject(int id, FresherProjectReqDto req) {
         FresherProject fresherProject = getFresherProject(id);
-        fresherProject.setFresher(fresherService.getFresher(req.getIdFresher()));
-        fresherProject.setProject(projectService.getProject(req.getIdProject()));
-        fresherProject.setRole(req.getRole());
+            if (req.getIdFresher() != null) {
+            fresherProject.setFresher(fresherService.getFresher(req.getIdFresher()));
+        }
+            if (req.getIdProject() != null) {
+            fresherProject.setProject(projectService.getProject(req.getIdProject()));
+        }
+        if (req.getRole() != null) {
+            fresherProject.setRole(req.getRole());
+        }
         log.info("Update FresherProject", id);
         return convertToDTO(fresherProjectRepository.save(fresherProject));
     }
+    
 
     // Xóa FresherProject theo ID
     public void deleteFresherProject(int id) {

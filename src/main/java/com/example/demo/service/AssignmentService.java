@@ -76,12 +76,21 @@ public class AssignmentService {
     // Cập nhật Assignment
     public AssignmentResDto updateAssignment(int id, AssignmentReqDto req) {
         Assignment assignment = getAssignment(id);
-        assignment.setFresher(fresherService.getFresher(req.getIdFresher()));
-        assignment.setProject(projectService.getProject(req.getProject()));
-        assignment.setAssignmentNumber(req.getAssignmentNumber());
-        assignment.setScore(req.getScore());
-        return convertToDTO(assignmentRepository.save(assignment));
+        if (req.getIdFresher() != null) {
+            assignment.setFresher(fresherService.getFresher(req.getIdFresher()));
+        }
+        if (req.getIdProject() != null) {
+            assignment.setProject(projectService.getProject(req.getIdProject()));
+        }
+        if (req.getAssignmentNumber() != null) {
+            assignment.setAssignmentNumber(req.getAssignmentNumber());
+        }
+        if (req.getScore() != null) {
+            assignment.setScore(req.getScore());
+        }
+            return convertToDTO(assignmentRepository.save(assignment));
     }
+    
 
     // Xóa Assignment theo ID
     public void deleteAssignment(int id) {

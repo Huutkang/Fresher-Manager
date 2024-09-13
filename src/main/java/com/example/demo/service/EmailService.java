@@ -61,7 +61,7 @@ public class EmailService {
         }else{
             message = "bị loại khỏi ";
         }
-        message = "Xin chào "+nameUser+". Bạn đã "+message+"dự án"+namePrj+".\nXin chân thành cảm ơn!";
+        message = "Xin chào "+nameUser+". Bạn đã "+message+"dự án "+namePrj+".\nXin chân thành cảm ơn!";
         try{
             sendEmail(to, subject, message);
             notificationService.addNotification(idUser, idPrj, to+"\n"+subject+"\n"+message);

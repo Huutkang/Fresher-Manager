@@ -131,7 +131,7 @@ public class FresherService {
     
         log.info("Updated fresher with ID: " + id);
         return convertToDTO(fresherRepository.save(fresher));
-    }    
+    }
 
     // Xóa Fresher theo ID
     public void deleteFresher(int id) {
@@ -139,6 +139,7 @@ public class FresherService {
         fresher.setActive(false);
         fresherRepository.save(fresher);
         log.info("Deleted fresher", id);
+        usersService.removeRole(fresher.getUser().getId(), Role.FRESHER);
     }
 
     // Hàm lấy Fresher theo ID người dùng

@@ -56,12 +56,8 @@ public class NotificationController {
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Api<NotificationResDto>> updateNotification(@PathVariable int id, @RequestBody NotificationReqDto notificationDetails) {
-        try {
-            NotificationResDto updatedNotification = notificationService.updateNotification(id, notificationDetails);
-            return Api.response(Code.OK, updatedNotification);
-        } catch (RuntimeException e) {
-            return Api.response(Code.NOTIFICATION_NOT_EXISTED);
-        }
+        NotificationResDto updatedNotification = notificationService.updateNotification(id, notificationDetails);
+        return Api.response(Code.OK, updatedNotification);
     }
 
     // Xóa Notification theo ID
